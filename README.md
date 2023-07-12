@@ -58,5 +58,5 @@ HiTIPS is released under the [MIT License](LICENSE).
 
 ## Contact
 
-For any questions, suggestions, or support, please feel free to reach out to us at adib.k.bme@gmail.com
+For any questions, suggestions, or support, please feel free to reach out to us at adib.keikhosravi@nih.gov
 
