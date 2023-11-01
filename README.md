@@ -1,62 +1,57 @@
 # HiTIPS
 
-![HiTIPS Logo](path/to/your/logo.png)
+**HiTIPS** (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.
 
-HiTIPS (High-Throughput Image Processing Software) is a powerful tool designed for the analysis of high-throughput imaging datasets. It offers a wide range of features and functionalities to facilitate the processing and analysis of FISH (Fluorescence In Situ Hybridization) data. HiTIPS integrates advanced image processing and machine learning algorithms to automate cell and nucleus segmentation, FISH signal identification, and quantification of signal intensity and distribution.
+## 🌟 Key Features
 
-## Key Features
+- 🔍 **Automated Segmentation**: Efficiently segments cells and nuclei.
+- 📍 **FISH Signal Identification**: Accurate localization and identification of FISH signals.
+- 📊 **Quantitative Analysis**: Measures signal intensity and distribution.
+- 🎨 **Customizable Interface**: Provides flexibility for customization and integrating plugins.
+- 🚀 **High-Throughput Support**: Designed for processing large-scale imaging datasets.
+- ⚙️ **Extendable Algorithms**: Incorporates new methodologies for enhancing current analysis routines.
+- 🧩 **Plugin Support**: Supports the creation and integration of new analysis routines.
 
-- Automated segmentation of cells and nuclei
-- Identification and localization of FISH signals
-- Quantification of signal intensity and distribution
-- Flexible user interface for easy customization and plugin integration
-- Support for high-throughput image processing and analysis
-- Incorporation of new algorithms for existing analysis routines
-- Creation of separate plugins for new analysis routines
+## 📥 Installation
 
-## Installation
+### Using Conda and Pip
 
-To install and use HiTIPS, follow these steps:
-
-1. Clone the HiTIPS repository to your local machine:
-    git clone https://github.com/your-username/HiTIPS.git
-
-2. Install the required dependencies:
-    pip install -r requirements.txt
+1. **Create a Conda Environment**:
+   ```bash
+   conda create --name hitips_env python=3.8
+   conda activate hitips_env
    
-3. Launch HiTIPS:
-    python hitips.py
+2. **Install HiTIPS**:
+   ```bash
+   pip install hitips
+   
+4. **Launch HiTIPS:**
+   ```bash
+   python -m hitips
+   
+## 🚀 Usage
 
+- Launch HiTIPS using the command `python -m hitips`.
+- Introduce your high-throughput imaging dataset into the software.
+- Navigate through the available analysis options and specify your desired tasks.
+- Modify the analysis parameters fitting your requirements.
+- Initiate the analysis process.
+- Review and interpret the produced outcomes.
+- Save or export the results as required.
 
-## Usage
+## 🤝 Contributing
 
-1. Launch HiTIPS by executing the `hitips.py` script.
-2. Load your high-throughput imaging dataset into HiTIPS.
-3. Explore the available analysis routines and select the desired tasks to perform on your dataset.
-4. Customize the analysis parameters according to your requirements.
-5. Run the analysis and wait for the results.
-6. Review and visualize the generated outputs.
-7. Save and export the analysis results as needed.
+We warmly welcome contributions to HiTIPS! If you're keen on contributing, please adhere to the following guidelines:
+- Fork and Branch: `git checkout -b feature/your-feature-name`
+- Ensure that your changes align with the project's coding standards.
+- Validate your modifications with appropriate tests.
+- Commit your changes, ensuring your commit messages are descriptive.
+- Push your updates to your fork.
+- Submit a pull request on the primary HiTIPS repository detailing your changes.
 
-## Contributing
+## 📜 License
 
-Contributions to HiTIPS are welcome! If you would like to contribute, please follow these steps:
+HiTIPS is distributed under the MIT License.
 
-1. Fork the repository and create your branch:
-    git checkout -b feature/your-feature-name
-
-
-2. Implement your changes and ensure that the code follows the project's coding style.
-3. Write tests to validate your code changes.
-4. Commit your changes with descriptive commit messages.
-5. Push your branch to your forked repository.
-6. Open a pull request in the main HiTIPS repository, describing your changes and their purpose.
-
-## License
-
-HiTIPS is released under the [MIT License](LICENSE).
-
-## Contact
-
-For any questions, suggestions, or support, please feel free to reach out to us at adib.keikhosravi@nih.gov
-
+## 📞 Contact
+For inquiries, feedback, or support, please don't hesitate to contact us at adib.keikhosravi@nih.gov.
