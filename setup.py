@@ -1,34 +1,38 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
-    name='HiTIPS',
-    version='1.0.0',
-    author='Adib Keikhosravi',
-    author_email='adib.k.bme@gmail.com',
-    description='High throughput image processing software for anlyzing cell dynamics and DNA/RNA ',
-    packages=['your_package'],
+    name="hitips",
+    version="0.1",
+    packages=find_packages(),
     install_requires=[
-        'pyqt',
-        'scipy',
-        'pandas',
-        'pillow',
-        'matplotlib',
-        'imageio',
-        'tifffile',
-        'scikit-image==0.18.3',
-        'btrack',
-        'qimage2ndarray',
-        'aicsimageio',
-        'cellpose',
-        'opencv-python-headless',
-        'deepcell',
-        'hmmlearn',
-        'aicsimageio[nd2]',
-        'nd2reader'
-    ],
+		    'numpy',
+		    'opencv-python-headless',
+		    'scikit-image',
+		    'scipy',
+		    'Pillow',
+		    'pandas',
+		    'matplotlib',
+		    'btrack',  # Ensure this exists on PyPI
+		    'imageio',
+		    'tifffile',
+		    'aicsimageio',
+		    'deepcell',  # Ensure this exists on PyPI
+		    'scikit-learn',
+		    'hmmlearn',
+		    'PyQt5',
+		    'cellpose',
+		    'tensorflow',
+		    'joblib',
+		    'dask',
+		    'nd2reader',
+		    'imaris_ims_file_reader',
+		    'qimage2ndarray'
+		],
+
     entry_points={
         'console_scripts': [
-            'HiTIPS=hitips.HiTIPS:main',
+            'hitips=hitips.HiTIPS:main',
         ],
     },
 )
+
