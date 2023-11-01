@@ -20,7 +20,6 @@
 - **RAM**: Minimum 16GB (32GB recommended for large datasets).
 - **Storage**: SSD with 500GB or more of available space.
 - **GPU**: Optional but recommended, especially if using CUDA-enhanced functionalities.
-- **Network**: Reliable internet connection for updates and data transfers.
 
 ### Software Requirements:
 
