@@ -11,6 +11,22 @@
 - 🚀 **High-Throughput Support**: Designed for processing large-scale imaging datasets.
 - ⚙️ **Extendable Algorithms**: Incorporates new methodologies for enhancing current analysis routines.
 - 🧩 **Plugin Support**: Supports the creation and integration of new analysis routines.
+  
+## 🔧 Hardware and Software Prerequisites
+
+### Hardware Requirements:
+
+- **CPU**: Multi-core processor (e.g., Intel i7 or AMD Ryzen 7).
+- **RAM**: Minimum 16GB (32GB recommended for large datasets).
+- **Storage**: SSD with 500GB or more of available space.
+- **GPU**: Optional but recommended, especially if using CUDA-enhanced functionalities.
+- **Network**: Reliable internet connection for updates and data transfers.
+
+### Software Requirements:
+
+- **Operating System**: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora).
+- **Python**: Version 3.7 or newer.
+- **Package Manager**: Latest version of [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution).
 
 ## 📥 Installation
 
