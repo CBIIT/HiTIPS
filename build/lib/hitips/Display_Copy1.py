@@ -110,7 +110,6 @@ class imagedisplayer(object):
             
     def GET_IMAGE_NAME(self,displaygui):
             
-            # print(self.grid_data)
             self.imgchannels = self.METADATA_DATAFRAME.loc[
                                     (self.METADATA_DATAFRAME['column'] == str(self.grid_data[0])) & 
                                     (self.METADATA_DATAFRAME['row'] == str(self.grid_data[1])) & 
@@ -249,8 +248,6 @@ class imagedisplayer(object):
 
             self.input_image = self.IMAGE_TO_BE_MASKED()
             ch1_spots_img, ch2_spots_img, ch3_spots_img, ch4_spots_img, ch5_spots_img = self.IMAGE_FOR_SPOT_DETECTION(self.input_image, displaygui)
-            print(ch1_spots_img)
-
 
 
             if ch1_spots_img.size != 0:

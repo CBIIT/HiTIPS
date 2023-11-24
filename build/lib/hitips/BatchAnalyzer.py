@@ -35,6 +35,8 @@ from skimage.util import img_as_float
 from scipy.cluster.hierarchy import linkage, fcluster
 from hmmlearn import hmm
 from scipy.spatial.distance import pdist, cdist, squareform
+import spatial_efd
+from skimage.segmentation import watershed, find_boundaries
 
 WELL_PLATE_ROWS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
@@ -60,7 +62,87 @@ class BatchAnalysis(object):
         self.spot_distances = {}
         self.experiment_name = []
         self.output_prefix = []
+        self.output_folder = []
+        self.gui_params = Gui_Params(self.AnalysisGui,self.inout_resource_gui)
+        
+    def SAVE_NUCLEI_INFORMATION(self, cell_df, columns, rows):
+            
+        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
+        if os.path.isdir(xlsx_output_folder) == False:
+            os.mkdir(xlsx_output_folder) 
+
+        xlsx_name = ['Nuclei_Information.csv']
+        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
+        cell_df.rename(columns={ "label":"cell_index"}, inplace = True)
+        cell_df.to_csv(xlsx_full_name)
+
+        well_nuc_folder = os.path.join(self.output_folder, 'well_nuclei_results')
+        if os.path.isdir(well_nuc_folder) == False:
+            os.mkdir(well_nuc_folder)
+        for col in columns:
+            for row in rows:
+
+                well_nuc_df = cell_df.loc[(cell_df['column'] == col) & (cell_df['row'] == row)]
+                if well_nuc_df.empty == False:
+                    well_nuc_filename = self.output_prefix + '_nuclei_information_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
+                    nuc_well_csv_full_name = os.path.join(well_nuc_folder, well_nuc_filename)
+                    well_nuc_df.to_csv(path_or_buf=nuc_well_csv_full_name, encoding='utf8')
+        print("Nuclei Information Saved....")
+        
+    def SAVE_SPOT_INFO(self, spot_df, coordinates_method, columns, rows, channel_name ):
+        
+        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
+        if os.path.isdir(xlsx_output_folder) == False:
+            os.mkdir(xlsx_output_folder)
+        xlsx_name = channel_name + '_Spot_Locations_' + coordinates_method + r'.csv'
+        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name)
+        spot_df.to_csv(xlsx_full_name)
+
+        well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
+        if os.path.isdir(well_spot_loc_folder) == False:
+            os.mkdir(well_spot_loc_folder)
+        for col in columns:
+            for row in rows:
+                spot_loc_df = spot_df.loc[(spot_df['column'] == col) & (spot_df['row'] == row)]
+                if spot_loc_df.empty == False:
+                    spot_loc_filename = self.output_prefix + '_' + channel_name +'_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
+                    spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
+                    spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')   
+                    
+    def process_channel(self, channel_spot_df_list, columns, rows, channel_name):
+        if len(channel_spot_df_list) > 0:
+            channel_spot_df = pd.concat(channel_spot_df_list)
+            if self.gui_params.SpotsLocation_check_status:
+                self.SAVE_SPOT_INFO(channel_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, channel_name)
     
+    def PROCESS_ALL_SPOT_CHANNELS(self):
+
+        columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
+        rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
+    
+        # Process each channel
+        self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
+        self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
+        self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
+        self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
+        self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
+        
+    def update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
+        channel_df = getattr(self, channel_attr)
+        if not channel_df.empty:
+            row_index_spotdf = channel_df.loc[
+                (channel_df['field_index'] == fov) & (channel_df['column'] == col) & 
+                (channel_df['row'] == row) & (channel_df["time_point"] == time_point) & 
+                (channel_df["cell_index"] == previous_index)
+            ].index
+            channel_df.loc[row_index_spotdf, 'cell_index'] = new_index
+        setattr(self, channel_attr, channel_df) # Update the class variable
+    
+    def update_cell_index_in_all_spot_channels(self, col, row, fov, time_point, previous_index, new_index):
+        for channel in ['ch1_spot_df', 'ch2_spot_df', 'ch3_spot_df', 'ch4_spot_df', 'ch5_spot_df']:
+            self.update_cell_index_in_channel(channel, col, row, fov, time_point, previous_index, new_index)
+
+               
     def ON_APPLYBUTTON(self, Meta_Data_df):
         
         self.gui_params = Gui_Params(self.AnalysisGui,self.inout_resource_gui)
@@ -74,11 +156,12 @@ class BatchAnalysis(object):
         self.experiment_name = path_list[path_list.__len__()-2]
         self.output_prefix  = path_list[path_list.__len__()-1]
         self.output_folder = os.path.join(self.inout_resource_gui.Output_dir,self.experiment_name)
-
-        os.mkdir(self.output_folder, exist_ok=True) 
+        if os.path.isdir(self.output_folder) == False:
+            os.mkdir(self.output_folder) 
             
         csv_config_folder = os.path.join(self.output_folder, 'configuration_files')
-        os.mkdir(csv_config_folder, exist_ok=True) 
+        if os.path.isdir(csv_config_folder) == False:
+            os.mkdir(csv_config_folder) 
         self.config_file = os.path.join(csv_config_folder, 'analysis_configuration.csv')
         self.AnalysisGui.SAVE_CONFIGURATION(self.config_file, self.ImageAnalyzer)
         
@@ -125,133 +208,41 @@ class BatchAnalysis(object):
             for process in processes:
                 process.join()
 
-        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
-        if os.path.isdir(xlsx_output_folder) == False:
-            os.mkdir(xlsx_output_folder) 
+        
 
         if self.gui_params.NucInfoChkBox_check_status == True:
 
             self.cell_df = pd.concat(self.cell_pd_list)
+            self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
+            
 
-            xlsx_name = ['Nuclei_Information.csv']
-            xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-            self.cell_df.rename(columns={ "label":"cell_index"}, inplace = True)
-            self.cell_df.to_csv(xlsx_full_name)
+        # if self.ch1_spot_df_list.__len__() > 0:
+        #     self.ch1_spot_df = pd.concat(self.ch1_spot_df_list)
+        #     if self.gui_params.NucInfoChkBox_check_status == True:
+        #         self.SAVE_SPOT_INFO(self.ch1_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch1')
+        
+        # if self.ch2_spot_df_list.__len__() > 0:
+        #     self.ch2_spot_df = pd.concat(self.ch2_spot_df_list)
+        #     if self.gui_params.SpotsLocation_check_status == True:
+        #         self.SAVE_SPOT_INFO(self.ch2_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch2')
 
-            well_nuc_folder = os.path.join(self.output_folder, 'well_nuclei_results')
-            if os.path.isdir(well_nuc_folder) == False:
-                os.mkdir(well_nuc_folder)
-            for col in columns:
-                for row in rows:
+        # if self.ch3_spot_df_list.__len__() > 0:
+        #     self.ch3_spot_df = pd.concat(self.ch3_spot_df_list)
+        #     if self.gui_params.SpotsLocation_check_status == True:
+        #         self.SAVE_SPOT_INFO(self.ch3_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch3')
 
-                    well_nuc_df = self.cell_df.loc[(self.cell_df['column'] == col) & (self.cell_df['row'] == row)]
-                    if well_nuc_df.empty == False:
-                        well_nuc_filename = self.output_prefix + '_nuclei_information_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                        nuc_well_csv_full_name = os.path.join(well_nuc_folder, well_nuc_filename)
-                        well_nuc_df.to_csv(path_or_buf=nuc_well_csv_full_name, encoding='utf8')
+        # if self.ch4_spot_df_list.__len__() > 0:
+        #     self.ch4_spot_df = pd.concat(self.ch4_spot_df_list)
+        #     if self.gui_params.SpotsLocation_check_status == True:
+        #         self.SAVE_SPOT_INFO(self.ch4_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch4')
 
-
-        if self.ch1_spot_df_list.__len__() > 0:
-            self.ch1_spot_df = pd.concat(self.ch1_spot_df_list)
-
-            if self.gui_params.NucInfoChkBox_check_status == True:
-                coordinates_method = self.gui_params.SpotLocationCbox_currentText
-                xlsx_name = ['Ch1_Spot_Locations_' + coordinates_method + r'.csv']
-                xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-                self.ch1_spot_df.to_csv(xlsx_full_name)
-
-                well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-                if os.path.isdir(well_spot_loc_folder) == False:
-                    os.mkdir(well_spot_loc_folder)
-                for col in columns:
-                    for row in rows:
-                        spot_loc_df = self.ch1_spot_df.loc[(self.ch1_spot_df['column'] == col) & (self.ch1_spot_df['row'] == row)]
-                        if spot_loc_df.empty == False:
-                            spot_loc_filename = self.output_prefix + '_ch1_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                            spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                            spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')
-
-        if self.ch2_spot_df_list.__len__() > 0:
-            self.ch2_spot_df = pd.concat(self.ch2_spot_df_list)
-
-            if self.gui_params.SpotsLocation_check_status == True:
-                coordinates_method = self.gui_params.SpotLocationCbox_currentText
-                xlsx_name = ['Ch2_Spot_Locations_' + coordinates_method + r'.csv']
-                xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-                self.ch2_spot_df.to_csv(xlsx_full_name)   
-
-                well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-                if os.path.isdir(well_spot_loc_folder) == False:
-                    os.mkdir(well_spot_loc_folder)
-                for col in columns:
-                    for row in rows:
-                        spot_loc_df = self.ch2_spot_df.loc[(self.ch2_spot_df['column'] == col) & (self.ch2_spot_df['row'] == row)]
-                        if spot_loc_df.empty == False:
-                            spot_loc_filename = self.output_prefix + '_ch2_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                            spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                            spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')
-
-        if self.ch3_spot_df_list.__len__() > 0:
-            self.ch3_spot_df = pd.concat(self.ch3_spot_df_list)
-
-            if self.gui_params.SpotsLocation_check_status == True:
-                coordinates_method = self.gui_params.SpotLocationCbox_currentText
-                xlsx_name = ['Ch3_Spot_Locations_' + coordinates_method + r'.csv']
-                xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-                self.ch3_spot_df.to_csv(xlsx_full_name)   
-
-                well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-                if os.path.isdir(well_spot_loc_folder) == False:
-                    os.mkdir(well_spot_loc_folder)
-                for col in columns:
-                    for row in rows:
-                        spot_loc_df = self.ch3_spot_df.loc[(self.ch3_spot_df['column'] == col) & (self.ch3_spot_df['row'] == row)]
-                        if spot_loc_df.empty == False:
-                            spot_loc_filename = self.output_prefix + '_ch3_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                            spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                            spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')
-
-        if self.ch4_spot_df_list.__len__() > 0:
-            self.ch4_spot_df = pd.concat(self.ch4_spot_df_list)
-
-            if self.gui_params.SpotsLocation_check_status == True:
-                coordinates_method = self.gui_params.SpotLocationCbox_currentText
-                xlsx_name = ['Ch4_Spot_Locations_' + coordinates_method + r'.csv']
-                xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-                self.ch4_spot_df.to_csv(xlsx_full_name) 
-
-                well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-                if os.path.isdir(well_spot_loc_folder) == False:
-                    os.mkdir(well_spot_loc_folder)
-                for col in columns:
-                    for row in rows:
-                        spot_loc_df = self.ch4_spot_df.loc[(self.ch4_spot_df['column'] == col) & (self.ch4_spot_df['row'] == row)]
-                        if spot_loc_df.empty == False:
-                            spot_loc_filename = self.output_prefix + '_ch4_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                            spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                            spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')
-
-        if self.ch5_spot_df_list.__len__() > 0:
-            self.ch5_spot_df = pd.concat(self.ch5_spot_df_list)
-
-            if self.gui_params.SpotsLocation_check_status == True:
-                coordinates_method = self.gui_params.SpotLocationCbox_currentText
-                xlsx_name = ['Ch5_Spot_Locations_' + coordinates_method + r'.csv']
-                xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-                self.ch5_spot_df.to_csv(xlsx_full_name)  
-
-                well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-                if os.path.isdir(well_spot_loc_folder) == False:
-                    os.mkdir(well_spot_loc_folder)
-                for col in columns:
-                    for row in rows:
-                        spot_loc_df = self.ch5_spot_df.loc[(self.ch5_spot_df['column'] == col) & (self.ch5_spot_df['row'] == row)]
-                        if spot_loc_df.empty == False:
-                            spot_loc_filename = self.output_prefix + '_ch5_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                            spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                            spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')
-
-
+        # if self.ch5_spot_df_list.__len__() > 0:
+        #     self.ch5_spot_df = pd.concat(self.ch5_spot_df_list)
+        #     if self.gui_params.SpotsLocation_check_status == True:
+        #         self.SAVE_SPOT_INFO(self.ch5_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch5')
+        self.PROCESS_ALL_SPOT_CHANNELS()
+            # Calculate Spot Distances
+    
         if self.gui_params.SpotsDistance_check_status == True:
             columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
             rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
@@ -261,8 +252,7 @@ class BatchAnalysis(object):
             
             xlsx_name = ['Nuclei_Information.csv']
             xlsx_full_name = os.path.join(os.path.join(self.output_folder,"whole_plate_resutls"), xlsx_name[0])
-            self.cell_df = pd.read_csv(xlsx_full_name)
-            
+            self.cell_df = pd.read_csv(xlsx_full_name).drop(["Unnamed: 0"], axis=1)
             cell_tracking_folder = os.path.join(self.output_folder, 'cell_tracking')
             if os.path.isdir(cell_tracking_folder) == False:
                 os.mkdir(cell_tracking_folder)
@@ -356,7 +346,43 @@ class BatchAnalysis(object):
                         if self.gui_params.NucTrackingMethod_currentText == "DeepCell":
                         
                             tracks_pd = self.deepcell_tracking(t_stack_nuc,label_stack,self.gui_params)
-                        
+                        ###
+                        tracks_pd_copy = tracks_pd.copy()
+                        tracks_pd_copy=tracks_pd_copy.rename(columns={"t": "time_point", "x": "centroid-1", "y": "centroid-0", "ID": "cell_index"})
+                        tracks_pd_copy["time_point"] = tracks_pd_copy["time_point"] + 1
+                        tracks_pd_copy = tracks_pd_copy.astype({'centroid-0':'int', 'centroid-1':'int'})
+                        self.cell_df =  self.cell_df.astype({'centroid-0':'int', 'centroid-1':'int', 'time_point':'int', 'cell_index':'int'})
+                        field_cell_df = self.cell_df.loc[(self.cell_df['field_index'] == fov)&(self.cell_df['column'] == col)&(self.cell_df['row'] == row)]
+                        for trck_ind, trck_row in tracks_pd_copy.iterrows():
+
+                            row_index_celldf = field_cell_df.loc[(field_cell_df["time_point"]==trck_row["time_point"])&(field_cell_df["centroid-0"]==trck_row["centroid-0"])&
+                                                          (field_cell_df["centroid-1"]==trck_row["centroid-1"])].index[0]
+                            
+                            # Update 'cell_index' in self.cell_df
+                            previous_index = self.cell_df.loc[row_index_celldf, 'cell_index']
+                            self.cell_df.loc[row_index_celldf, 'cell_index'] = trck_row["cell_index"]
+                            
+                            self.update_cell_index_in_all_spot_channels( col, row, fov, trck_row["time_point"], previous_index, trck_row["cell_index"])
+                            # if self.ch1_spot_df.empty==False:
+                                
+                            #     row_index_spotdf = self.ch1_spot_df.loc[(self.ch1_spot_df['field_index'] == fov)&(self.ch1_spot_df['column'] == col)&(self.ch1_spot_df['row'] == row)&
+                            #                                             (self.ch1_spot_df["time_point"]==trck_row["time_point"])&(self.ch1_spot_df["cell_index"]==previous_index)]
+                                
+                            #     self.ch1_spot_df.loc[row_index_spotdf, 'cell_index'] = trck_row["cell_index"]
+                            # Define the list of channel dataframes
+                            # channel_dfs = [self.ch1_spot_df, self.ch2_spot_df, self.ch3_spot_df, self.ch4_spot_df, self.ch5_spot_df]
+                            
+                            # # Loop through each channel dataframe
+                            # for channel_df in channel_dfs:
+                            #     if not channel_df.empty:
+                            #         row_index_spotdf = channel_df.loc[
+                            #             (channel_df['field_index'] == fov) & (channel_df['column'] == col) & (channel_df['row'] == row) &
+                            #             (channel_df["time_point"] == trck_row["time_point"]) & (channel_df["cell_index"] == previous_index)
+                            #         ].index
+                                    
+                            #         channel_df.loc[row_index_spotdf, 'cell_index'] = trck_row["cell_index"]
+
+                            
                         ##########save whole field track images
                         font = cv2.FONT_HERSHEY_SIMPLEX
                         fontScale = int(1)
@@ -746,12 +772,14 @@ class BatchAnalysis(object):
                             
                             single_track_copy.to_csv(self.cell_level_file_name(cell_tracking_folder, 'single_track_tables', 'track_table', '.csv', col, row, fov, id_))  
                             print("saved track: "+ 'col' + str(col) + r'_row' + str(row) + r'_field' + str(fov) + r'_cell' + str(id_))
-                         
-                        
+                            
+        self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
+        self.PROCESS_ALL_SPOT_CHANNELS()
         seconds2 = time.time()
         
         diff=seconds2-seconds1
         print('Total Processing Time (Minutes):',diff/60)
+        
     def normalize_stack(self, images):
 
         normalized_stack = []
@@ -835,8 +863,26 @@ class BatchAnalysis(object):
                     props_df['perimeter'] = pixpermicron*props_df['perimeter']
                     image_cells_df = pd.concat([df,props_df], axis=1)
 #                     self.cell_pd_list = pd.concat([self.cell_pd_list, image_cells_df], axis=0, ignore_index=True)
-
-
+                    
+                    labeled_boundary = np.multiply(find_boundaries(labeled_nuc, mode='inner', background=0),labeled_nuc)
+                    # List to store the coordinates of each nucleus boundary
+                    efc_ratio = {}
+                    # Iterate over each region to extract its boundary coordinates
+                    for region in regionprops(labeled_boundary):
+                        ecd_coeffs = spatial_efd.CalculateEFD(region.coords[:,0], region.coords[:,1], 15)
+                        EFDcoeffs, rotation = spatial_efd.normalize_efd(ecd_coeffs, size_invariant = True)
+                        MinorAxisArray = []
+                        MajorAxisArray = []
+                        for i in range(len(EFDcoeffs)):
+                            MinorAxis = (EFDcoeffs[i][0]**2 + EFDcoeffs[i][2]**2)**(1/2)
+                            MajorAxis = (EFDcoeffs[i][1]**2 + EFDcoeffs[i][3]**2)**(1/2)
+                            MinorAxisArray.append(MinorAxis)
+                            MajorAxisArray.append(MajorAxis)    
+                    
+                        efc_ratio[region.label] = (MinorAxisArray[0] + MajorAxisArray[0])/( sum(MinorAxisArray[1:]) + sum(MajorAxisArray[1:]))
+                    image_cells_df['efc_ratio']=0
+                    image_cells_df['efc_ratio'] = image_cells_df['label'].map(efc_ratio).fillna(image_cells_df['efc_ratio'])
+                    
                     if (self.gui_params.SecChannel_current_index > 0) & (self.gui_params.SecArea_current_index > 0):
                         
                         secondary_image_df = self.df_checker.loc[(self.df_checker['channel'] == str(self.gui_params.SecChannel_current_index))]
@@ -884,7 +930,7 @@ class BatchAnalysis(object):
                 if self.gui_params.SpotMaxZProject_status_check == True:
 
                         if self.gui_params.SpotCh1CheckBox_status_check == True:
-                            if ch1_xyz!=[]:
+                            if ch1_xyz.size > 0:
                                 ch1_xyz_round = np.round(np.asarray(ch1_xyz)).astype('int')
                                 ch1_spot_nuc_labels = labeled_nuc[ch1_xyz_round[:,0], ch1_xyz_round[:,1]]
 
@@ -910,7 +956,8 @@ class BatchAnalysis(object):
     
                                     
                         if self.gui_params.SpotCh2CheckBox_status_check == True:
-                            if ch2_xyz!=[]:
+                            # if ch2_xyz!=[]:
+                            if ch2_xyz.size > 0:
                                 
                                 ch2_xyz_round = np.round(np.asarray(ch2_xyz)).astype('int')
                                 ch2_spot_nuc_labels = labeled_nuc[ch2_xyz_round[:,0], ch2_xyz_round[:,1]]
@@ -937,7 +984,7 @@ class BatchAnalysis(object):
     
 
                         if self.gui_params.SpotCh3CheckBox_status_check == True:
-                            if ch3_xyz!=[]:
+                            if ch3_xyz.size > 0:
 
                                 ch3_xyz_round = np.round(np.asarray(ch3_xyz)).astype('int')
                                 ch3_spot_nuc_labels = labeled_nuc[ch3_xyz_round[:,0], ch3_xyz_round[:,1]]
@@ -965,7 +1012,7 @@ class BatchAnalysis(object):
     
 
                         if self.gui_params.SpotCh4CheckBox_status_check == True:
-                            if ch4_xyz!=[]:
+                            if ch4_xyz.size > 0:
 
                                 ch4_xyz_round = np.round(np.asarray(ch4_xyz)).astype('int')
                                 ch4_spot_nuc_labels = labeled_nuc[ch4_xyz_round[:,0], ch4_xyz_round[:,1]]
@@ -993,7 +1040,7 @@ class BatchAnalysis(object):
 
                                     
                         if self.gui_params.SpotCh5CheckBox_status_check == True:
-                            if ch5_xyz!=[]:
+                            if ch5_xyz.size > 0:
 
                                 ch5_xyz_round = np.round(np.asarray(ch5_xyz)).astype('int')
                                 ch5_spot_nuc_labels = labeled_nuc[ch5_xyz_round[:,0], ch5_xyz_round[:,1]]
@@ -1314,7 +1361,7 @@ class BatchAnalysis(object):
                     coordinates_max_project=np.ones((0,2), dtype='float')
                 xyz_coordinates = np.append(np.asarray(coordinates_max_project).astype('float'), spots_z_coordinates, 1)
 
-        return xyz_coordinates, coordinates_stack, final_spots
+        return np.array(xyz_coordinates), np.array(coordinates_stack), final_spots
     
    
     def RADIAL_DIST_CALC(self, xyz_round, spot_nuc_labels, radial_dist_df, dist_img):
@@ -1323,7 +1370,7 @@ class BatchAnalysis(object):
         for i in range(xyz_round.__len__()):
             
             sp_dist = dist_img[xyz_round[i,0], xyz_round[i,1]]
-            spot_lbl =np.int(spot_nuc_labels[i])
+            spot_lbl =int(spot_nuc_labels[i])
             if spot_lbl>0:
                 cell_max = radial_dist_df.loc[radial_dist_df['label']==spot_lbl]['max_intensity'].iloc[0]
                 sp_radial_dist= (cell_max-sp_dist)/(cell_max-1+eps)
@@ -1336,10 +1383,8 @@ class BatchAnalysis(object):
     
     def RUN_BTRACK(self,label_stack, gui_params):
         
-        obj_from_generator = btrack.utils.segmentation_to_objects(label_stack, properties = ('bbox','area',
-                                                                                    'perimeter',
-                                                                                      'major_axis_length','orientation',
-                                                                                       'solidity','eccentricity'))
+        obj_from_generator = btrack.utils.segmentation_to_objects(label_stack, properties = ('bbox','area', 'perimeter', 'major_axis_length','orientation',
+                                                                                             'solidity','eccentricity' ))
         # initialise a tracker session using a context manager
         with btrack.BayesianTracker() as tracker:
             tracker = btrack.BayesianTracker()
