@@ -4,11 +4,10 @@ from PyQt5.QtWidgets import QWidget, QMessageBox
 from xml.dom import minidom
 import numpy as np
 import pandas as pd
-import HiTIPS
 import glob
 import json
-import DisplayGUI, AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
-import Display, InputOutput, MetaData_Reader, Display_Copy1
+from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
+from . import InputOutput, MetaData_Reader, Display_Copy1
 import os
 import sys
 from aicsimageio import AICSImage

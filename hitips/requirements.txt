@@ -1,5 +1,5 @@
 conda install -c anaconda pyqt scipy pandas  pillow
 conda install -c conda-forge matplotlib imageio  tifffile 
-pip install scikit-image==0.18.3 btrack  qimage2ndarray aicsimageio cellpose opencv-python-headless deepcell aicsimageio[nd2] hmmlearn nd2reader
+pip install scikit-image==0.18.3 btrack  qimage2ndarray aicsimageio cellpose opencv-python-headless deepcell aicsimageio[nd2] hmmlearn nd2reader spatial_efd
 
 

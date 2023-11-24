@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import DisplayGUI, AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
+from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
 from PyQt5.QtWidgets import QWidget, QMessageBox
-import Display, InputOutput, MetaData_Reader, Display_Copy1
+from . import InputOutput, MetaData_Reader, Display_Copy1
 import pandas as pd
 from xml.dom import minidom
 import os

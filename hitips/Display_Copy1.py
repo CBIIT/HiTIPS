@@ -10,9 +10,9 @@ from skimage import exposure
 from skimage.measure import regionprops, regionprops_table
 from PIL import Image, ImageQt
 import qimage2ndarray
-from Analysis import ImageAnalyzer
-from AnalysisGUI import analyzer
-from IO_ResourceGUI import InOut_resource
+from .Analysis import ImageAnalyzer
+from .AnalysisGUI import analyzer
+from .IO_ResourceGUI import InOut_resource
 from scipy.ndimage import label
 from skimage.color import label2rgb, gray2rgb
 

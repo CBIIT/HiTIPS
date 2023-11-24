@@ -13,7 +13,7 @@ from PIL import Image, ImageQt
 from scipy.ndimage import label, distance_transform_edt
 import multiprocessing
 from multiprocessing import Pool, Process, Manager
-from GUI_parameters import Gui_Params
+from .GUI_parameters import Gui_Params
 import btrack
 from btrack.constants import BayesianUpdates
 import imageio

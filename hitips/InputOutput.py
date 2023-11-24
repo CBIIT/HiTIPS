@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from HiTIPS import ControlPanel
+from .HiTIPS import ControlPanel
 from PyQt5.QtWidgets import QWidget
 import os
-import MetaData_Reader
+from . import MetaData_Reader
 
 class inputoutput_control(QWidget):
         
