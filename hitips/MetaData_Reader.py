@@ -7,7 +7,6 @@ import pandas as pd
 import glob
 import json
 from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
-from . import InputOutput, MetaData_Reader, Display_Copy1
 import os
 import sys
 from aicsimageio import AICSImage

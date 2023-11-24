@@ -1,7 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
+from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis, MetaData_Reader, Display_Copy1
 from PyQt5.QtWidgets import QWidget, QMessageBox
-from . import InputOutput, MetaData_Reader, Display_Copy1
 import pandas as pd
 from xml.dom import minidom
 import os
@@ -50,7 +49,7 @@ class ControlPanel(QWidget):
         self.displaygui.show()
         self.displaygui.setEnabled(False)
 
-        self.inputoutputcontrol = InputOutput.inputoutput_control()
+        # self.inputoutputcontrol = InputOutput.inputoutput_control()
         
         self.image_analyzer = Analysis.ImageAnalyzer(self.analysisgui, self.inout_resource_gui)
         self.analysisgui.set_image_analyzer(self.image_analyzer)
