@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name="hitips",
-    version="0.1",
+    version="0.1.18",
     author="keikhosravi",
     author_email="adib.keikhosravi@nih.gov",
     description="HiTIPS: High-Throughput Image Processing Software for FISH data analysis",
@@ -13,15 +13,16 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/CBIIT/HiTIPS",
     packages=find_packages(),
+    package_data={ 'hitips': ['cell_config.json', 'Roboto-Light.ttf', 'Roboto-Bold.ttf']},
     install_requires=[
         'numpy',
         'opencv-python-headless',
-        'scikit-image',
+        'scikit-image==0.18.3',
         'scipy',
         'Pillow',
-        'pandas',
+        'pandas==1.4.2',
         'matplotlib',
-        'btrack',  
+        'btrack==0.4.3',  
         'imageio',
         'tifffile',
         'aicsimageio',
@@ -36,7 +37,8 @@ setup(
         'nd2reader',
         'imaris_ims_file_reader',
         'qimage2ndarray',
-        'spatial_efd'
+        'spatial_efd',
+        'pydantic==1.10.9',
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
