@@ -18,9 +18,33 @@ import nd2reader
 from imaris_ims_file_reader.ims import ims
 
 class ImageReader(object):
-    
+        """
+        This class provides functionality for reading and loading various types of biological image data.
+
+        Attributes:
+        - ControlPanel: A reference to the ControlPanel object.
+        - analysisgui: A reference to the AnalysisGUI object.
+        - inout_resource_gui: A reference to the IO_ResourceGUI object.
+        - displaygui: A reference to the DisplayGUI_Copy1 object.
+
+        Methods:
+        - __init__: Initializes the ImageReader with references to GUI components.
+        - ON_CLICK_LOADBUTTON: Handles the action to load metadata from selected files.
+        - ON_CLICK_LOADIMGBUTTON: Handles the action to load images from selected files.
+        - READ_FROM_METADATA: Reads metadata from a given file and extracts relevant information.
+        - MICROMANAGER_READER: Reads and processes metadata from MicroManager software.
+        - LOAD_BIOFORMAT_DATA: Loads image data from various bioformats supported files.
+        """
     def __init__(self, ControlPanel, inout_resource_gui, displaygui, analysisgui):
-        
+        """
+        Initializes the ImageReader object with references to GUI components.
+
+        Parameters:
+        - ControlPanel: Reference to the ControlPanel object.
+        - inout_resource_gui: Reference to the IO_ResourceGUI object.
+        - displaygui: Reference to the DisplayGUI_Copy1 object.
+        - analysisgui: Reference to the AnalysisGUI object.
+        """
         self.ControlPanel =ControlPanel
         self.analysisgui = analysisgui
         self.inout_resource_gui = inout_resource_gui
@@ -29,6 +53,12 @@ class ImageReader(object):
         self.inout_resource_gui.LoadImageButton.clicked.connect(lambda: self.ON_CLICK_LOADIMGBUTTON())
         
     def ON_CLICK_LOADBUTTON(self):
+        """
+        Handles the action to load metadata from selected files based on the selected device type in the GUI.
+
+        This method allows users to select and load metadata files, processes these files depending on the device type selected in the GUI, 
+        and updates the GUI components with the loaded metadata information.
+        """
         if self.inout_resource_gui.DeviceType.currentText()=='CellVoyager':
             options = QtWidgets.QFileDialog.Options()
             self.fnames, _ = QtWidgets.QFileDialog.getOpenFileNames(None, 'Select Metadata Files...',
@@ -59,7 +89,12 @@ class ImageReader(object):
 
             
     def ON_CLICK_LOADIMGBUTTON(self):
-        
+        """
+        Handles the action to load image files from selected paths.
+
+        This method allows users to select and load image files in various formats. It updates the GUI components with information 
+        about the loaded images and prepares the data for further analysis.
+        """
         options = QtWidgets.QFileDialog.Options()
         self.fnames, _ = QtWidgets.QFileDialog.getOpenFileNames(None, 'Select Image Files...',
                                                                 '', "Images (*.czi *.tiff *.tif *.nd2 *.ims)"
@@ -76,7 +111,19 @@ class ImageReader(object):
         
         
     def READ_FROM_METADATA(self, metadatafilename):
-    
+        
+        """
+        Reads metadata from a specified file and extracts relevant image information.
+
+        Parameters:
+        - metadatafilename (str): Path to the metadata file.
+
+        Returns:
+        - DataFrame: A pandas DataFrame containing the extracted metadata information.
+
+        This method reads and processes metadata from specified CellVoyager files, extracts relevant information, 
+        and returns it in a structured DataFrame format.
+        """
         PATH_TO_FILES = os.path.split(metadatafilename)[0]
         self.mydoc = minidom.parse(metadatafilename)
         self.items = self.mydoc.getElementsByTagName('bts:MeasurementRecord')
@@ -156,7 +203,20 @@ class ImageReader(object):
 
     
     def MICROMANAGER_READER(self, metadatadir):
+        
+        """
+        Reads and processes metadata from the MicroManager software.
 
+        Parameters:
+        - metadatadir (str): Directory containing the metadata files.
+
+        Returns:
+        - DataFrame: A pandas DataFrame containing metadata information processed from MicroManager files.
+
+        This method processes metadata from a specified directory containing MicroManager files, organizes the metadata into a structured format, 
+        and returns it as a pandas DataFrame.
+        """
+        
         metadata_mm=pd.DataFrame()
 
         col_list = ['Time', 'Width', 'Height', 'PixelSize_um', 'Channel', 'FrameIndex', 'SlicePosition', 'Slice', 'PositionIndex', 
@@ -230,7 +290,18 @@ class ImageReader(object):
     
 
     def LOAD_BIOFORMAT_DATA(self, image_full_path):
-        
+        """
+        Loads image data from various bioformats supported files.
+
+        Parameters:
+        - image_full_path (list of str): Paths to the image files to be loaded.
+
+        Returns:
+        - DataFrame: A pandas DataFrame containing information extracted from the image files.
+
+        This method supports loading and processing image data from various file formats (like .czi, .tiff, .tif, .nd2, .ims), 
+        organizing this information into a structured DataFrame format.
+        """
         self.fnames = image_full_path
         
         if self.fnames:

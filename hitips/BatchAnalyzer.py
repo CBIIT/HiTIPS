@@ -8,7 +8,7 @@ from skimage.io import imread
 from scipy import ndimage
 from PIL import Image, ImageDraw, ImageFont
 import pandas as pd
-import matplotlib.image as mpimg
+# import matplotlib.image as mpimg
 from PIL import Image, ImageQt
 from scipy.ndimage import label, distance_transform_edt
 import multiprocessing
@@ -28,7 +28,6 @@ from skimage.feature import peak_local_max
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import adapted_rand_error, contingency_table, mean_squared_error, peak_signal_noise_ratio, variation_of_information
 from skimage.filters import threshold_otsu, median
-from sklearn import mixture
 from skimage.morphology import disk, binary_closing, skeletonize, binary_opening, binary_erosion, white_tophat
 from skimage.registration import phase_cross_correlation
 from skimage.util import img_as_float
@@ -37,10 +36,84 @@ from hmmlearn import hmm
 from scipy.spatial.distance import pdist, cdist, squareform
 import spatial_efd
 from skimage.segmentation import watershed, find_boundaries
+from .Cell_Spot_Tracker import Tracking
+#RUN_BTRACK, deepcell_tracking, zero_pad_patch, phase_correlation, rotate_point, get_spot_patch, run_clustering
 
 WELL_PLATE_ROWS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
 class BatchAnalysis(object):
+    """
+    A class used to conduct batch analysis of biological image data, focusing on the analysis of cells and spots.
+
+    Attributes:
+    ------------
+    Various shared data lists and attributes for storing analysis results and configuration details.
+
+    Methods:
+    --------
+    __init__(self, Gui_Params, image_analyzer):
+        Initializes the BatchAnalysis object with required parameters and data structures.
+
+    ON_APPLYBUTTON(self, Meta_Data_df):
+        Begins the batch analysis process, setting paths, reading metadata, and initiating various analyses.
+
+    SAVE_NUCLEI_INFORMATION(self, cell_df, columns, rows):
+        Saves analyzed information about nuclei into designated output files.
+
+    SAVE_SPOT_INFO(self, spot_df, coordinates_method, columns, rows, channel_name):
+        Saves the analyzed spot information for specific channels and methods.
+
+    process_channel(self, channel_spot_df_list, columns, rows, channel_name):
+        Processes each channel and saves spot information if necessary.
+
+    PROCESS_ALL_SPOT_CHANNELS(self):
+        Processes all spot channels and compiles their analyzed information.
+
+    update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
+        Updates cell indices in a specified channel's DataFrame.
+
+    update_cell_index_in_all_spot_channels(self, col, row, fov, time_point, previous_index, new_index):
+        Updates cell indices across all spot channels.
+
+    normalize_stack(self, images):
+        Normalizes a stack of images.
+
+    cell_level_file_name(self, top_folder, folder_name, name_prefix, name_extention, col, row, fov, cell_ind, spot_ch=None):
+        Generates file names for saving cell level data.
+
+    spot_level_file_name(self, top_folder, folder_name, name_prefix, name_extention, col, row, fov, cell_ind, spot_ch, spot_ind):
+        Generates file names for saving spot level data.
+
+    BATCH_ANALYZER(self, col, row, fov, t): 
+        Analyzes a batch of images for nuclei and spots, updating the results lists.
+
+    Calculate_Spot_Distances(self, row, col):
+        Calculates the distances between spots for given cells.
+
+    DISTANCE_calculator(self, spot_pd_dict, key1, key2, select_cell, row, col):
+        A helper function for calculating distances between spots.
+
+    IMG_FOR_NUC_MASK(self):
+        Loads the image used for creating nuclei masks.
+
+    RAW_IMAGE_LOADER(self, maskchannel):
+        Loads raw images for a specified channel.
+
+    Z_STACK_NUC_SEGMENTER(self, ImageForNucMask):
+        Segments nuclei from a z-stack of images.
+
+    Z_STACK_NUC_LABLER(self, ImageForLabel):
+        Labels nuclei in a z-stack of images.
+
+    IMAGE_FOR_SPOT_DETECTION(self, ImageForNucMask):
+        Prepares images for spot detection and retrieves coordinates.
+
+    XYZ_SPOT_COORDINATES(self, images_pd_df, ImageForNucMask, spot_channel):
+        Retrieves XYZ coordinates for spots in a specified channel.
+
+    RADIAL_DIST_CALC(self, xyz_round, spot_nuc_labels, radial_dist_df, dist_img):
+        Calculates radial distances for spots.
+    """
     output_folder = []
     manager = Manager()
     cell_pd_list, ch1_spot_df_list, ch2_spot_df_list = manager.list(), manager.list(), manager.list()
@@ -48,13 +121,23 @@ class BatchAnalysis(object):
     ### make sure all the lists are clear
     cell_pd_list[:], ch1_spot_df_list[:], ch2_spot_df_list[:] = [], [], []
     ch3_spot_df_list[:], ch4_spot_df_list[:], ch5_spot_df_list[:] = [], [], []
-    def __init__(self,analysisgui, image_analyzer, inout_resource_gui, displaygui, ImDisplay):
+    
+    def __init__(self,Gui_Params, image_analyzer):
+        """
+        Initializes the BatchAnalysis object with necessary parameters and structures for analysis.
 
-        self.inout_resource_gui = inout_resource_gui
-        self.AnalysisGui = analysisgui
-        self.displaygui = displaygui
+        Parameters:
+        -----------
+        Gui_Params : [type]
+            Parameters from the GUI for controlling analysis settings.
+        image_analyzer : [type]
+            The image analyzer object to use for processing the images.
+
+        Returns:
+        --------
+        None
+        """
         self.ImageAnalyzer = image_analyzer
-        self.ImDisplay = ImDisplay
         self.ch1_spot_df, self.ch2_spot_df, self.ch3_spot_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         self.ch4_spot_df, self.ch5_spot_df, self.cell_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         self.df_checker = pd.DataFrame()
@@ -63,99 +146,33 @@ class BatchAnalysis(object):
         self.experiment_name = []
         self.output_prefix = []
         self.output_folder = []
-        self.gui_params = Gui_Params(self.AnalysisGui,self.inout_resource_gui)
+        self.gui_params = Gui_Params
         
-    def SAVE_NUCLEI_INFORMATION(self, cell_df, columns, rows):
-            
-        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
-        if os.path.isdir(xlsx_output_folder) == False:
-            os.mkdir(xlsx_output_folder) 
-
-        xlsx_name = ['Nuclei_Information.csv']
-        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
-        cell_df.rename(columns={ "label":"cell_index"}, inplace = True)
-        cell_df.to_csv(xlsx_full_name)
-
-        well_nuc_folder = os.path.join(self.output_folder, 'well_nuclei_results')
-        if os.path.isdir(well_nuc_folder) == False:
-            os.mkdir(well_nuc_folder)
-        for col in columns:
-            for row in rows:
-
-                well_nuc_df = cell_df.loc[(cell_df['column'] == col) & (cell_df['row'] == row)]
-                if well_nuc_df.empty == False:
-                    well_nuc_filename = self.output_prefix + '_nuclei_information_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                    nuc_well_csv_full_name = os.path.join(well_nuc_folder, well_nuc_filename)
-                    well_nuc_df.to_csv(path_or_buf=nuc_well_csv_full_name, encoding='utf8')
-        print("Nuclei Information Saved....")
-        
-    def SAVE_SPOT_INFO(self, spot_df, coordinates_method, columns, rows, channel_name ):
-        
-        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
-        if os.path.isdir(xlsx_output_folder) == False:
-            os.mkdir(xlsx_output_folder)
-        xlsx_name = channel_name + '_Spot_Locations_' + coordinates_method + r'.csv'
-        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name)
-        spot_df.to_csv(xlsx_full_name)
-
-        well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
-        if os.path.isdir(well_spot_loc_folder) == False:
-            os.mkdir(well_spot_loc_folder)
-        for col in columns:
-            for row in rows:
-                spot_loc_df = spot_df.loc[(spot_df['column'] == col) & (spot_df['row'] == row)]
-                if spot_loc_df.empty == False:
-                    spot_loc_filename = self.output_prefix + '_' + channel_name +'_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
-                    spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
-                    spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')   
-                    
-    def process_channel(self, channel_spot_df_list, columns, rows, channel_name):
-        if len(channel_spot_df_list) > 0:
-            channel_spot_df = pd.concat(channel_spot_df_list)
-            if self.gui_params.SpotsLocation_check_status:
-                self.SAVE_SPOT_INFO(channel_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, channel_name)
-    
-    def PROCESS_ALL_SPOT_CHANNELS(self):
-
-        columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
-        rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
-    
-        # Process each channel
-        self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
-        self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
-        self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
-        self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
-        self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
-        
-    def update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
-        channel_df = getattr(self, channel_attr)
-        if not channel_df.empty:
-            row_index_spotdf = channel_df.loc[
-                (channel_df['field_index'] == fov) & (channel_df['column'] == col) & 
-                (channel_df['row'] == row) & (channel_df["time_point"] == time_point) & 
-                (channel_df["cell_index"] == previous_index)
-            ].index
-            channel_df.loc[row_index_spotdf, 'cell_index'] = new_index
-        setattr(self, channel_attr, channel_df) # Update the class variable
-    
-    def update_cell_index_in_all_spot_channels(self, col, row, fov, time_point, previous_index, new_index):
-        for channel in ['ch1_spot_df', 'ch2_spot_df', 'ch3_spot_df', 'ch4_spot_df', 'ch5_spot_df']:
-            self.update_cell_index_in_channel(channel, col, row, fov, time_point, previous_index, new_index)
-
                
     def ON_APPLYBUTTON(self, Meta_Data_df):
-        
-        self.gui_params = Gui_Params(self.AnalysisGui,self.inout_resource_gui)
+        """
+        Begins the batch analysis process, including setting paths, reading metadata, and initiating analyses.
+
+        Parameters:
+        -----------
+        Meta_Data_df : DataFrame
+            Metadata DataFrame containing information about the images to be analyzed.
+
+        Returns:
+        --------
+        None
+        """
+        self.gui_params.update_values()
         seconds1 = time.time()
         
-        while self.inout_resource_gui.Output_dir ==[]:
+        while self.gui_params.Output_dir ==[]:
                 
-            self.inout_resource_gui.OUTPUT_FOLDER_LOADBTN()
+            self.gui_params.OUTPUT_FOLDER_LOADBTN()
         self.Meta_Data_df = Meta_Data_df
         path_list = os.path.split(self.Meta_Data_df["ImageName"][0])[0].split(r'/')
         self.experiment_name = path_list[path_list.__len__()-2]
         self.output_prefix  = path_list[path_list.__len__()-1]
-        self.output_folder = os.path.join(self.inout_resource_gui.Output_dir,self.experiment_name)
+        self.output_folder = os.path.join(self.gui_params.Output_dir,self.experiment_name)
         if os.path.isdir(self.output_folder) == False:
             os.mkdir(self.output_folder) 
             
@@ -163,7 +180,7 @@ class BatchAnalysis(object):
         if os.path.isdir(csv_config_folder) == False:
             os.mkdir(csv_config_folder) 
         self.config_file = os.path.join(csv_config_folder, 'analysis_configuration.csv')
-        self.AnalysisGui.SAVE_CONFIGURATION(self.config_file, self.ImageAnalyzer)
+        self.gui_params.SAVE_CONFIGURATION(self.config_file)
         
         columns = np.unique(np.asarray(self.Meta_Data_df['column'], dtype=int))
         rows = np.unique(np.asarray(self.Meta_Data_df['row'], dtype=int))
@@ -208,38 +225,11 @@ class BatchAnalysis(object):
             for process in processes:
                 process.join()
 
-        
-
         if self.gui_params.NucInfoChkBox_check_status == True:
 
             self.cell_df = pd.concat(self.cell_pd_list)
             self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
             
-
-        # if self.ch1_spot_df_list.__len__() > 0:
-        #     self.ch1_spot_df = pd.concat(self.ch1_spot_df_list)
-        #     if self.gui_params.NucInfoChkBox_check_status == True:
-        #         self.SAVE_SPOT_INFO(self.ch1_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch1')
-        
-        # if self.ch2_spot_df_list.__len__() > 0:
-        #     self.ch2_spot_df = pd.concat(self.ch2_spot_df_list)
-        #     if self.gui_params.SpotsLocation_check_status == True:
-        #         self.SAVE_SPOT_INFO(self.ch2_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch2')
-
-        # if self.ch3_spot_df_list.__len__() > 0:
-        #     self.ch3_spot_df = pd.concat(self.ch3_spot_df_list)
-        #     if self.gui_params.SpotsLocation_check_status == True:
-        #         self.SAVE_SPOT_INFO(self.ch3_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch3')
-
-        # if self.ch4_spot_df_list.__len__() > 0:
-        #     self.ch4_spot_df = pd.concat(self.ch4_spot_df_list)
-        #     if self.gui_params.SpotsLocation_check_status == True:
-        #         self.SAVE_SPOT_INFO(self.ch4_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch4')
-
-        # if self.ch5_spot_df_list.__len__() > 0:
-        #     self.ch5_spot_df = pd.concat(self.ch5_spot_df_list)
-        #     if self.gui_params.SpotsLocation_check_status == True:
-        #         self.SAVE_SPOT_INFO(self.ch5_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, 'Ch5')
         self.PROCESS_ALL_SPOT_CHANNELS()
             # Calculate Spot Distances
     
@@ -268,7 +258,6 @@ class BatchAnalysis(object):
                         cr_arr.append([row,col])
                         
             fovs = np.unique(np.asarray(self.Meta_Data_df['field_index'], dtype=int))
-#             fovs = np.array([2])
             time_points = np.unique(np.asarray(self.Meta_Data_df['time_point'], dtype=int))
             actionindices = np.unique(np.asarray(self.Meta_Data_df['action_index'], dtype=int))
             
@@ -341,11 +330,11 @@ class BatchAnalysis(object):
                         #### run nuclei tracking algorithm based the selected method
                         if self.gui_params.NucTrackingMethod_currentText == "Bayesian":
                             
-                            tracks_pd = self.RUN_BTRACK(label_stack, self.gui_params)
+                            tracks_pd = Tracking.RUN_BTRACK(label_stack, self.gui_params)
                         
                         if self.gui_params.NucTrackingMethod_currentText == "DeepCell":
                         
-                            tracks_pd = self.deepcell_tracking(t_stack_nuc,label_stack,self.gui_params)
+                            tracks_pd = Tracking.deepcell_tracking(t_stack_nuc,label_stack,self.gui_params)
                         ###
                         tracks_pd_copy = tracks_pd.copy()
                         tracks_pd_copy=tracks_pd_copy.rename(columns={"t": "time_point", "x": "centroid-1", "y": "centroid-0", "ID": "cell_index"})
@@ -363,24 +352,6 @@ class BatchAnalysis(object):
                             self.cell_df.loc[row_index_celldf, 'cell_index'] = trck_row["cell_index"]
                             
                             self.update_cell_index_in_all_spot_channels( col, row, fov, trck_row["time_point"], previous_index, trck_row["cell_index"])
-                            # if self.ch1_spot_df.empty==False:
-                                
-                            #     row_index_spotdf = self.ch1_spot_df.loc[(self.ch1_spot_df['field_index'] == fov)&(self.ch1_spot_df['column'] == col)&(self.ch1_spot_df['row'] == row)&
-                            #                                             (self.ch1_spot_df["time_point"]==trck_row["time_point"])&(self.ch1_spot_df["cell_index"]==previous_index)]
-                                
-                            #     self.ch1_spot_df.loc[row_index_spotdf, 'cell_index'] = trck_row["cell_index"]
-                            # Define the list of channel dataframes
-                            # channel_dfs = [self.ch1_spot_df, self.ch2_spot_df, self.ch3_spot_df, self.ch4_spot_df, self.ch5_spot_df]
-                            
-                            # # Loop through each channel dataframe
-                            # for channel_df in channel_dfs:
-                            #     if not channel_df.empty:
-                            #         row_index_spotdf = channel_df.loc[
-                            #             (channel_df['field_index'] == fov) & (channel_df['column'] == col) & (channel_df['row'] == row) &
-                            #             (channel_df["time_point"] == trck_row["time_point"]) & (channel_df["cell_index"] == previous_index)
-                            #         ].index
-                                    
-                            #         channel_df.loc[row_index_spotdf, 'cell_index'] = trck_row["cell_index"]
 
                             
                         ##########save whole field track images
@@ -460,16 +431,16 @@ class BatchAnalysis(object):
                                 
                                 small_img_patch = t_stack_nuc[int(pd_row['t']), min_row:max_row, min_col:max_col]
         
-                                img_patch = self.zero_pad_patch(small_img_patch, desired_size=patch_size)
+                                img_patch = Tracking.zero_pad_patch(small_img_patch, desired_size=patch_size)
                                 
-                                bin_img = self.zero_pad_patch(masks_stack[int(pd_row['t']), min_row:max_row, min_col:max_col], desired_size=patch_size)
+                                bin_img = Tracking.zero_pad_patch(masks_stack[int(pd_row['t']), min_row:max_row, min_col:max_col], desired_size=patch_size)
                                 mask_patches.append(bin_img)
                                 lbl_img, n_feat = label(bin_img)
                                 label_center = int(self.gui_params.patchsize_currentText/2)
                                 lbl_img[lbl_img!=lbl_img[label_center,label_center]]=0
                                 bin_img = lbl_img>0
 
-                                bin_img = ndimage.binary_dilation(bin_img, structure=np.ones((12,12))>0).astype(bin_img.dtype)
+                                bin_img = ndimage.binary_dilation(bin_img, structure=np.ones((3,3))>0).astype(bin_img.dtype)
 
 
                                 img_patch[bin_img==0]=0
@@ -494,9 +465,9 @@ class BatchAnalysis(object):
                                     final_angle = 0
                                 
                                 elif len(rotated_nuc) > 0:
-                                    if self.AnalysisGui.Registrationmethod.currentText() == "Phase Correlation":
+                                    if self.gui_params.Registrationmethod_currentText == "Phase Correlation":
                                         init_rotation = 15
-                                        final_angle, rotated_img = self.phase_correlation(rotated_nuc[-1], img_patch1, intial_rotation = 15, 
+                                        final_angle, rotated_img = Tracking.phase_correlation(rotated_nuc[-1], img_patch1, intial_rotation = 15, 
                                                                                           rescale_factor = 5, nuc_length = label_center-10)
                                         
 
@@ -535,13 +506,13 @@ class BatchAnalysis(object):
                                             pass
 
 
-                                    only_spots_patch[str(int(chnl))] = self.zero_pad_patch(only_spots_patch[str(int(chnl))], 
+                                    only_spots_patch[str(int(chnl))] = Tracking.zero_pad_patch(only_spots_patch[str(int(chnl))], 
                                                                                            desired_size=patch_size)
 
                                     col_name3='ch'+str(int(chnl))+'_patch_spots_locations'
                                     single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name3]=[np.where(only_spots_patch[str(int(chnl))]>0)]
 
-                                    spot_patch = self.zero_pad_patch(spot_dict_stack[str(int(chnl))][ min_row:max_row, min_col:max_col, int(pd_row['t'])], 
+                                    spot_patch = Tracking.zero_pad_patch(spot_dict_stack[str(int(chnl))][ min_row:max_row, min_col:max_col, int(pd_row['t'])], 
                                                                      desired_size=patch_size)
                                     spot_patches[str(int(chnl))].append(spot_patch)
 
@@ -550,7 +521,7 @@ class BatchAnalysis(object):
                                     for i in range(len(np.where(only_spots_patch[str(int(chnl))]>0)[0])):
 
                                         temp_spots.append(np.array([np.where(only_spots_patch[str(int(chnl))]>0)[0][i], np.where(only_spots_patch[str(int(chnl))]>0)[1][i]]))
-                                        temp_transformed.append(self.rotate_point((label_center-0.5,label_center-0.5),
+                                        temp_transformed.append(Tracking.rotate_point((label_center-0.5,label_center-0.5),
                                                                              np.array([np.where(only_spots_patch[str(int(chnl))]>0)[0][i], 
                                                                                        np.where(only_spots_patch[str(int(chnl))]>0)[1][i]]), 
                                                                              (final_angle+15)*np.pi/180))
@@ -561,7 +532,7 @@ class BatchAnalysis(object):
                                         col_name4='ch'+str(int(chnl))+'_transformed_spots_locations'
                                         single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name4]=[transformed_spots[str(pd_row['t'])]]
             
-                                    # only_spots_patch[str(int(chnl))] = self.zero_pad_patch(only_spots_patch[str(int(chnl))])
+                                    # only_spots_patch[str(int(chnl))] = Tracking.zero_pad_patch(only_spots_patch[str(int(chnl))])
                                     # spot_patch = cv2.normalize(spot_patch, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
                                     
                                     spot_patch = ndimage.shift(spot_patch, final_translation, order=0).astype(spot_dict_stack[str(int(chnl))].dtype)
@@ -590,7 +561,7 @@ class BatchAnalysis(object):
 
                                 if len(all_spots_for_gmm)>3:
                                     try:
-                                        clusters  = self.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.gui_params.SpotSearchRadiusSpinbox_current_value)
+                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.gui_params.SpotSearchRadiusSpinbox_current_value)
                                     except:
 
                                         clusters=[]
@@ -613,8 +584,8 @@ class BatchAnalysis(object):
                                                         # single_track_copy.loc[trk_ind, col_name] = integrated_intensities[next((i for i, spot in enumerate(timepoint_spots) if np.array_equal(spot, spot_loc)), -1)]
                                     
                                     for lbl1 in np.unique(clusters)[np.unique(clusters)>0]:
-                                        sp_bound= int(round(7*self.gui_params.PSFsizeSpinBox_current_value/2))
-                                        all_spot_patches, spot_patches_center_coords = self.get_spot_patch(single_track_copy, chnl, lbl1, 
+                                        sp_bound= int(round(7*self.gui_params.PSFsizeSpinBox_value/2))
+                                        all_spot_patches, spot_patches_center_coords = Tracking.get_spot_patch(single_track_copy, chnl, lbl1, 
                                                                                                            rotated_spot_patches[str(int(chnl))], 
                                                                                                            spot_boundary = sp_bound)
                                         for jjj in single_track_copy.index.tolist():
@@ -627,7 +598,7 @@ class BatchAnalysis(object):
                                                 fit_results = self.ImageAnalyzer.gmask_fit(spot_patch, 
                                                                                            xy_input=np.array([np.where(spot_patch==spot_patch.max())[0][0],
                                                                                                               np.where(spot_patch==spot_patch.max())[1][0]]), 
-                                                                                           fit=self.gui_params.IntegratedIntensity_fitStatus)
+                                                                                           fit=self.gui_params.IntegratedIntensity_fitStatus>0)
                                                 single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[np.array([spot_coords[0,0]-sp_bound+fit_results[0],
                                                                                                                                                 spot_coords[0,1]-sp_bound+fit_results[1]])]]
                                                 single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"] = fit_results[2]
@@ -779,9 +750,205 @@ class BatchAnalysis(object):
         
         diff=seconds2-seconds1
         print('Total Processing Time (Minutes):',diff/60)
+    def SAVE_NUCLEI_INFORMATION(self, cell_df, columns, rows):
+        """
+        Saves analyzed information about nuclei into designated output files.
+
+        Parameters:
+        -----------
+        cell_df : DataFrame
+            DataFrame containing the analyzed nuclei information.
+        columns : list
+            List of column indices in the imaging plate.
+        rows : list
+            List of row indices in the imaging plate.
+
+        Returns:
+        --------
+        None
+        """
+        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
+        if os.path.isdir(xlsx_output_folder) == False:
+            os.mkdir(xlsx_output_folder) 
+
+        xlsx_name = ['Nuclei_Information.csv']
+        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name[0])
+        cell_df.rename(columns={ "label":"cell_index"}, inplace = True)
+        cell_df.to_csv(xlsx_full_name)
+
+        well_nuc_folder = os.path.join(self.output_folder, 'well_nuclei_results')
+        if os.path.isdir(well_nuc_folder) == False:
+            os.mkdir(well_nuc_folder)
+        for col in columns:
+            for row in rows:
+
+                well_nuc_df = cell_df.loc[(cell_df['column'] == col) & (cell_df['row'] == row)]
+                if well_nuc_df.empty == False:
+                    well_nuc_filename = self.output_prefix + '_nuclei_information_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
+                    nuc_well_csv_full_name = os.path.join(well_nuc_folder, well_nuc_filename)
+                    well_nuc_df.to_csv(path_or_buf=nuc_well_csv_full_name, encoding='utf8')
+        print("Nuclei Information Saved....")
+        
+    def SAVE_SPOT_INFO(self, spot_df, coordinates_method, columns, rows, channel_name ):
+        
+        """
+        Saves the analyzed spot information for specific channels and methods.
+
+        Parameters:
+        -----------
+        spot_df : DataFrame
+            DataFrame containing the analyzed spot information.
+        coordinates_method : str
+            The method used for determining the coordinates of spots.
+        columns : list
+            List of column indices in the imaging plate.
+        rows : list
+            List of row indices in the imaging plate.
+        channel_name : str
+            Name of the channel for which the spot information is being saved.
+
+        Returns:
+        --------
+        None
+        """
+        
+        xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
+        if os.path.isdir(xlsx_output_folder) == False:
+            os.mkdir(xlsx_output_folder)
+        xlsx_name = channel_name + '_Spot_Locations_' + coordinates_method + r'.csv'
+        xlsx_full_name = os.path.join(xlsx_output_folder, xlsx_name)
+        spot_df.to_csv(xlsx_full_name)
+
+        well_spot_loc_folder = os.path.join(self.output_folder, 'well_spots_locations')
+        if os.path.isdir(well_spot_loc_folder) == False:
+            os.mkdir(well_spot_loc_folder)
+        for col in columns:
+            for row in rows:
+                spot_loc_df = spot_df.loc[(spot_df['column'] == col) & (spot_df['row'] == row)]
+                if spot_loc_df.empty == False:
+                    spot_loc_filename = self.output_prefix + '_' + channel_name +'_spots_locations_well_' + WELL_PLATE_ROWS[row-1] + str(col) + r'.csv'
+                    spot_loc_well_csv_full_name = os.path.join(well_spot_loc_folder, spot_loc_filename)
+                    spot_loc_df.to_csv(path_or_buf=spot_loc_well_csv_full_name, encoding='utf8')   
+                    
+    def process_channel(self, channel_spot_df_list, columns, rows, channel_name):
+        """
+        Processes each channel and saves spot information if necessary.
+
+        Parameters:
+        -----------
+        channel_spot_df_list : list
+            A list of DataFrames, each containing spot information for a specific channel.
+        columns : list
+            List of column indices in the imaging plate.
+        rows : list
+            List of row indices in the imaging plate.
+        channel_name : str
+            Name of the channel being processed.
+
+        Returns:
+        --------
+        None
+        """
+        if len(channel_spot_df_list) > 0:
+            channel_spot_df = pd.concat(channel_spot_df_list)
+            if self.gui_params.SpotsLocation_check_status:
+                self.SAVE_SPOT_INFO(channel_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, channel_name)
+    
+    def PROCESS_ALL_SPOT_CHANNELS(self):
+        """
+        Processes all spot channels and compiles their analyzed information.
+
+        Returns:
+        --------
+        None
+        """
+        columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
+        rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
+    
+        # Process each channel
+        self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
+        self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
+        self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
+        self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
+        self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
+        
+    def update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
+        """
+        Updates cell indices in a specified channel's DataFrame.
+
+        Parameters:
+        -----------
+        channel_attr : str
+            The attribute name of the channel DataFrame to be updated.
+        col : int
+            Column index of the well.
+        row : int
+            Row index of the well.
+        fov : int
+            Field of view index.
+        time_point : int
+            Time point index.
+        previous_index : int
+            The previous cell index.
+        new_index : int
+            The new cell index to replace the previous one.
+
+        Returns:
+        --------
+        None
+        """
+        channel_df = getattr(self, channel_attr)
+        if not channel_df.empty:
+            row_index_spotdf = channel_df.loc[
+                (channel_df['field_index'] == fov) & (channel_df['column'] == col) & 
+                (channel_df['row'] == row) & (channel_df["time_point"] == time_point) & 
+                (channel_df["cell_index"] == previous_index)
+            ].index
+            channel_df.loc[row_index_spotdf, 'cell_index'] = new_index
+        setattr(self, channel_attr, channel_df) # Update the class variable
+    
+    def update_cell_index_in_all_spot_channels(self, col, row, fov, time_point, previous_index, new_index):
+        
+        """
+        Updates cell indices across all spot channels.
+
+        Parameters:
+        -----------
+        col : int
+            Column index of the well.
+        row : int
+            Row index of the well.
+        fov : int
+            Field of view index.
+        time_point : int
+            Time point index.
+        previous_index : int
+            The previous cell index.
+        new_index : int
+            The new cell index to replace the previous one.
+
+        Returns:
+        --------
+        None
+        """
+        
+        for channel in ['ch1_spot_df', 'ch2_spot_df', 'ch3_spot_df', 'ch4_spot_df', 'ch5_spot_df']:
+            self.update_cell_index_in_channel(channel, col, row, fov, time_point, previous_index, new_index)
         
     def normalize_stack(self, images):
+        """
+        Normalizes a stack of images.
 
+        Parameters:
+        -----------
+        images : ndarray
+            A stack of images to be normalized.
+
+        Returns:
+        --------
+        ndarray
+            The stack of normalized images.
+        """
         normalized_stack = []
         # import random
         # import string
@@ -796,7 +963,35 @@ class BatchAnalysis(object):
         return np.stack(normalized_stack, axis=2).astype('uint8') 
     
     def cell_level_file_name(self, top_folder, folder_name, name_prefix, name_extention, col, row, fov, cell_ind,spot_ch=None):
-        
+        """
+        Generates file names for saving cell level data.
+
+        Parameters:
+        -----------
+        top_folder : str
+            The top level directory where the files will be saved.
+        folder_name : str
+            The name of the folder where the files will be saved.
+        name_prefix : str
+            The prefix for the file name.
+        name_extention : str
+            The file extension.
+        col : int
+            Column index of the well.
+        row : int
+            Row index of the well.
+        fov : int
+            Field of view index.
+        cell_ind : int
+            The index of the cell.
+        spot_ch : int, optional
+            The channel index of the spot.
+
+        Returns:
+        --------
+        str
+            The generated file path for saving the data.
+        """
         if "spot" in name_prefix:
             file_name = name_prefix+ r'_for_col' + str(col) + r'_row' + str(row) + r'_field' + str(fov) + r'_cell' + str(cell_ind)+ r'_Ch' + str(int(spot_ch)) + name_extention
         else:
@@ -809,7 +1004,37 @@ class BatchAnalysis(object):
         return os.path.join(file_path, file_name)
     
     def spot_level_file_name(self, top_folder, folder_name, name_prefix, name_extention, col, row, fov, cell_ind, spot_ch, spot_ind):
-        
+        """
+        Generates file names for saving spot level data.
+
+        Parameters:
+        -----------
+        top_folder : str
+            The top level directory where the files will be saved.
+        folder_name : str
+            The name of the folder where the files will be saved.
+        name_prefix : str
+            The prefix for the file name.
+        name_extention : str
+            The file extension.
+        col : int
+            Column index of the well.
+        row : int
+            Row index of the well.
+        fov : int
+            Field of view index.
+        cell_ind : int
+            The index of the cell.
+        spot_ch : int
+            The channel index of the spot.
+        spot_ind : int
+            The index of the spot.
+
+        Returns:
+        --------
+        str
+            The generated file path for saving the data.
+        """
         file_name = name_prefix+ r'_for_col' + str(col) + r'_row' + str(row) + r'_field' + str(fov) + r'_cell' + str(cell_ind)+ r'_Ch' + str(int(spot_ch))+ r'_spot' + str(spot_ind) + name_extention
         
         file_path = os.path.join(top_folder, folder_name)
@@ -819,6 +1044,26 @@ class BatchAnalysis(object):
         return os.path.join(file_path, file_name)
 
     def BATCH_ANALYZER(self, col,row,fov,t): 
+        
+        """
+        Analyzes a batch of images for nuclei and spots, updating the results lists.
+
+        Parameters:
+        -----------
+        col : int
+            Column index of the well.
+        row : int
+            Row index of the well.
+        fov : int
+            Field of view index.
+        t : int
+            Time point index.
+
+        Returns:
+        --------
+        None
+        """
+        
         ai = 1
         
         self.df_checker = self.Meta_Data_df.loc[(self.Meta_Data_df['column'] == str(col)) & 
@@ -1070,7 +1315,22 @@ class BatchAnalysis(object):
                                 
 
     def Calculate_Spot_Distances(self, row, col):
-    
+        
+        """
+        Calculates the distances between spots for given cells.
+
+        Parameters:
+        -----------
+        row : int
+            Row index of the well.
+        col : int
+            Column index of the well.
+
+        Returns:
+        --------
+        None
+        """
+        
         select_cell = self.cell_df.loc[(self.cell_df['column'] == col) & (self.cell_df['row'] == row)]    
 
         spot_pd_dict = {}
@@ -1127,7 +1387,31 @@ class BatchAnalysis(object):
                     dist_pd.to_csv(path_or_buf=spot_dist_well_csv_full_name, encoding='utf8')
 
     def DISTANCE_calculator(self, spot_pd_dict, key1, key2,select_cell, row, col):
-    
+        
+        """
+        A helper function for calculating distances between spots.
+
+        Parameters:
+        -----------
+        spot_pd_dict : dict
+            Dictionary of spot DataFrames keyed by channel name.
+        key1 : str
+            The first channel key for comparison.
+        key2 : str
+            The second channel key for comparison.
+        select_cell : DataFrame
+            DataFrame of selected cells for distance calculation.
+        row : int
+            Row index of the well.
+        col : int
+            Column index of the well.
+
+        Returns:
+        --------
+        DataFrame
+            A DataFrame containing the calculated distances.
+        """
+        
         fovs = np.unique(np.asarray(select_cell['field_index'], dtype=int))
         time_points = np.unique(np.asarray(select_cell['time_point'], dtype=int))
         actionindices = np.unique(np.asarray(select_cell['action_index'], dtype=int))
@@ -1189,7 +1473,14 @@ class BatchAnalysis(object):
 
                                                         
     def IMG_FOR_NUC_MASK(self):
-        
+        """
+        Loads the image used for creating nuclei masks.
+
+        Returns:
+        --------
+        ndarray
+            The loaded image for creating nuclei masks.
+        """
         if self.df_checker.empty == False:
 
             if self.gui_params.NucMaxZprojectCheckBox_status_check == True:
@@ -1208,7 +1499,8 @@ class BatchAnalysis(object):
                         # im = row["Type"].compute()
                         im = row["Type"]
                     else: 
-                        im = mpimg.imread(row['ImageName'])
+                        # im = mpimg.imread(row['ImageName'])
+                        im = imread(row['ImageName'])
                     im_uint8 = cv2.normalize(im, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
                     z_imglist.append( np.asarray(im_uint8))
                 loadedimg_formask = np.stack(z_imglist, axis=2)
@@ -1216,7 +1508,19 @@ class BatchAnalysis(object):
         return loadedimg_formask
     
     def RAW_IMAGE_LOADER(self, maskchannel):
-        
+        """
+        Loads raw images for a specified channel.
+
+        Parameters:
+        -----------
+        maskchannel : str
+            The channel for which the raw images are to be loaded.
+
+        Returns:
+        --------
+        ndarray
+            The loaded raw image for the specified channel.
+        """
         if self.df_checker.empty == False:
 
             if self.gui_params.NucMaxZprojectCheckBox_status_check == True:
@@ -1235,14 +1539,27 @@ class BatchAnalysis(object):
                         # im = row["Type"].compute()
                         im = row["Type"]
                     else: 
-                        im = mpimg.imread(row['ImageName'])
+                        # im = mpimg.imread(row['ImageName'])
+                        im = imread(row['ImageName'])
                     z_imglist.append( np.asarray(im))
                 loaded_image = np.stack(z_imglist, axis=2)
         
         return loaded_image
 
     def Z_STACK_NUC_SEGMENTER(self, ImageForNucMask):
-        
+        """
+        Segments nuclei from a z-stack of images.
+
+        Parameters:
+        -----------
+        ImageForNucMask : ndarray
+            The z-stack image for nuclei segmentation.
+
+        Returns:
+        --------
+        tuple
+            A tuple containing the boundary and mask images for segmented nuclei.
+        """
         nuc_bndry_list, nuc_mask_list = [], []
         w, h, z_plane = ImageForNucMask.shape
 
@@ -1260,7 +1577,19 @@ class BatchAnalysis(object):
         return nuc_bndry, nuc_mask
     
     def Z_STACK_NUC_LABLER(self, ImageForLabel):
-        
+        """
+        Labels nuclei in a z-stack of images.
+
+        Parameters:
+        -----------
+        ImageForLabel : ndarray
+            The z-stack image for nuclei labeling.
+
+        Returns:
+        --------
+        ndarray
+            The labeled nuclei image stack.
+        """
         label_nuc_list = []
         w, h, z_plane = ImageForLabel.shape
 
@@ -1277,7 +1606,19 @@ class BatchAnalysis(object):
     
     
     def IMAGE_FOR_SPOT_DETECTION(self, ImageForNucMask):
-        
+        """
+        Prepares images for spot detection and retrieves coordinates.
+
+        Parameters:
+        -----------
+        ImageForNucMask : ndarray
+            The image used for nuclei mask to assist in spot detection.
+
+        Returns:
+        --------
+        tuple
+            A tuple containing the XYZ coordinates and final spots for different channels.
+        """
         ch1_xyz, ch2_xyz, ch3_xyz, ch4_xyz, ch5_xyz = [],[],[],[],[]
         ch1_xyz_3D, ch2_xyz_3D, ch3_xyz_3D, ch4_xyz_3D, ch5_xyz_3D = [],[],[],[],[]
         ch1_final_spots, ch2_final_spots, ch3_final_spots, ch4_final_spots, ch5_final_spots = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
@@ -1311,6 +1652,26 @@ class BatchAnalysis(object):
 
     
     def XYZ_SPOT_COORDINATES(self, images_pd_df, ImageForNucMask, spot_channel):
+        """
+        Calculates XYZ coordinates of spots in given images, processing each z-slice and generating a max projection.
+
+        Parameters:
+        -----------
+        images_pd_df : DataFrame
+            DataFrame containing image data, including image paths and z-slice information.
+        ImageForNucMask : ndarray
+            Nuclei image used as a mask for spot detection.
+        spot_channel : str
+            Channel identifier used for spot detection.
+
+        Returns:
+        --------
+        tuple
+            A tuple containing three elements:
+            1. xyz_coordinates (ndarray): Array of XYZ coordinates of detected spots in the max projection.
+            2. coordinates_stack (ndarray): Stack of XYZ coordinates of spots in each z-slice.
+            3. final_spots (DataFrame): DataFrame containing the final processed spot data.
+        """
         
         z_imglist = []
         coordinates_stack = np.ones((0,3), dtype='float')
@@ -1322,12 +1683,37 @@ class BatchAnalysis(object):
                 # im = row["Type"].compute()
                 im = row["Type"]
             else: 
-                im = mpimg.imread(row['ImageName'])
+                # im = mpimg.imread(row['ImageName'])
+                im = imread(row['ImageName'])
             z_imglist.append( np.asarray(im))
             _z_coordinates1 = np.asarray(row['z_slice']).astype('float')
             
             
-            coordinates, final_spots = self.ImageAnalyzer.SpotDetector(im, self.AnalysisGui, ImageForNucMask, spot_channel)
+            # coordinates, final_spots = self.ImageAnalyzer.SpotDetector(im, self.AnalysisGui, ImageForNucMask, spot_channel)
+            detection_methods = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
+            threshold_methods = ["Auto", "Manual"]
+            
+            
+            self.gui_params.update_values()
+            params_to_pass= self.gui_params.spot_params_dict[spot_channel]
+
+            coordinates, final_spots = self.ImageAnalyzer.SpotDetector(
+                                                                        input_image_raw=im, 
+                                                                        nuclei_image=ImageForNucMask, 
+                                                                        spot_detection_method= detection_methods[params_to_pass[0]],
+                                                                        threshold_method= threshold_methods[params_to_pass[1]],
+                                                                        threshold_value= params_to_pass[2],
+                                                                        kernel_size= params_to_pass[3],
+                                                                        spot_location_coords= self.gui_params.SpotLocationCbox_currentText,
+                                                                        remove_bright_junk= self.gui_params.RemoveBrightJunk_status_check,
+                                                                        resize_factor= params_to_pass[4],
+                                                                        min_area= params_to_pass[5],
+                                                                        max_area= params_to_pass[6],
+                                                                        min_integrated_intensity= params_to_pass[7],
+                                                                        psf_size= self.gui_params.PSFsizeSpinBox_value,
+                                                                        gaussian_fit= self.gui_params.IntegratedIntensity_fitStatus>0
+                                                                    )
+
             
             if coordinates.__len__()>0:
                 _z_coordinates = np.ones((coordinates.__len__(),1), dtype='float')*_z_coordinates1
@@ -1343,7 +1729,30 @@ class BatchAnalysis(object):
             print(row['ImageName'])
             image_stack = np.stack(z_imglist, axis=2)
             max_project = image_stack.max(axis=2)
-            coordinates_max_project, final_spots = self.ImageAnalyzer.SpotDetector(max_project, self.AnalysisGui, ImageForNucMask, spot_channel)
+            
+            # coordinates_max_project, final_spots = self.ImageAnalyzer.SpotDetector(max_project, self.AnalysisGui, ImageForNucMask, spot_channel)
+            detection_methods = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
+            threshold_methods = ["Auto", "Manual"]
+            
+            self.gui_params.update_values()
+            params_to_pass= self.gui_params.spot_params_dict[spot_channel]
+
+            coordinates_max_project, final_spots = self.ImageAnalyzer.SpotDetector(
+                                                                        input_image_raw=im, 
+                                                                        nuclei_image=ImageForNucMask, 
+                                                                        spot_detection_method= detection_methods[params_to_pass[0]],
+                                                                        threshold_method= threshold_methods[params_to_pass[1]],
+                                                                        threshold_value= params_to_pass[2],
+                                                                        kernel_size= params_to_pass[3],
+                                                                        spot_location_coords= self.gui_params.SpotLocationCbox_currentText,
+                                                                        remove_bright_junk= self.gui_params.RemoveBrightJunk_status_check,
+                                                                        resize_factor= params_to_pass[4],
+                                                                        min_area= params_to_pass[5],
+                                                                        max_area= params_to_pass[6],
+                                                                        min_integrated_intensity= params_to_pass[7],
+                                                                        psf_size= self.gui_params.PSFsizeSpinBox_value,
+                                                                        gaussian_fit= self.gui_params.IntegratedIntensity_fitStatus>0
+                                                                    )
         
             if coordinates_max_project.__len__()>0:
 
@@ -1365,6 +1774,26 @@ class BatchAnalysis(object):
     
    
     def RADIAL_DIST_CALC(self, xyz_round, spot_nuc_labels, radial_dist_df, dist_img):
+        
+        """
+        Calculates the radial distance of each spot from the center of its respective nucleus.
+
+        Parameters:
+        -----------
+        xyz_round : ndarray
+            Rounded XYZ coordinates of detected spots.
+        spot_nuc_labels : ndarray
+            Labels indicating to which nucleus each spot belongs.
+        radial_dist_df : DataFrame
+            DataFrame containing radial distance information for nuclei.
+        dist_img : ndarray
+            Distance transform image of nuclei.
+
+        Returns:
+        --------
+        ndarray
+            Array containing the radial distance of each spot from the center of its nucleus.
+        """
         radial_dist=[]
         eps=0.000001
         for i in range(xyz_round.__len__()):
@@ -1381,340 +1810,280 @@ class BatchAnalysis(object):
         return np.array(radial_dist).astype(float)
 
     
-    def RUN_BTRACK(self,label_stack, gui_params):
-        
-        obj_from_generator = btrack.utils.segmentation_to_objects(label_stack, properties = ('bbox','area', 'perimeter', 'major_axis_length','orientation',
-                                                                                             'solidity','eccentricity' ))
-        # initialise a tracker session using a context manager
-        with btrack.BayesianTracker() as tracker:
-            tracker = btrack.BayesianTracker()
-                # configure the tracker using a config file
-                
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            # config_file = os.path.join(current_dir, 'BayesianTracker', 'models', 'cell_config.json')
-            config_file = os.path.join(current_dir, 'cell_config.json')
-            tracker.configure_from_file(config_file)
-            if label_stack.shape[0] > 1250:
-                tracker.update_method = BayesianUpdates.APPROXIMATE
-            # tracker.configure_from_file('/data2/HiTIPS_hmm/HiTIPS/BayesianTracker/models/cell_config.json')
-            tracker.max_search_radius = gui_params.NucSearchRadiusSpinbox_current_value
+#     def RUN_BTRACK(self,label_stack, gui_params):
 
-            # append the objects to be tracked
-            tracker.append(obj_from_generator)
+#         obj_from_generator = btrack.utils.segmentation_to_objects(label_stack, properties = ('bbox','area', 'perimeter', 'major_axis_length','orientation',
+#                                                                                              'solidity','eccentricity' ))
+#         # initialise a tracker session using a context manager
+#         with btrack.BayesianTracker() as tracker:
+#             tracker = btrack.BayesianTracker()
+#                 # configure the tracker using a config file
 
-            # set the volume
-        #     tracker.volume=((0, 1200), (0, 1200), (-1e5, 64.))
+#             current_dir = os.path.dirname(os.path.abspath(__file__))
+#             # config_file = os.path.join(current_dir, 'BayesianTracker', 'models', 'cell_config.json')
+#             config_file = os.path.join(current_dir, 'cell_config.json')
+#             tracker.configure_from_file(config_file)
+#             if label_stack.shape[0] > 1250:
+#                 tracker.update_method = BayesianUpdates.APPROXIMATE
+#             # tracker.configure_from_file('/data2/HiTIPS_hmm/HiTIPS/BayesianTracker/models/cell_config.json')
+#             tracker.max_search_radius = gui_params.NucSearchRadiusSpinbox_current_value
 
-            # track them (in interactive mode)
-            tracker.track_interactive(step_size=100)
+#             # append the objects to be tracked
+#             tracker.append(obj_from_generator)
 
-            # generate hypotheses and run the global optimizer
-            if label_stack.shape[0] < 1250:
-                tracker.optimize()
+#             # set the volume
+#         #     tracker.volume=((0, 1200), (0, 1200), (-1e5, 64.))
 
-#                             tracker.export(os.path.join('/data2/cell_tracking/','tracking.h5'), obj_type='obj_type_1')
+#             # track them (in interactive mode)
+#             tracker.track_interactive(step_size=100)
 
-#                             # get the tracks in a format for napari visualization
-#                             data, properties, graph = tracker.to_napari(ndim=2)
+#             # generate hypotheses and run the global optimizer
+#             if label_stack.shape[0] < 1250:
+#                 tracker.optimize()
 
-            tracks = tracker.tracks
+# #                             tracker.export(os.path.join('/data2/cell_tracking/','tracking.h5'), obj_type='obj_type_1')
 
-        tracks_pd = pd.DataFrame()
-        for i in range(len(tracks)):
-            tracks_pd = tracks_pd.append(pd.DataFrame(tracks[i].to_dict()))
-        tracks_pd = tracks_pd[tracks_pd['dummy']==False]
-        return tracks_pd
-    
-    def deepcell_tracking(self,t_stack_nuc,masks_stack, gui_params):
-    
-        tracker = CellTracking()
-        tracked_data = tracker.track(np.copy(np.expand_dims(t_stack_nuc, axis=-1)), np.copy(np.expand_dims(masks_stack, axis=-1)))
+# #                             # get the tracks in a format for napari visualization
+# #                             data, properties, graph = tracker.to_napari(ndim=2)
 
-        tracks_pd = pd.DataFrame()
-        for i in range(len(tracked_data['y_tracked'])):
-            labeled_nuc, number_nuc = label(np.squeeze(tracked_data['y_tracked'][i]))
-            dist_props = regionprops_table(labeled_nuc, properties=('label','centroid', 'bbox','area', 'perimeter', 'major_axis_length','orientation', 'solidity','eccentricity'))
-            single_image_df = pd.DataFrame(dist_props)
-            single_image_df['t']=i*np.ones(len(single_image_df),dtype=int)
-            single_image_df.rename(columns={ "label":"ID"}, inplace = True)
-            single_image_df.rename(columns={ "centroid-0":"y"}, inplace = True)
-            single_image_df.rename(columns={ "centroid-1":"x"}, inplace = True)
-            single_image_df['z']=i*np.zeros(len(single_image_df),dtype=int)
-            single_image_df['generation']=i*np.zeros(len(single_image_df),dtype=int)
-            single_image_df['parent']=single_image_df['ID']
-            single_image_df['root']=single_image_df['ID']
-            new_columns=['ID','t','x','y','z','parent','root','generation', 'area', 'major_axis_length', 'solidity', 'bbox-1', 'bbox-2', 'bbox-3', 'eccentricity', 'bbox-0', 'orientation', 'perimeter']
-            new_df = single_image_df[new_columns]
-            tracks_pd = pd.concat([tracks_pd,new_df], axis=0)
-        
-        return tracks_pd
-    
-    def mutual_information(self, hgram):
-     
-        pxy = hgram / float(np.sum(hgram))
-        px = np.sum(pxy, axis=1) # marginal for x over y
-        py = np.sum(pxy, axis=0) # marginal for y over x
-        px_py = px[:, None] * py[None, :] # Broadcast to multiply marginals
-        # Now we can do the calculation using the pxy, px_py 2D arrays
-        nzs = pxy > 0 # Only non-zero pxy values contribute to the sum
-        return np.sum(pxy[nzs] * np.log(pxy[nzs] / px_py[nzs]))
-    
-    def zero_pad_patch(self, input_image, desired_size=(128,128)):
-        
-        padded_image1 = np.zeros(desired_size, dtype=float)
-        w,h= input_image.shape
-        if w>desired_size[0]:
-            input_image = input_image[:desired_size[0],:]
-        if h>desired_size[1]:
-            input_image = input_image[:,:desired_size[1]]
-        shift_w = int(desired_size[0]/2)
-        shift_h = int(desired_size[1]/2)
-        padded_image1[:w, :h] = input_image
-        padded_image = np.roll(np.roll(padded_image1, int(shift_w-w/2),axis=0), int(shift_h-h/2), axis=1)    
+#             tracks = tracker.tracks
+#         # Create a list to store each DataFrame
+#         data_frames = []
+#         for i in range(len(tracks)):
+#             data_frames.append(pd.DataFrame(tracks[i].to_dict()))
 
-        return padded_image
-    
-    def registration_features(self, ref_img, ref_mask, reg_img, reg_mask):
-    
-        csi1 = np.dot(np.ravel(ref_img),np.ravel(reg_img))/(np.linalg.norm(np.ravel(ref_img))*np.linalg.norm(np.ravel(reg_img)))
+#         # Concatenate all DataFrames in the list
+#         tracks_pd = pd.concat(data_frames, ignore_index=True)
+#         tracks_pd = tracks_pd[tracks_pd['dummy'] == False]
 
-        hist_2d_1, x_edges, y_edges = np.histogram2d(reg_img.ravel(), ref_img.ravel(), bins=20)
-        mi1 = self.mutual_information(hist_2d_1)
+#         return tracks_pd
 
-        ssim_ind1 = ssim(ref_img, reg_img, data_range=ref_img.max() - ref_img.min())
+#     def deepcell_tracking(self,t_stack_nuc,masks_stack, gui_params):
 
-        mse = -mean_squared_error(ref_img, reg_img)
+#         tracker = CellTracking()
+#         tracked_data = tracker.track(np.copy(np.expand_dims(t_stack_nuc, axis=-1)), np.copy(np.expand_dims(masks_stack, axis=-1)))
 
-        # ct = contingency_table(ref_mask, reg_mask)
-        # are = adapted_rand_error(image_true=ref_mask, image_test=reg_mask, table=ct)[0]
-        # # vi1, vi2 = variation_of_information(image0=ref_mask, image1=reg_mask , table=ct)
+#         tracks_pd = pd.DataFrame()
+#         for i in range(len(tracked_data['y_tracked'])):
+#             labeled_nuc, number_nuc = label(np.squeeze(tracked_data['y_tracked'][i]))
+#             dist_props = regionprops_table(labeled_nuc, properties=('label','centroid', 'bbox','area', 'perimeter', 'major_axis_length','orientation', 'solidity','eccentricity'))
+#             single_image_df = pd.DataFrame(dist_props)
+#             single_image_df['t']=i*np.ones(len(single_image_df),dtype=int)
+#             single_image_df.rename(columns={ "label":"ID"}, inplace = True)
+#             single_image_df.rename(columns={ "centroid-0":"y"}, inplace = True)
+#             single_image_df.rename(columns={ "centroid-1":"x"}, inplace = True)
+#             single_image_df['z']=i*np.zeros(len(single_image_df),dtype=int)
+#             single_image_df['generation']=i*np.zeros(len(single_image_df),dtype=int)
+#             single_image_df['parent']=single_image_df['ID']
+#             single_image_df['root']=single_image_df['ID']
+#             new_columns=['ID','t','x','y','z','parent','root','generation', 'area', 'major_axis_length', 'solidity', 'bbox-1', 'bbox-2', 'bbox-3', 'eccentricity', 'bbox-0', 'orientation', 'perimeter']
+#             new_df = single_image_df[new_columns]
+#             tracks_pd = pd.concat([tracks_pd,new_df], axis=0)
 
-        eps_are=0.000000001
+#         return tracks_pd
 
-        psnr = peak_signal_noise_ratio(ref_img.astype("uint8"),reg_img.astype("uint8"))
+#     def mutual_information(self, hgram):
 
-        return np.array([csi1, mi1, ssim_ind1, mse,  psnr])#,1/(are+eps_are), -vi1, -vi2])
-    
-    def rotation_register_img_prep(self, ref_img, reg_img, rotation_angle, median_disk_size=3):
-    
-        median_ref_img = median(ref_img*255/(ref_img.max()+0.0001), disk(median_disk_size))
+#         pxy = hgram / float(np.sum(hgram))
+#         px = np.sum(pxy, axis=1) # marginal for x over y
+#         py = np.sum(pxy, axis=0) # marginal for y over x
+#         px_py = px[:, None] * py[None, :] # Broadcast to multiply marginals
+#         # Now we can do the calculation using the pxy, px_py 2D arrays
+#         nzs = pxy > 0 # Only non-zero pxy values contribute to the sum
+#         return np.sum(pxy[nzs] * np.log(pxy[nzs] / px_py[nzs]))
 
-        im2_rot = rotate(reg_img, rotation_angle, center=None, preserve_range=True)
-        img2_rot = median(im2_rot*255/(im2_rot.max()+0.0001) ,disk(median_disk_size))
+#     def zero_pad_patch(self, input_image, desired_size=(128,128)):
 
-        im2_rot1 = self.zero_pad_patch(img2_rot, desired_size=patch_size)
+#         padded_image1 = np.zeros(desired_size, dtype=float)
+#         w,h= input_image.shape
+#         if w>desired_size[0]:
+#             input_image = input_image[:desired_size[0],:]
+#         if h>desired_size[1]:
+#             input_image = input_image[:,:desired_size[1]]
+#         shift_w = int(desired_size[0]/2)
+#         shift_h = int(desired_size[1]/2)
+#         padded_image1[:w, :h] = input_image
+#         padded_image = np.roll(np.roll(padded_image1, int(shift_w-w/2),axis=0), int(shift_h-h/2), axis=1)    
 
-        #### correct for translation
-        rot2_translation = phase_cross_correlation(median_ref_img, im2_rot1, upsample_factor=1)[0]
-        # rot2_translation = np.array([0,0])
-        median_reg_img = ndimage.shift(im2_rot1, rot2_translation, order=0)
+#         return padded_image
 
-        return median_ref_img, median_reg_img
+#     def registration_features(self, ref_img, ref_mask, reg_img, reg_mask):
 
-    def run_registration_rotation(self, angle):
+#         csi1 = np.dot(np.ravel(ref_img),np.ravel(reg_img))/(np.linalg.norm(np.ravel(ref_img))*np.linalg.norm(np.ravel(reg_img)))
 
-        img1, im1_rot1 = self.rotation_register_img_prep(rotated_nuc[-1], img_patch1, angle, median_disk_size=3)
+#         hist_2d_1, x_edges, y_edges = np.histogram2d(reg_img.ravel(), ref_img.ravel(), bins=20)
+#         mi1 = self.mutual_information(hist_2d_1)
 
-        return self.registration_features(img1, im1_rot1)
+#         ssim_ind1 = ssim(ref_img, reg_img, data_range=ref_img.max() - ref_img.min())
 
-    def phase_correlation(self, ref_img, reg_img, intial_rotation = 15, rescale_factor = 5, nuc_length = 50):
-        
-        if ref_img.max()>0:    
-            
-            radius = nuc_length*rescale_factor
-            ref_image = img_as_float(rescale(median(ref_img,disk(3)),rescale_factor))
-            rotated = rotate(rescale(median(reg_img,disk(3)),rescale_factor), intial_rotation, preserve_range=True)
-            image_polar = warp_polar(ref_image, radius=radius)
-            rotated_polar = warp_polar(rotated, radius=radius)
-            shifts, error, phasediff = phase_cross_correlation(image_polar, rotated_polar)
-            final_angle = -shifts[0]
-            rotated_img = rotate(rotate(reg_img, intial_rotation, order=0, preserve_range=True), final_angle, order=0, preserve_range=True)
+#         mse = -mean_squared_error(ref_img, reg_img)
 
-        elif ref_img.max()==0:
-            
-            final_angle = 0
-            rotated_img = rotate(reg_img, 0, order=0, preserve_range=True)
-        
-        return final_angle, rotated_img
-    
-    
-#     def max_distance_condition(self, cluster, max_dist):
-#         pairwise_distances = pdist(cluster)
-#         return np.max(pairwise_distances) <= max_dist
+#         # ct = contingency_table(ref_mask, reg_mask)
+#         # are = adapted_rand_error(image_true=ref_mask, image_test=reg_mask, table=ct)[0]
+#         # # vi1, vi2 = variation_of_information(image0=ref_mask, image1=reg_mask , table=ct)
 
-#     def outlier_removal(self, points, threshold):
-#         mean = np.mean(points, axis=0)
-#         std_dev = np.std(points, axis=0)
-#         not_outlier_index = np.all(np.abs(points - mean) <= threshold * std_dev, axis=1)
-#         outlier_index =~not_outlier_index
-#         return not_outlier_index, outlier_index
+#         eps_are=0.000000001
 
-#     def run_clustering(self, points, outlier_threshold = 2, max_dist = 6):
-#         # Remove outliers
-#         not_outlier_index, outlier_index = self.outlier_removal(points, outlier_threshold)
-#         filtered_points = points[not_outlier_index]
+#         psnr = peak_signal_noise_ratio(ref_img.astype("uint8"),reg_img.astype("uint8"))
 
-#         # Compute the distance matrix and perform hierarchical clustering
-#         distance_matrix = pdist(filtered_points)
-#         linkage_matrix = linkage(distance_matrix, method='single')
-#         clusters = fcluster(linkage_matrix, max_dist, criterion='distance')
-#         # Merge small clusters
-#         clusters = self.merge_small_clusters(filtered_points, clusters)
+#         return np.array([csi1, mi1, ssim_ind1, mse,  psnr])#,1/(are+eps_are), -vi1, -vi2])
 
-#         return clusters, not_outlier_index, outlier_index 
+#     def rotation_register_img_prep(self, ref_img, reg_img, rotation_angle, median_disk_size=3):
 
-#     def merge_small_clusters(self, points, labels):
-        
-#         if len(labels) < 2:
+#         median_ref_img = median(ref_img*255/(ref_img.max()+0.0001), disk(median_disk_size))
+
+#         im2_rot = rotate(reg_img, rotation_angle, center=None, preserve_range=True)
+#         img2_rot = median(im2_rot*255/(im2_rot.max()+0.0001) ,disk(median_disk_size))
+
+#         im2_rot1 = self.zero_pad_patch(img2_rot, desired_size=patch_size)
+
+#         #### correct for translation
+#         rot2_translation = phase_cross_correlation(median_ref_img, im2_rot1, upsample_factor=1)[0]
+#         # rot2_translation = np.array([0,0])
+#         median_reg_img = ndimage.shift(im2_rot1, rot2_translation, order=0)
+
+#         return median_ref_img, median_reg_img
+
+#     def run_registration_rotation(self, angle):
+
+#         img1, im1_rot1 = self.rotation_register_img_prep(rotated_nuc[-1], img_patch1, angle, median_disk_size=3)
+
+#         return self.registration_features(img1, im1_rot1)
+
+#     def phase_correlation(self, ref_img, reg_img, intial_rotation = 15, rescale_factor = 5, nuc_length = 50):
+
+#         if ref_img.max()>0:    
+
+#             radius = nuc_length*rescale_factor
+#             ref_image = img_as_float(rescale(median(ref_img,disk(3)),rescale_factor))
+#             rotated = rotate(rescale(median(reg_img,disk(3)),rescale_factor), intial_rotation, preserve_range=True)
+#             image_polar = warp_polar(ref_image, radius=radius)
+#             rotated_polar = warp_polar(rotated, radius=radius)
+#             shifts, error, phasediff = phase_cross_correlation(image_polar, rotated_polar)
+#             final_angle = -shifts[0]
+#             rotated_img = rotate(rotate(reg_img, intial_rotation, order=0, preserve_range=True), final_angle, order=0, preserve_range=True)
+
+#         elif ref_img.max()==0:
+
+#             final_angle = 0
+#             rotated_img = rotate(reg_img, 0, order=0, preserve_range=True)
+
+#         return final_angle, rotated_img
+
+
+
+#     def rotate_point(self, origin, point, angle):
+#         """
+#         Rotate a point counterclockwise by a given angle around a given origin.
+
+#         The angle should be given in radians.
+#         """
+#         ox, oy = origin
+#         px, py = point
+
+#         qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+#         qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+#         return qx, qy
+
+#     def get_spot_patch(self, single_track_copy, chnl, lbl1, rot_spot_patches, spot_boundary = 4):
+#         small_spot_patches = {}
+#         spot_patches_center_coords = {}
+#         real_spots = single_track_copy[single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"].apply(lambda x: x != [])]['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"]
+#         real_spots_indices = np.array(real_spots.index)
+#         for i in np.array(single_track_copy.index):
+#             if i not in real_spots_indices:
+#                 time_point = single_track_copy['t'].loc[i]
+#                 ind1 = np.searchsorted(real_spots_indices, i)
+#                 if ind1==0:
+#                     try:
+#                         row,col = real_spots.loc[real_spots_indices[0]][0][0]
+#                     except:
+#                         row,col = real_spots.loc[real_spots_indices[0]][0]
+
+#                 if ind1==len(real_spots_indices):
+#                     try:
+#                           row,col = real_spots.loc[real_spots_indices[-1]][0][0]            
+#                     except:
+#                           row,col = real_spots.loc[real_spots_indices[-1]][0]
+
+#                 else:
+#                     try: 
+#                           lower_row,lower_col = real_spots.loc[real_spots_indices[ind1-1]][0][0]
+#                     except:
+#                           lower_row,lower_col = real_spots.loc[real_spots_indices[ind1-1]][0]
+
+#                     try:
+#                           uper_row,uper_col = real_spots.loc[real_spots_indices[ind1]][0][0]
+#                     except:
+#                           uper_row,uper_col = real_spots.loc[real_spots_indices[ind1]][0]
+
+#                     row = int(np.round((lower_row+uper_row)/2))
+#                     col = int(np.round((lower_col+uper_col)/2))
+
+#             else:
+
+#                 try:
+#                     row,col = real_spots.loc[i][0][0]
+#                 except:
+#                     row,col = real_spots.loc[i][0]
+
+#             small_spot_patches[i]=rot_spot_patches[int(i)][int(row-spot_boundary) : int(row+spot_boundary+1), int(col-spot_boundary) : int(col+spot_boundary+1)]
+#             spot_patches_center_coords[i] = np.array([row,col]).reshape((1,2))
+
+#         return small_spot_patches, spot_patches_center_coords
+
+#     def merge_small_clusters(self,points, labels, max_dist):
+#         if (len(labels) < 2)|(self.gui_params.minburstdurationSpinbox_current_value==1):
 #             return labels
 
-#         # Get cluster sizes
 #         cluster_sizes = np.bincount(labels)
 
-#         # Find the large clusters
-#         large_clusters = np.where(cluster_sizes > 2)[0]
+#         large_clusters = np.where(cluster_sizes >= self.gui_params.minburstdurationSpinbox_current_value)[0]
+#         small_clusters = np.where((cluster_sizes > 0) & (cluster_sizes < self.gui_params.minburstdurationSpinbox_current_value))[0]
 
-#         # Find the small clusters
-#         small_clusters = np.where(cluster_sizes < 3)[0]
+#         large_cluster_points = points[np.isin(labels, large_clusters)]
 
-#         # Compute the centroids of the large clusters
-#         large_cluster_centroids = np.array([points[labels == i].mean(axis=0) for i in large_clusters])
-
-#         # For each small cluster, find the closest large cluster and merge them
 #         for small_cluster in small_clusters:
-#             # Get the indices of the data points in the small cluster
 #             small_cluster_indices = np.where(labels == small_cluster)[0]
 
-#             # Compute the centroid of the small cluster
-#             small_cluster_centroid = points[small_cluster_indices].mean(axis=0)
+#             for idx in small_cluster_indices:
+#                 distances = cdist(points[idx].reshape(1, -1), large_cluster_points)
+#                 closest_large_cluster_point_index = np.argmin(distances)
+#                 closest_large_cluster_point_distance = distances[0, closest_large_cluster_point_index]
 
-#             # Calculate the distances from the small cluster centroid to the centroids of the large clusters
-#             distances = cdist(small_cluster_centroid.reshape(1, -1), large_cluster_centroids)
+#                 if closest_large_cluster_point_distance <= max_dist:
+#                     labels[idx] = labels[large_cluster_points[closest_large_cluster_point_index]]
+#                 else:
+#                     labels[idx] = 0
 
-#             # Find the closest large cluster
-#             closest_large_cluster = large_clusters[np.argmin(distances)]
-
-#             # Merge the small cluster with the closest large cluster
-#             labels[small_cluster_indices] = closest_large_cluster
-
-#         # Reassign cluster labels to maintain consecutive numbering
-#         unique_labels, unique_inverse = np.unique(labels, return_inverse=True)
-#         new_labels = np.arange(1, len(unique_labels) + 1)
-#         label_mapping = dict(zip(unique_labels, new_labels))
-#         return np.array([label_mapping[label] for label in labels])
-    
-    def rotate_point(self, origin, point, angle):
-        """
-        Rotate a point counterclockwise by a given angle around a given origin.
-
-        The angle should be given in radians.
-        """
-        ox, oy = origin
-        px, py = point
-
-        qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-        qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-        return qx, qy
-    
-    def get_spot_patch(self, single_track_copy, chnl, lbl1, rot_spot_patches, spot_boundary = 4):
-        small_spot_patches = {}
-        spot_patches_center_coords = {}
-        real_spots = single_track_copy[single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"].apply(lambda x: x != [])]['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"]
-        real_spots_indices = np.array(real_spots.index)
-        for i in np.array(single_track_copy.index):
-            if i not in real_spots_indices:
-                time_point = single_track_copy['t'].loc[i]
-                ind1 = np.searchsorted(real_spots_indices, i)
-                if ind1==0:
-                    try:
-                        row,col = real_spots.loc[real_spots_indices[0]][0][0]
-                    except:
-                        row,col = real_spots.loc[real_spots_indices[0]][0]
-                        
-                if ind1==len(real_spots_indices):
-                    try:
-                          row,col = real_spots.loc[real_spots_indices[-1]][0][0]            
-                    except:
-                          row,col = real_spots.loc[real_spots_indices[-1]][0]
-                          
-                else:
-                    try: 
-                          lower_row,lower_col = real_spots.loc[real_spots_indices[ind1-1]][0][0]
-                    except:
-                          lower_row,lower_col = real_spots.loc[real_spots_indices[ind1-1]][0]
-                         
-                    try:
-                          uper_row,uper_col = real_spots.loc[real_spots_indices[ind1]][0][0]
-                    except:
-                          uper_row,uper_col = real_spots.loc[real_spots_indices[ind1]][0]
-                          
-                    row = int(np.round((lower_row+uper_row)/2))
-                    col = int(np.round((lower_col+uper_col)/2))
-
-            else:
-                 
-                try:
-                    row,col = real_spots.loc[i][0][0]
-                except:
-                    row,col = real_spots.loc[i][0]
-       
-            small_spot_patches[i]=rot_spot_patches[int(i)][int(row-spot_boundary) : int(row+spot_boundary+1), int(col-spot_boundary) : int(col+spot_boundary+1)]
-            spot_patches_center_coords[i] = np.array([row,col]).reshape((1,2))
-
-        return small_spot_patches, spot_patches_center_coords
-    
-    def merge_small_clusters(self,points, labels, max_dist):
-        if (len(labels) < 2)|(self.gui_params.minburstdurationSpinbox_current_value==1):
-            return labels
-
-        cluster_sizes = np.bincount(labels)
-
-        large_clusters = np.where(cluster_sizes >= self.gui_params.minburstdurationSpinbox_current_value)[0]
-        small_clusters = np.where((cluster_sizes > 0) & (cluster_sizes < self.gui_params.minburstdurationSpinbox_current_value))[0]
-
-        large_cluster_points = points[np.isin(labels, large_clusters)]
-
-        for small_cluster in small_clusters:
-            small_cluster_indices = np.where(labels == small_cluster)[0]
-
-            for idx in small_cluster_indices:
-                distances = cdist(points[idx].reshape(1, -1), large_cluster_points)
-                closest_large_cluster_point_index = np.argmin(distances)
-                closest_large_cluster_point_distance = distances[0, closest_large_cluster_point_index]
-
-                if closest_large_cluster_point_distance <= max_dist:
-                    labels[idx] = labels[large_cluster_points[closest_large_cluster_point_index]]
-                else:
-                    labels[idx] = 0
-
-        return labels
+#         return labels
 
 
-    def run_clustering(self, points, outlier_threshold=2, max_dist=6):
-        distance_matrix = pdist(points)
-        linkage_matrix = linkage(distance_matrix, method='single')
-        initial_clusters = fcluster(linkage_matrix, max_dist, criterion='distance')
+#     def run_clustering(self, points, outlier_threshold=2, max_dist=6):
+#         distance_matrix = pdist(points)
+#         linkage_matrix = linkage(distance_matrix, method='single')
+#         initial_clusters = fcluster(linkage_matrix, max_dist, criterion='distance')
 
-        unique_clusters = np.unique(initial_clusters)
-        centroids = np.array([points[initial_clusters == cluster].mean(axis=0) for cluster in unique_clusters])
+#         unique_clusters = np.unique(initial_clusters)
+#         centroids = np.array([points[initial_clusters == cluster].mean(axis=0) for cluster in unique_clusters])
 
-        cluster_std_devs = []
-        for cluster, centroid in zip(unique_clusters, centroids):
-            cluster_points = points[initial_clusters == cluster]
-            distances = cdist(centroid.reshape(1, -1), cluster_points)
-            cluster_std_devs.append(np.std(distances))
+#         cluster_std_devs = []
+#         for cluster, centroid in zip(unique_clusters, centroids):
+#             cluster_points = points[initial_clusters == cluster]
+#             distances = cdist(centroid.reshape(1, -1), cluster_points)
+#             cluster_std_devs.append(np.std(distances))
 
-        outlier_index = np.zeros(points.shape[0], dtype=bool)
-        for cluster, centroid, std_dev in zip(unique_clusters, centroids, cluster_std_devs):
-            cluster_points = points[initial_clusters == cluster]
-            distances = cdist(centroid.reshape(1, -1), cluster_points)
-            is_outlier = distances > outlier_threshold * max_dist
-            outlier_index[initial_clusters == cluster] = is_outlier.flatten()
+#         outlier_index = np.zeros(points.shape[0], dtype=bool)
+#         for cluster, centroid, std_dev in zip(unique_clusters, centroids, cluster_std_devs):
+#             cluster_points = points[initial_clusters == cluster]
+#             distances = cdist(centroid.reshape(1, -1), cluster_points)
+#             is_outlier = distances > outlier_threshold * max_dist
+#             outlier_index[initial_clusters == cluster] = is_outlier.flatten()
 
-        initial_clusters[outlier_index] = 0
+#         initial_clusters[outlier_index] = 0
 
-        # Merge small clusters and outliers
-        clusters = self.merge_small_clusters(points, initial_clusters, max_dist)
+#         # Merge small clusters and outliers
+#         clusters = self.merge_small_clusters(points, initial_clusters, max_dist)
 
 
-        return clusters
+#         return clusters

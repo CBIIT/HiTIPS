@@ -12,14 +12,15 @@ if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
 
 class analyzer(QWidget):
 
-    def __init__(self, centralwidget, gridLayout_centralwidget, displaygui=None, ImDisplay=None, image_analyzer=None):
+    def __init__(self, centralwidget, gridLayout_centralwidget, displaygui=None, ImDisplay=None, image_analyzer=None, gui_params=None):
         super().__init__(centralwidget)
         self.gridLayout_centralwidget = gridLayout_centralwidget
         self.displaygui = displaygui
         self.AnalysisLbl = QtWidgets.QLabel(centralwidget)
         self.ImDisplay = ImDisplay  
         self.image_analyzer = image_analyzer
-
+        self.gui_params = gui_params
+        
         self.gridLayout_centralwidget.addWidget(self.AnalysisLbl, 1, 17, 1, 3)
         font = QtGui.QFont()
         font.setFamily(".Farah PUA")
@@ -432,7 +433,7 @@ class analyzer(QWidget):
         self.spotchannelselect.addItem("Ch4")
         self.spotchannelselect.addItem("Ch5")
         self.spotchannelselect.setFont(font)
-        self.spotchannelselect.currentIndexChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_GUI_PARAMS())
+        
         
         self.spotanalysismethodLbl = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.spotanalysismethodLbl, 1, 0, 1, 1)
@@ -463,7 +464,7 @@ class analyzer(QWidget):
         self.spotanalysismethod.addItem("EnhancedLOG")
         self.spotanalysismethod.setFont(font)
         self.spotanalysismethod.currentIndexChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
-        self.spotanalysismethod.currentIndexChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.spotanalysismethod.currentIndexChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
         
         self.thresholdmethod = QtWidgets.QComboBox(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.thresholdmethod, 2, 1, 1, 1)
@@ -478,7 +479,7 @@ class analyzer(QWidget):
         self.ThresholdSlider.setObjectName("ThresholdSlider")
         self.ThresholdSlider.valueChanged.connect(lambda: self.SPOT_THRESH_LABEL_UPDATE())
         self.ThresholdSlider.sliderReleased.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
-        self.ThresholdSlider.sliderReleased.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.ThresholdSlider.sliderReleased.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
 
         self.SpotThreshSliderValue = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotThreshSliderValue, 3, 2, 1, 1)
@@ -487,8 +488,6 @@ class analyzer(QWidget):
         self.SpotThreshSliderValue.setFont(font)
         self.SpotThreshSliderValue.setObjectName("SpotThreshSliderValue")
         self.SpotThreshSliderValue.setText(QtCore.QCoreApplication.translate("MainWindow", str(self.ThresholdSlider.value()))) 
-        
-        
         self.ThresholdSlider.setMaximum(100)
         self.ThresholdSlider.setMinimum(0)
         self.ThresholdSlider.setValue(100)
@@ -511,25 +510,25 @@ class analyzer(QWidget):
         self.SensitivitySpinBox.setMinimum(1)
         self.SensitivitySpinBox.setValue(3)
         self.SensitivitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
-        self.SensitivitySpinBox.valueChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.SensitivitySpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
         
-        self.AnalysisMode.addItem(self.SpotAnalysis, "")
         
-        self.SpotPerChSpinBox = QtWidgets.QSpinBox(self.SpotAnalysis)
-        self.gridLayout_SpotAnalysis.addWidget(self.SpotPerChSpinBox, 5, 1, 1, 1)
+        
+        self.ResizeFactor = QtWidgets.QSpinBox(self.SpotAnalysis)
+        self.gridLayout_SpotAnalysis.addWidget(self.ResizeFactor, 5, 1, 1, 1)
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.SpotPerChSpinBox.setFont(font)
-        self.SpotPerChSpinBox.setObjectName("SpotPerChSpinBox")
-        self.SpotPerChSpinBox.setValue(1)
-        self.SpotPerChSpinBox.valueChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
-        self.SpotPerChSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        self.ResizeFactor.setFont(font)
+        self.ResizeFactor.setObjectName("ResizeFactor")
+        self.ResizeFactor.setValue(1)
+        self.ResizeFactor.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        self.ResizeFactor.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
         
-        self.SpotperchannelLbl = QtWidgets.QLabel(self.SpotAnalysis)
-        self.gridLayout_SpotAnalysis.addWidget(self.SpotperchannelLbl, 5, 0, 1, 1)
+        self.ResizeFactorLabel = QtWidgets.QLabel(self.SpotAnalysis)
+        self.gridLayout_SpotAnalysis.addWidget(self.ResizeFactorLabel, 5, 0, 1, 1)
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.SpotperchannelLbl.setFont(font)
+        self.ResizeFactorLabel.setFont(font)
         
         
         self.SpotareaminLbl = QtWidgets.QLabel(self.SpotAnalysis)
@@ -545,8 +544,8 @@ class analyzer(QWidget):
         self.SpotareaminSpinBox.setFont(font)
         self.SpotareaminSpinBox.setObjectName("SpotareaminSpinBox")
         self.SpotareaminSpinBox.setValue(0)
-        self.SpotareaminSpinBox.valueChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
         self.SpotareaminSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        self.SpotareaminSpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
           
         self.SpotareamaxLbl = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotareamaxLbl, 6, 2, 1, 1)
@@ -561,8 +560,8 @@ class analyzer(QWidget):
         self.SpotareamaxSpinBox.setFont(font)
         self.SpotareamaxSpinBox.setObjectName("SpotareamaxSpinBox")
         self.SpotareamaxSpinBox.setValue(99)
-        self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
         self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
         
         self.SpotIntegratedIntensityLbl = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotIntegratedIntensityLbl, 7, 0, 1, 1)
@@ -579,12 +578,10 @@ class analyzer(QWidget):
         self.SpotIntegratedIntensitySpinBox.setMinimum(0)
         self.SpotIntegratedIntensitySpinBox.setMaximum(200000)
         self.SpotIntegratedIntensitySpinBox.setValue(100) 
-        self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.image_analyzer.UPDATE_SPOT_ANALYSIS_PARAMS())
         self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
-
+        self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
         
-        self.ThresholdSlider.setValue(100)
-
+        self.AnalysisMode.addItem(self.SpotAnalysis, "")
         #############################################
         #### Nuclei and spot tracking
         self.nuc_spot_track = QtWidgets.QWidget()
@@ -610,7 +607,6 @@ class analyzer(QWidget):
         
         
         self.NucTrackMethod = QtWidgets.QComboBox(self.nuc_spot_track)
-# #         self.CytoChannel.setGeometry(QtCore.QRect(90, 0, 211, 31))
         self.gridLayout_nuc_spot_track.addWidget(self.NucTrackMethod, 0, 1, 1, 2)
         
         self.NucTrackMethod.setObjectName("NucTrackMethod")
@@ -619,7 +615,6 @@ class analyzer(QWidget):
         self.NucTrackMethod.setFont(font)
         
         self.NucSearchRadiusSpinbox = QtWidgets.QSpinBox(self.nuc_spot_track)
-#         self.SpotPerCh5SpinBox.setGeometry(QtCore.QRect(250 + shift, 35, 51, 24))
         self.gridLayout_nuc_spot_track.addWidget(self.NucSearchRadiusSpinbox, 1, 1, 1, 1)
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -690,7 +685,6 @@ class analyzer(QWidget):
         self.RegistrationmethodLbl.setObjectName("RegistrationmethodLbl")
         
         self.Registrationmethod = QtWidgets.QComboBox(self.nuc_spot_track)
-# #         self.CytoChannel.setGeometry(QtCore.QRect(90, 0, 211, 31))
         self.gridLayout_nuc_spot_track.addWidget(self.Registrationmethod, 5, 1, 1, 2)
         
         self.Registrationmethod.setObjectName("Registrationmethod")
@@ -707,7 +701,6 @@ class analyzer(QWidget):
         self.FittingnmethodLbl.setObjectName("FittingnmethodLbl")
         
         self.Fittingnmethod = QtWidgets.QComboBox(self.nuc_spot_track)
-# #         self.CytoChannel.setGeometry(QtCore.QRect(90, 0, 211, 31))
         self.gridLayout_nuc_spot_track.addWidget(self.Fittingnmethod, 6, 1, 1, 2)
         
         self.Fittingnmethod.setObjectName("Fittingnmethod")
@@ -757,7 +750,6 @@ class analyzer(QWidget):
         self.patchsizelbl.setObjectName("patchsizelbl")
         
         self.patchsize = QtWidgets.QComboBox(self.nuc_spot_track)
-# #         self.CytoChannel.setGeometry(QtCore.QRect(90, 0, 211, 31))
         self.gridLayout_nuc_spot_track.addWidget(self.patchsize, 9, 1, 1, 1)
         
         self.patchsize.setObjectName("patchsize")
@@ -776,7 +768,6 @@ class analyzer(QWidget):
         
         #### Resutls
         self.Results = QtWidgets.QWidget()
-#         self.Results.setGeometry(QtCore.QRect(0, 0, 381, 171))
         self.gridLayout_AnalysisMode.addWidget(self.Results, 5, 0, 1, 1)
         self.Results.setObjectName("Results")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.Results)
@@ -812,28 +803,20 @@ class analyzer(QWidget):
         self.Spot_Tracking.setObjectName("Spot_Tracking")
         self.gridLayout_3.addWidget(self.Spot_Tracking, 2, 1, 1, 1)
         self.Spot_Tracking.setFont(font)
-#         self.Spot_Tracking.setEnabled(False)
         self.AnalysisMode.addItem(self.Results, "")
         
         _translate = QtCore.QCoreApplication.translate
         self.AnalysisLbl.setText(_translate("MainWindow", "Analysis"))
         self.RunAnalysis.setText(_translate("MainWindow", "Run Analysis"))
         self.ResetButton.setText(_translate("MainWindow", "Reset"))
-       # self.CloseButton.setText(_translate("MainWindow", "Close"))
         ### nuclei detection
         self.NucleiChLbl.setText(_translate("MainWindow", "Channel"))
-#         self.CellTypeLabel.setText(_translate("MainWindow", "Cell Type"))
         self.NucDetectMethodLbl.setText(_translate("MainWindow", "Method"))
         self.NucleiChannel.setItemText(0, _translate("MainWindow", "Channel 1"))
         self.NucleiChannel.setItemText(1, _translate("MainWindow", "Channel 2"))
         self.NucleiChannel.setItemText(2, _translate("MainWindow", "Channel 3"))
         self.NucleiChannel.setItemText(3, _translate("MainWindow", "Channel 4"))
         self.NucleiChannel.setItemText(4, _translate("MainWindow", "Channel 5"))
-#         self.NucCellType.setItemText(0, _translate("MainWindow", "Fibroblasts"))
-#         self.NucCellType.setItemText(1, _translate("MainWindow", "MCF10A"))
-#         self.NucCellType.setItemText(2, _translate("MainWindow", "HCT116"))
-#         self.NucCellType.setItemText(3, _translate("MainWindow", "U2OS"))
-#         self.NucCellType.setItemText(4, _translate("MainWindow", "Mouse Mammary Tumor"))
         self.NucDetectMethod.setItemText(0, _translate("MainWindow", "Int.-based"))
         self.NucDetectMethod.setItemText(1, _translate("MainWindow", "Marker Controlled"))
         self.NucDetectMethod.setItemText(2, _translate("MainWindow", "CellPose-CPU"))
@@ -855,10 +838,7 @@ class analyzer(QWidget):
         self.SpotCh3CheckBox.setText(_translate("MainWindow", "Ch3"))
         self.SpotCh4CheckBox.setText(_translate("MainWindow", "Ch4"))
         self.SpotCh5CheckBox.setText(_translate("MainWindow", "Ch5"))
-#         self.Coor_CenterOfMass.setText(_translate("MainWindow", "Center of Mass"))
-#         self.Coor_MaxIntensity.setText(_translate("MainWindow", "Maximum Intensity"))
-#         self.Coor_SpotCentroid.setText(_translate("MainWindow", "Spot Centroid"))
-        self.SpotperchannelLbl.setText(_translate("MainWindow", "Resize factor:"))
+        self.ResizeFactorLabel.setText(_translate("MainWindow", "Resize factor:"))
         self.SpotareaminLbl.setText(_translate("MainWindow", "Spot Area Min:"))
         self.SpotareamaxLbl.setText(_translate("MainWindow", "Max:"))
         self.SpotIntegratedIntensityLbl.setText(_translate("MainWindow", "Min Integrated Int.:"))
@@ -882,7 +862,7 @@ class analyzer(QWidget):
         self.thresholdvalueLbl.setText(_translate("MainWindow", "Threshold Value"))
         self.spotchannelselectlbl.setText(_translate("MainWindow", "Channel"))
         self.sensitivityLbl.setText(_translate("MainWindow", "Kernel Size"))
-        self.spotanalysismethod.setItemText(0, _translate("MainWindow", "Laplacian of Gaussian"))
+        self.spotanalysismethod.setItemText(0, _translate("MainWindow", "Laplacian of Gaussian"))  
         self.spotanalysismethod.setItemText(1, _translate("MainWindow", "Gaussian"))
         self.spotanalysismethod.setItemText(2, _translate("MainWindow", "Intensity Threshold"))
         self.spotanalysismethod.setItemText(3, _translate("MainWindow", "Enhanced LOG"))
@@ -944,9 +924,6 @@ class analyzer(QWidget):
         self.FittingnmethodLbl.setText(_translate("MainWindow", "Fitting Method"))
         self.Fittingnmethod.setItemText(0, _translate("MainWindow", "Two State HMM"))
         self.Fittingnmethod.setItemText(1, _translate("MainWindow", "Three State HMM"))
-        
-#         self.SpotTrackMethod.setItemText(0, _translate("MainWindow", "TrackPy"))
-#         self.SpotTrackMethod.setItemText(1, _translate("MainWindow", "Bayesian"))
         self.AnalysisMode.setItemText(self.AnalysisMode.indexOf(self.nuc_spot_track), _translate("MainWindow", "Nuclei/Spot Tracking"))
         ### results 
         self.AnalysisMode.setItemText(self.AnalysisMode.indexOf(self.SpotDetection), _translate("MainWindow", "Spot Channels"))
@@ -980,160 +957,8 @@ class analyzer(QWidget):
         
         self.SpotThreshSliderValue.setText(QtCore.QCoreApplication.translate("MainWindow", str(self.ThresholdSlider.value())))
     
-    
-    def SAVE_CONFIGURATION(self, csv_filename, ImageAnalyzer):
-        det_method = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
-        thresh_method = ["Auto","Manual"]
-        config_data = {
-            
-            "nuclei_channel": self.NucleiChannel.currentText(),
-            "nuclei_detection_method": self.NucDetectMethod.currentText(),
-            "nuclei_z_project":  self.NucMaxZprojectCheckBox.isChecked(),
-            "remove_boundary_nuclei": self.NucRemoveBoundaryCheckBox.isChecked(),
-            "nuclei_detection": self.NucDetectionSlider.value(),
-            "nuclei_separation": self.NucSeparationSlider.value(),
-            "nuclei_area": self.NucleiAreaSlider.value(),
-            "ch1_spot": self.SpotCh1CheckBox.isChecked(),
-            "ch2_spot": self.SpotCh2CheckBox.isChecked(),
-            "ch3_spot": self.SpotCh3CheckBox.isChecked(),
-            "ch4_spot": self.SpotCh4CheckBox.isChecked(),
-            "ch5_spot": self.SpotCh5CheckBox.isChecked(),
-            "spot_coordinates": self.SpotLocationCbox.currentText(),
-            "spot_z_project": self.SpotMaxZProject.isChecked(),
-            "ch1_spot_detection_method": det_method[int(ImageAnalyzer.spot_params_dict["Ch1"][0])],
-            "ch1_spot_threshold_method": thresh_method[int(ImageAnalyzer.spot_params_dict["Ch1"][1])],
-            "ch1_spot_threshold_value": ImageAnalyzer.spot_params_dict["Ch1"][2],
-            "ch1_kernel_size": ImageAnalyzer.spot_params_dict["Ch1"][3],
-            "ch1_spots/ch": ImageAnalyzer.spot_params_dict["Ch1"][4],
-            "ch1_spots_area_min": ImageAnalyzer.spot_params_dict["Ch1"][5],
-            "ch1_spots_area_max": ImageAnalyzer.spot_params_dict["Ch1"][6],
-            "ch1_spots_integrated_intensity": ImageAnalyzer.spot_params_dict["Ch1"][7],            
-            "ch2_spot_detection_method": det_method[int(ImageAnalyzer.spot_params_dict["Ch2"][0])],
-            "ch2_spot_threshold_method": thresh_method[int(ImageAnalyzer.spot_params_dict["Ch2"][1])],
-            "ch2_spot_threshold_value": ImageAnalyzer.spot_params_dict["Ch2"][2],
-            "ch2_kernel_size": ImageAnalyzer.spot_params_dict["Ch2"][3],
-            "ch2_spots/ch": ImageAnalyzer.spot_params_dict["Ch2"][4],
-            "ch2_spots_area_min": ImageAnalyzer.spot_params_dict["Ch2"][5],
-            "ch2_spots_area_max": ImageAnalyzer.spot_params_dict["Ch2"][6],
-            "ch2_spots_integrated_intensity": ImageAnalyzer.spot_params_dict["Ch2"][7],
-            "ch3_spot_detection_method": det_method[int(ImageAnalyzer.spot_params_dict["Ch3"][0])],
-            "ch3_spot_threshold_method": thresh_method[int(ImageAnalyzer.spot_params_dict["Ch3"][1])],
-            "ch3_spot_threshold_value": ImageAnalyzer.spot_params_dict["Ch3"][2],
-            "ch3_kernel_size": ImageAnalyzer.spot_params_dict["Ch3"][3],
-            "ch3_spots/ch": ImageAnalyzer.spot_params_dict["Ch3"][4],
-            "ch3_spots_area_min": ImageAnalyzer.spot_params_dict["Ch3"][5],
-            "ch3_spots_area_max": ImageAnalyzer.spot_params_dict["Ch3"][6],
-            "ch3_spots_integrated_intensity": ImageAnalyzer.spot_params_dict["Ch3"][7],
-            "ch4_spot_detection_method": det_method[int(ImageAnalyzer.spot_params_dict["Ch4"][0])],
-            "ch4_spot_threshold_method": thresh_method[int(ImageAnalyzer.spot_params_dict["Ch4"][1])],
-            "ch4_spot_threshold_value": ImageAnalyzer.spot_params_dict["Ch4"][2],
-            "ch4_kernel_size": ImageAnalyzer.spot_params_dict["Ch4"][3],
-            "ch4_spots/ch": ImageAnalyzer.spot_params_dict["Ch4"][4],
-            "ch4_spots_area_min": ImageAnalyzer.spot_params_dict["Ch4"][5],
-            "ch4_spots_area_max": ImageAnalyzer.spot_params_dict["Ch4"][6],
-            "ch4_spots_integrated_intensity": ImageAnalyzer.spot_params_dict["Ch4"][7],
-            "ch5_spot_detection_method": det_method[int(ImageAnalyzer.spot_params_dict["Ch5"][0])],
-            "ch5_spot_threshold_method": thresh_method[int(ImageAnalyzer.spot_params_dict["Ch5"][1])],
-            "ch5_spot_threshold_value": ImageAnalyzer.spot_params_dict["Ch5"][2],
-            "ch5_kernel_size": ImageAnalyzer.spot_params_dict["Ch5"][3],
-            "ch5_spots/ch": ImageAnalyzer.spot_params_dict["Ch5"][4],
-            "ch5_spots_area_min": ImageAnalyzer.spot_params_dict["Ch5"][5],
-            "ch5_spots_area_max": ImageAnalyzer.spot_params_dict["Ch5"][6],
-            "ch5_spots_integrated_intensity": ImageAnalyzer.spot_params_dict["Ch5"][7]
-        }
-        
-        config_df = pd.DataFrame.from_dict(config_data, orient='index')
-        
-        config_df.to_csv(csv_filename)
-#         self.LOAD_CONFIGURATION(ImageAnalyzer)
-        
-    def file_save(self, image_analyzer):
-        self.fnames, _  = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')
-        self.csv_filename = self.fnames + r'.csv'
-        self.SAVE_CONFIGURATION(self.csv_filename, image_analyzer)
-        
-    def LOAD_CONFIGURATION(self,image_analyzer):
-        
-        det_method = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
-        thresh_method = ["Auto","Manual"]
-        
-        options = QtWidgets.QFileDialog.Options()
-        self.fnames, _ = QtWidgets.QFileDialog.getOpenFileNames(self, 'Select Configuration File...',
-                                                                '', "Configuration files (*.csv)"
-                                                                , options=options)
-        conf = pd.read_csv(self.fnames[0])
-        
-        self.NucleiChannel.setCurrentText(conf[conf['Unnamed: 0']== 'nuclei_channel']['0'].iloc[0])
-        self.NucDetectMethod.setCurrentText(conf[conf['Unnamed: 0']== 'nuclei_detection_method']['0'].iloc[0])
-        self.NucMaxZprojectCheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'nuclei_z_project']['0'].iloc[0])))
-        self.NucRemoveBoundaryCheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'remove_boundary_nuclei']['0'].iloc[0])))
-        self.NucDetectionSlider.setValue(int(float(conf[conf['Unnamed: 0']== 'nuclei_detection']['0'].iloc[0])))
-        self.NucSeparationSlider.setValue(int(float(conf[conf['Unnamed: 0']== 'nuclei_separation']['0'].iloc[0])))
-        self.NucleiAreaSlider.setValue(np.array(conf[conf['Unnamed: 0']== 'nuclei_area']['0'].iloc[0]).astype(int))
-        self.SpotCh1CheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'ch1_spot']['0'].iloc[0])))
-        self.SpotCh2CheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'ch2_spot']['0'].iloc[0])))
-        self.SpotCh3CheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'ch3_spot']['0'].iloc[0])))
-        self.SpotCh4CheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'ch4_spot']['0'].iloc[0])))
-        self.SpotCh5CheckBox.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'ch5_spot']['0'].iloc[0])))
-        self.SpotLocationCbox.setCurrentText(conf[conf['Unnamed: 0']== 'spot_coordinates']['0'].iloc[0])
-        self.SpotMaxZProject.setChecked(bool(util.strtobool(conf[conf['Unnamed: 0']== 'spot_z_project']['0'].iloc[0])))
-        self.spotanalysismethod.setCurrentText(conf[conf['Unnamed: 0']== 'ch1_spot_detection_method']['0'].iloc[0])
-        self.thresholdmethod.setCurrentText(conf[conf['Unnamed: 0']== 'ch1_spot_threshold_method']['0'].iloc[0])
-        self.ThresholdSlider.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_spot_threshold_value']['0'].iloc[0])))
-        self.SensitivitySpinBox.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_kernel_size']['0'].iloc[0])))
-        self.SpotPerChSpinBox.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_spots/ch']['0'].iloc[0])))
-        self.SpotareaminSpinBox.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_spots_area_min']['0'].iloc[0])))
-        self.SpotareamaxSpinBox.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_spots_area_max']['0'].iloc[0])))
-        self.SpotIntegratedIntensitySpinBox.setValue(int(float(conf[conf['Unnamed: 0']== 'ch1_spots_integrated_intensity']['0'].iloc[0])))
-        
-        (bool(util.strtobool(conf[conf['Unnamed: 0']== 'spot_z_project']['0'].iloc[0])))
-        
-        image_analyzer.spot_params_dict["Ch1"] = np.array([det_method.index(conf[conf['Unnamed: 0']== 'ch1_spot_detection_method']['0'].iloc[0]),
-                                                 thresh_method.index(conf[conf['Unnamed: 0']== 'ch1_spot_threshold_method']['0'].iloc[0]),
-                                                 conf[conf['Unnamed: 0']== 'ch1_spot_threshold_value']['0'].iloc[0], 
-                                                 conf[conf['Unnamed: 0']== 'ch1_kernel_size']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch1_spots/ch']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch1_spots_area_min']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch1_spots_area_max']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch1_spots_integrated_intensity']['0'].iloc[0]],dtype=float).astype("int")
-                                                 
-            
-        image_analyzer.spot_params_dict["Ch2"] = np.array([det_method.index(conf[conf['Unnamed: 0']== 'ch2_spot_detection_method']['0'].iloc[0]),
-                                                 thresh_method.index(conf[conf['Unnamed: 0']== 'ch2_spot_threshold_method']['0'].iloc[0]),
-                                                 conf[conf['Unnamed: 0']== 'ch2_spot_threshold_value']['0'].iloc[0], 
-                                                 conf[conf['Unnamed: 0']== 'ch2_kernel_size']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch2_spots/ch']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch2_spots_area_min']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch2_spots_area_max']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch2_spots_integrated_intensity']['0'].iloc[0]],dtype=float).astype("int")
-        
-        image_analyzer.spot_params_dict["Ch3"] = np.array([det_method.index(conf[conf['Unnamed: 0']== 'ch3_spot_detection_method']['0'].iloc[0]),
-                                                 thresh_method.index(conf[conf['Unnamed: 0']== 'ch3_spot_threshold_method']['0'].iloc[0]),
-                                                 conf[conf['Unnamed: 0']== 'ch3_spot_threshold_value']['0'].iloc[0], 
-                                                 conf[conf['Unnamed: 0']== 'ch3_kernel_size']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch3_spots/ch']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch3_spots_area_min']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch3_spots_area_max']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch3_spots_integrated_intensity']['0'].iloc[0]], dtype=float).astype("int")
-        
-        image_analyzer.spot_params_dict["Ch4"] = np.array([det_method.index(conf[conf['Unnamed: 0']== 'ch4_spot_detection_method']['0'].iloc[0]),
-                                                 thresh_method.index(conf[conf['Unnamed: 0']== 'ch4_spot_threshold_method']['0'].iloc[0]),
-                                                 conf[conf['Unnamed: 0']== 'ch4_spot_threshold_value']['0'].iloc[0], 
-                                                 conf[conf['Unnamed: 0']== 'ch4_kernel_size']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch4_spots/ch']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch4_spots_area_min']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch4_spots_area_max']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch4_spots_integrated_intensity']['0'].iloc[0]],dtype=float).astype("int")
-        
-        image_analyzer.spot_params_dict["Ch5"] = np.array([det_method.index(conf[conf['Unnamed: 0']== 'ch5_spot_detection_method']['0'].iloc[0]),
-                                                 thresh_method.index(conf[conf['Unnamed: 0']== 'ch5_spot_threshold_method']['0'].iloc[0]),
-                                                 conf[conf['Unnamed: 0']== 'ch5_spot_threshold_value']['0'].iloc[0], 
-                                                 conf[conf['Unnamed: 0']== 'ch5_kernel_size']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch5_spots/ch']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch5_spots_area_min']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch5_spots_area_max']['0'].iloc[0],
-                                                 conf[conf['Unnamed: 0']== 'ch5_spots_integrated_intensity']['0'].iloc[0]], dtype=float).astype("int")
-        
+    def set_gui_params(self, gui_params):
+        self.gui_params = gui_params
         
            
     def INITIALIZE_SEGMENTATION_PARAMETERS(self):

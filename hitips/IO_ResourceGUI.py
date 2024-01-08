@@ -9,7 +9,7 @@ if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
 
 
 class InOut_resource(QWidget):
-    Output_dir = []
+    
     Num_CPU_cores = 0
     Num_GPU_inuse = 0
     def __init__(self, centralwidget, gridLayout_centralwidget, analysisgui=None , MetaData_Reader=None):
@@ -55,7 +55,7 @@ class InOut_resource(QWidget):
         self.gridLayout_IO.addWidget(self.OutFldrButton, 0, 4, 1, 1)
         self.OutFldrButton.setObjectName("OutFldrButton")
         
-        self.OutFldrButton.clicked.connect(lambda: self.OUTPUT_FOLDER_LOADBTN())
+        # self.OutFldrButton.clicked.connect(lambda: self.OUTPUT_FOLDER_LOADBTN())
         
         self.NumFilesLoadedLbl = QtWidgets.QLabel(self.IO)
         self.gridLayout_IO.addWidget(self.NumFilesLoadedLbl, 1, 0, 1, 2)

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis, MetaData_Reader, Display_Copy1
+from .GUI_parameters import Gui_Params
 from PyQt5.QtWidgets import QWidget, QMessageBox
 import pandas as pd
 from xml.dom import minidom
@@ -15,63 +16,53 @@ if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
 class ControlPanel(QWidget):
     
     EXIT_CODE_REBOOT = -1234567890
-       
-    #self.displaygui = QtWidgets.QGroupBox()    
     Meta_Data_df = pd.DataFrame()
     
     def controlUi(self, MainWindow):
         
         MainWindow.setObjectName("MainWindow")
-#         MainWindow.resize(1000, 550)
         font = QtGui.QFont()
         font.setItalic(True)
         MainWindow.setFont(font)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        
-
         self.gridLayout_centralwidget = QtWidgets.QGridLayout(self.centralwidget)
              
 ######  Instantiating GUI classes
 
         self.inout_resource_gui = IO_ResourceGUI.InOut_resource(self.centralwidget,self.gridLayout_centralwidget)
-        
         self.displaygui = DisplayGUI_Copy1.display()
         self.analysisgui = AnalysisGUI.analyzer(self.centralwidget, self.gridLayout_centralwidget, self.displaygui)
-        self.ImDisplay = Display_Copy1.imagedisplayer(self.centralwidget, self.inout_resource_gui, self.analysisgui)
+        
+        self.gui_params = Gui_Params(self.analysisgui,self.inout_resource_gui, self.displaygui)
+        self.analysisgui.set_gui_params(self.gui_params)
+        self.ImDisplay = Display_Copy1.imagedisplayer(self.centralwidget, self.gui_params, self.analysisgui)
+
+        self.gui_params.set_ImDisplay(self.ImDisplay)
         
         self.displaygui.set_analysisgui(self.analysisgui)
         self.displaygui.set_imdisplay(self.ImDisplay)
         self.analysisgui.set_imdisplay(self.ImDisplay)
         self.inout_resource_gui.set_analysisgui(self.analysisgui)
-        
         self.analysisgui.setEnabled(False)
         self.displaygui.show()
         self.displaygui.setEnabled(False)
-
-        # self.inputoutputcontrol = InputOutput.inputoutput_control()
-        
-        self.image_analyzer = Analysis.ImageAnalyzer(self.analysisgui, self.inout_resource_gui)
+        self.image_analyzer = Analysis.ImageAnalyzer(self.gui_params)
         self.analysisgui.set_image_analyzer(self.image_analyzer)
-        
         self.PlateGrid = GridLayout.gridgenerator(self, self.centralwidget, self.gridLayout_centralwidget, self.displaygui, self.inout_resource_gui, self.ImDisplay)
         self.PlateGrid.setEnabled(False)
-        
         self.ImageReader = MetaData_Reader.ImageReader(self, self.inout_resource_gui, self.displaygui, self.analysisgui)
         self.inout_resource_gui.set_MetaData_Reader(self.ImageReader)
         
-        self.batchanalysis = BatchAnalyzer.BatchAnalysis(self.analysisgui, self.image_analyzer, self.inout_resource_gui, self.displaygui, self.ImDisplay)
+        self.batchanalysis = BatchAnalyzer.BatchAnalysis(self.gui_params, self.image_analyzer)
+        
         MainWindow.setCentralWidget(self.centralwidget)
         
 ######  Input Output loader controllers
-
         
         self.inout_resource_gui.DisplayCheckBox.stateChanged.connect(lambda: self.ImDisplay.display_initializer(self.Meta_Data_df,  self.displaygui, self.inout_resource_gui))
-        
         self.inout_resource_gui.DisplayCheckBox.stateChanged.connect(lambda: self.PlateGrid.GRID_INITIALIZER(self.Meta_Data_df, self.displaygui, self.inout_resource_gui, self.ImDisplay))
-       
         self.analysisgui.RunAnalysis.clicked.connect(lambda: self.batchanalysis.ON_APPLYBUTTON(self.Meta_Data_df))
-        
         self.analysisgui.ResetButton.clicked.connect(lambda: self.ON_RESET_BUTTON())
       
         ####### Menu Bar 
@@ -103,17 +94,14 @@ class ControlPanel(QWidget):
         self.menuTool.addAction(self.LoadConfig)
         self.menuTool.addAction(self.saveConfig)
         self.menubar.addAction(self.menuFile.menuAction())
-        self.menubar.addAction(self.menuTool.menuAction())
-        
-        self.saveConfig.triggered.connect(lambda:self.analysisgui.file_save(self.image_analyzer))
-        self.LoadConfig.triggered.connect(lambda:self.analysisgui.LOAD_CONFIGURATION(self.image_analyzer))
-        
+        self.menubar.addAction(self.menuTool.menuAction())       
+        self.saveConfig.triggered.connect(lambda:self.gui_params.file_save())
+        self.LoadConfig.triggered.connect(lambda:self.gui_params.LOAD_CONFIGURATION())       
         self.retranslateUi(MainWindow)
         self.analysisgui.AnalysisMode.setCurrentIndex(self.analysisgui.AnalysisMode.indexOf(self.analysisgui.Results))
         self.inout_resource_gui.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
             
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "HiTIPS"))
@@ -125,11 +113,9 @@ class ControlPanel(QWidget):
         self.saveConfig.setText(_translate("MainWindow", "Save Configuration"))
         self.actionexit.setText(_translate("MainWindow", "exit"))
         
-           
-        
     def ON_RESET_BUTTON(self):
         del self.batchanalysis
-        self.batchanalysis = BatchAnalyzer.BatchAnalysis(self.analysisgui, self.image_analyzer, self.inout_resource_gui, self.displaygui, self.ImDisplay)
+        self.batchanalysis = BatchAnalyzer.BatchAnalysis(self.gui_params, self.image_analyzer)
         QtWidgets.qApp.exit( ControlPanel.EXIT_CODE_REBOOT )
         
 def main():
@@ -142,7 +128,6 @@ def main():
         MainWindow.show()
         currentExitCode = app.exec_()
         app = None
-       # sys.exit(app.exec_())
     
 if __name__ == "__main__":
     main()
