@@ -314,7 +314,7 @@ class ImageAnalyzer(object):
         return boundary, mask
             
     def watershed_scikit(self, input_img, cell_size=None, first_threshold=None, second_threshold=None):
-         """
+        """
         Performs image segmentation using the watershed algorithm implemented in scikit-image.
 
         Parameters:
@@ -336,6 +336,7 @@ class ImageAnalyzer(object):
         Note:
         Requires scikit-image, OpenCV, and SciPy libraries. The first_threshold and second_threshold parameters are critical for the watershed segmentation process and should be chosen based on the specific requirements of the image analysis task.
         """
+            
         img_uint8 = cv2.copyMakeBorder(input_img,5,5,5,5,cv2.BORDER_CONSTANT,value=0)
         
         med_scikit = median(img_uint8, disk(1))

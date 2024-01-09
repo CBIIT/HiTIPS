@@ -3,12 +3,12 @@ import cv2
 import math
 import os
 import time
+import sys
 from skimage.measure import regionprops, regionprops_table
 from skimage.io import imread
 from scipy import ndimage
 from PIL import Image, ImageDraw, ImageFont
 import pandas as pd
-# import matplotlib.image as mpimg
 from PIL import Image, ImageQt
 from scipy.ndimage import label, distance_transform_edt
 import multiprocessing
@@ -19,7 +19,6 @@ from btrack.constants import BayesianUpdates
 import imageio
 from tifffile import imwrite
 from skimage.transform import rotate, warp_polar, rescale
-from matplotlib import pyplot as plt
 from skimage.color import label2rgb, gray2rgb
 from aicsimageio import AICSImage
 from aicsimageio.writers import OmeTiffWriter
@@ -37,7 +36,9 @@ from scipy.spatial.distance import pdist, cdist, squareform
 import spatial_efd
 from skimage.segmentation import watershed, find_boundaries
 from .Cell_Spot_Tracker import Tracking
-#RUN_BTRACK, deepcell_tracking, zero_pad_patch, phase_correlation, rotate_point, get_spot_patch, run_clustering
+import pkg_resources
+from .logging_decorator import log_errors
+import logging
 
 WELL_PLATE_ROWS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
@@ -148,7 +149,7 @@ class BatchAnalysis(object):
         self.output_folder = []
         self.gui_params = Gui_Params
         
-               
+    @log_errors(logging.getLogger(__name__))            
     def ON_APPLYBUTTON(self, Meta_Data_df):
         """
         Begins the batch analysis process, including setting paths, reading metadata, and initiating analyses.
@@ -162,6 +163,9 @@ class BatchAnalysis(object):
         --------
         None
         """
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.ERROR)
+        
         self.gui_params.update_values()
         seconds1 = time.time()
         
@@ -181,6 +185,23 @@ class BatchAnalysis(object):
             os.mkdir(csv_config_folder) 
         self.config_file = os.path.join(csv_config_folder, 'analysis_configuration.csv')
         self.gui_params.SAVE_CONFIGURATION(self.config_file)
+        
+        ### error logs
+        
+        log_file = os.path.join(csv_config_folder, 'error_log.log')
+        file_handler = logging.FileHandler(log_file)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        
+        ### save package info
+        package_list = ['hitips', 'numpy', 'scikit-image', 'pandas', 'btrack', 'imageio', 'tifffile', 'aicsimageio', 'hmmlearn', 'scipy', 'spatial_efd', 'opencv-python-headless']
+        versions = self.get_package_versions(package_list)
+        versions['python'] = sys.version
+        versions_df = pd.DataFrame(list(versions.items()), columns=['Package', 'Version'])
+        versions_log_file = os.path.join(csv_config_folder, 'dependencies_versions.csv')
+        versions_df.to_csv(versions_log_file, index=False)
+        #####################################################################
         
         columns = np.unique(np.asarray(self.Meta_Data_df['column'], dtype=int))
         rows = np.unique(np.asarray(self.Meta_Data_df['row'], dtype=int))
@@ -544,7 +565,6 @@ class BatchAnalysis(object):
                                     
                                      
 
-                                
                             large_rotcell_stack = np.stack(rotated_nuc, axis=2)
                             large_cell_stack = np.stack(nuc_patches, axis=2)
                             large_rot_spot_img_stack={}
@@ -558,10 +578,11 @@ class BatchAnalysis(object):
                                 raw_large_rot_spot_img_stack = large_rot_spot_img_stack[str(int(chnl))].copy()
                                 spot_df_list = single_track_copy.loc[single_track_copy["ch"+str(chnl)+"_spots_number"]>0]["ch"+str(chnl)+"_transformed_spots_locations"].tolist()
                                 all_spots_for_gmm = np.round(np.array([item for sublist in spot_df_list for item in sublist])).astype(int)
-
                                 if len(all_spots_for_gmm)>3:
+                                    
                                     try:
-                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.gui_params.SpotSearchRadiusSpinbox_current_value)
+                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.gui_params.SpotSearchRadiusSpinbox_current_value,
+                                                                        min_burst_duration = self.gui_params.minburstdurationSpinbox_current_value)
                                     except:
 
                                         clusters=[]
@@ -593,7 +614,6 @@ class BatchAnalysis(object):
                                             if jjj in list(all_spot_patches.keys()):
                                                 spot_patch = all_spot_patches[jjj]
                                                 spot_coords = spot_patches_center_coords[jjj]
-                                                # print(spot_patch.shape)
 
                                                 fit_results = self.ImageAnalyzer.gmask_fit(spot_patch, 
                                                                                            xy_input=np.array([np.where(spot_patch==spot_patch.max())[0][0],
@@ -750,6 +770,16 @@ class BatchAnalysis(object):
         
         diff=seconds2-seconds1
         print('Total Processing Time (Minutes):',diff/60)
+    
+    def get_package_versions(self, packages):
+        versions = {}
+        for package in packages:
+            try:
+                version = pkg_resources.get_distribution(package).version
+            except pkg_resources.DistributionNotFound:
+                version = 'Not Installed'
+            versions[package] = version
+        return versions
     def SAVE_NUCLEI_INFORMATION(self, cell_df, columns, rows):
         """
         Saves analyzed information about nuclei into designated output files.
@@ -1042,7 +1072,7 @@ class BatchAnalysis(object):
             os.mkdir(file_path)
         
         return os.path.join(file_path, file_name)
-
+    @log_errors(logging.getLogger(__name__))
     def BATCH_ANALYZER(self, col,row,fov,t): 
         
         """
@@ -1808,8 +1838,8 @@ class BatchAnalysis(object):
             radial_dist.append(sp_radial_dist)
     
         return np.array(radial_dist).astype(float)
-
     
+
 #     def RUN_BTRACK(self,label_stack, gui_params):
 
 #         obj_from_generator = btrack.utils.segmentation_to_objects(label_stack, properties = ('bbox','area', 'perimeter', 'major_axis_length','orientation',

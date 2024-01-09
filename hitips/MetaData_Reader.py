@@ -18,24 +18,25 @@ import nd2reader
 from imaris_ims_file_reader.ims import ims
 
 class ImageReader(object):
-        """
-        This class provides functionality for reading and loading various types of biological image data.
+    """
+    This class provides functionality for reading and loading various types of biological image data.
 
-        Attributes:
-        - ControlPanel: A reference to the ControlPanel object.
-        - analysisgui: A reference to the AnalysisGUI object.
-        - inout_resource_gui: A reference to the IO_ResourceGUI object.
-        - displaygui: A reference to the DisplayGUI_Copy1 object.
+    Attributes:
+    - ControlPanel: A reference to the ControlPanel object.
+    - analysisgui: A reference to the AnalysisGUI object.
+    - inout_resource_gui: A reference to the IO_ResourceGUI object.
+    - displaygui: A reference to the DisplayGUI_Copy1 object.
 
-        Methods:
-        - __init__: Initializes the ImageReader with references to GUI components.
-        - ON_CLICK_LOADBUTTON: Handles the action to load metadata from selected files.
-        - ON_CLICK_LOADIMGBUTTON: Handles the action to load images from selected files.
-        - READ_FROM_METADATA: Reads metadata from a given file and extracts relevant information.
-        - MICROMANAGER_READER: Reads and processes metadata from MicroManager software.
-        - LOAD_BIOFORMAT_DATA: Loads image data from various bioformats supported files.
-        """
+    Methods:
+    - __init__: Initializes the ImageReader with references to GUI components.
+    - ON_CLICK_LOADBUTTON: Handles the action to load metadata from selected files.
+    - ON_CLICK_LOADIMGBUTTON: Handles the action to load images from selected files.
+    - READ_FROM_METADATA: Reads metadata from a given file and extracts relevant information.
+    - MICROMANAGER_READER: Reads and processes metadata from MicroManager software.
+    - LOAD_BIOFORMAT_DATA: Loads image data from various bioformats supported files.
+    """
     def __init__(self, ControlPanel, inout_resource_gui, displaygui, analysisgui):
+        
         """
         Initializes the ImageReader object with references to GUI components.
 

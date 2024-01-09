@@ -133,7 +133,7 @@ class Tracking():
         
         return tracks_pd
     
-    def mutual_information(self, hgram):
+    def mutual_information( hgram):
         """
         Calculates the mutual information between two images based on their joint histogram.
 
@@ -179,7 +179,7 @@ class Tracking():
 
         return padded_image
     
-    def registration_features(self, ref_img, ref_mask, reg_img, reg_mask):
+    def registration_features(ref_img, ref_mask, reg_img, reg_mask):
         """
         Extracts various features to evaluate the quality of image registration.
 
@@ -197,7 +197,7 @@ class Tracking():
         csi1 = np.dot(np.ravel(ref_img),np.ravel(reg_img))/(np.linalg.norm(np.ravel(ref_img))*np.linalg.norm(np.ravel(reg_img)))
 
         hist_2d_1, x_edges, y_edges = np.histogram2d(reg_img.ravel(), ref_img.ravel(), bins=20)
-        mi1 = self.mutual_information(hist_2d_1)
+        mi1 = Tracking.mutual_information(hist_2d_1)
 
         ssim_ind1 = ssim(ref_img, reg_img, data_range=ref_img.max() - ref_img.min())
 
@@ -213,7 +213,7 @@ class Tracking():
 
         return np.array([csi1, mi1, ssim_ind1, mse,  psnr])#,1/(are+eps_are), -vi1, -vi2])
     
-    def rotation_register_img_prep(self, ref_img, reg_img, rotation_angle, median_disk_size=3):
+    def rotation_register_img_prep( ref_img, reg_img, rotation_angle, median_disk_size=3):
         """
         Prepares images for rotational registration.
 
@@ -233,7 +233,7 @@ class Tracking():
         im2_rot = rotate(reg_img, rotation_angle, center=None, preserve_range=True)
         img2_rot = median(im2_rot*255/(im2_rot.max()+0.0001) ,disk(median_disk_size))
 
-        im2_rot1 = self.zero_pad_patch(img2_rot, desired_size=patch_size)
+        im2_rot1 = Tracking.zero_pad_patch(img2_rot, desired_size=patch_size)
 
         #### correct for translation
         rot2_translation = phase_cross_correlation(median_ref_img, im2_rot1, upsample_factor=1)[0]
@@ -242,7 +242,7 @@ class Tracking():
 
         return median_ref_img, median_reg_img
 
-    def run_registration_rotation(self, angle):
+    def run_registration_rotation( angle):
         """
         Performs image registration considering rotation.
 
@@ -254,9 +254,9 @@ class Tracking():
 
         This method performs image registration by considering a specific rotation angle and returns features to evaluate the registration.
         """
-        img1, im1_rot1 = self.rotation_register_img_prep(rotated_nuc[-1], img_patch1, angle, median_disk_size=3)
+        img1, im1_rot1 = Tracking.rotation_register_img_prep(rotated_nuc[-1], img_patch1, angle, median_disk_size=3)
 
-        return self.registration_features(img1, im1_rot1)
+        return Tracking.registration_features(img1, im1_rot1)
 
     def phase_correlation(ref_img, reg_img, intial_rotation = 15, rescale_factor = 5, nuc_length = 50):
         """
@@ -379,7 +379,7 @@ class Tracking():
 
         return small_spot_patches, spot_patches_center_coords
     
-    def merge_small_clusters(self,points, labels, max_dist):
+    def merge_small_clusters(points, labels, max_dist, min_burst_duration):
         
         """
         Merges small clusters of points based on a distance threshold.
@@ -394,13 +394,13 @@ class Tracking():
 
         This method merges small clusters into larger ones based on proximity, using the specified distance threshold.
         """
-        if (len(labels) < 2)|(self.gui_params.minburstdurationSpinbox_current_value==1):
+        if (len(labels) < 2)|(min_burst_duration==1):
             return labels
 
         cluster_sizes = np.bincount(labels)
 
-        large_clusters = np.where(cluster_sizes >= self.gui_params.minburstdurationSpinbox_current_value)[0]
-        small_clusters = np.where((cluster_sizes > 0) & (cluster_sizes < self.gui_params.minburstdurationSpinbox_current_value))[0]
+        large_clusters = np.where(cluster_sizes >= min_burst_duration)[0]
+        small_clusters = np.where((cluster_sizes > 0) & (cluster_sizes < min_burst_duration))[0]
 
         large_cluster_points = points[np.isin(labels, large_clusters)]
 
@@ -420,7 +420,7 @@ class Tracking():
         return labels
 
 
-    def run_clustering(points, outlier_threshold=2, max_dist=6):
+    def run_clustering(points, outlier_threshold=2, max_dist=6, min_burst_duration=1):
         """
         Performs clustering on a set of points, with options for handling outliers.
 
@@ -457,7 +457,7 @@ class Tracking():
         initial_clusters[outlier_index] = 0
 
         # Merge small clusters and outliers
-        clusters = self.merge_small_clusters(points, initial_clusters, max_dist)
+        clusters = Tracking.merge_small_clusters(points, initial_clusters, max_dist, min_burst_duration)
 
 
         return clusters
