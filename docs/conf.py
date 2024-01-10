@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../hitips'))
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -14,7 +18,18 @@ release = '0.1.19'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    # Add other extensions as needed
+]
+
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'undoc-members': True,
+    'exclude-members': '__weakref__'
+}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
