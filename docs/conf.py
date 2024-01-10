@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../hitips'))
+sys.path.insert(0, os.path.abspath('/data2/HiTIPS_dist'))
 
 # Configuration file for the Sphinx documentation builder.
 #
