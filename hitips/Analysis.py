@@ -21,29 +21,33 @@ from scipy.special import erf
 class ImageAnalyzer(object):
     
     """
-    This class provides a suite of methods for analyzing and processing biological images, particularly focusing on segmentation and tracking.
+    A suite of methods for analyzing and processing biological images, focusing on segmentation and tracking.
 
     Attributes:
-    - gui_params (object): Configuration parameters passed from the graphical user interface (GUI) or other settings.
+        gui_params (object): Configuration parameters from the GUI or other settings.
 
     Methods:
-    - __init__: Initializes the ImageAnalyzer with GUI parameters.
-    - neuceli_segmenter: Performs nuclei segmentation using various methods.
-    - deepcell_segmenter: Segments nuclei using the DeepCell application.
-    - cellpose_segmenter: Segments cells using the CellPose model.
-    - segmenter_function: Advanced image segmentation using blurring, thresholding, and the watershed algorithm.
-    - watershed_scikit: Image segmentation using the watershed algorithm from scikit-image.
-    - max_z_project: Creates a maximum intensity projection from a stack of images.
-    - SpotDetector: Detects spots in an image using various methods.
-    - spots_information: Analyzes and refines detected spots in an image.
-    - gmask_fit: Performs Gaussian mask fitting to determine spot characteristics.
-    - local_background: Calculates local background using a linear fit to border pixels.
-    - COORDINATES_TO_CIRCLE: Creates an image with circles drawn at specified coordinates.
-    - SPOTS_TO_BOUNDARY: Converts a binary image of spots to an image with highlighted boundaries.
-
-    The class is designed to interface with various segmentation and tracking algorithms, providing a consistent API for image analysis tasks.
+        __init__: Initializes the ImageAnalyzer with GUI parameters.
+        neuceli_segmenter: Segments nuclei using various methods.
+        deepcell_segmenter: Segments nuclei using DeepCell.
+        cellpose_segmenter: Segments cells using CellPose.
+        segmenter_function: Advanced segmentation using blurring, thresholding, and watershed.
+        watershed_scikit: Image segmentation using scikit-image's watershed algorithm.
+        max_z_project: Maximum intensity projection from an image stack.
+        SpotDetector: Detects spots using various methods.
+        spots_information: Analyzes and refines detected spots.
+        gmask_fit: Gaussian mask fitting for spot characteristics.
+        local_background: Calculates local background using linear fit to border pixels.
+        COORDINATES_TO_CIRCLE: Draws circles at specified coordinates on an image.
+        SPOTS_TO_BOUNDARY: Converts a binary image of spots to highlighted boundaries.
     """
     def __init__(self,gui_params):
+        """
+        Initializes the ImageAnalyzer with configuration parameters.
+
+        Parameters:
+            gui_params (object): Configuration parameters for image analysis.
+        """
         self.gui_params = gui_params
     
     def neuceli_segmenter(self, input_img, pixpermic=None):
@@ -51,20 +55,16 @@ class ImageAnalyzer(object):
         Segments nuclei in an image using various methods based on GUI settings.
 
         Parameters:
-        - input_img (numpy.ndarray): The input image for nuclei segmentation.
-        - pixpermic (float, optional): Microns per pixel value for physical size representation in the image. Default is None.
+            input_img (numpy.ndarray): Input image for nuclei segmentation.
+            pixpermic (float, optional): Microns per pixel for physical size in the image. Default is None.
 
         Returns:
-        - boundary (numpy.ndarray): Image with boundaries of nuclei marked.
-        - mask (numpy.ndarray): Binary mask image with filled areas representing segmented nuclei.
+            tuple: A tuple containing:
+                - boundary (numpy.ndarray): Image with marked nuclei boundaries.
+                - mask (numpy.ndarray): Binary mask of segmented nuclei.
 
-        This method selects the appropriate nuclei segmentation technique based on GUI parameters. It supports various methods including intensity-based segmentation, marker-controlled watershed, CellPose (with GPU or CPU), and DeepCell segmentation. It computes the boundary and mask of segmented nuclei and returns them.
-
-        Usage Example:
-        boundary, mask = neuceli_segmenter(input_image, pixpermic=0.5)
-
-        Note:
-        Ensure appropriate segmentation method libraries are installed and properly set up. The choice of method and its parameters are dictated by the GUI settings in 'self.gui_params'.
+        Usage:
+            boundary, mask = image_analyzer.neuceli_segmenter(input_image, pixpermic=0.5)
         """
         
         self.gui_params.update_values()
@@ -121,21 +121,21 @@ class ImageAnalyzer(object):
         Performs nuclear segmentation on an input image using DeepCell's NuclearSegmentation application.
 
         Parameters:
-        - input_img (numpy.ndarray): The input image for segmentation, expected to be a 2D array representing a grayscale image.
-        - mmp (float, optional): Microns per pixel value for the input image. Adjusts the model's internal scaling for accurate size representation. Default is None.
+            - input_img (numpy.ndarray): The input image for segmentation, expected to be a 2D array representing a grayscale image.
+            - mmp (float, optional): Microns per pixel value for the input image. Adjusts the model's internal scaling for accurate size representation. Default is None.
 
         Returns:
-        - boundary (numpy.ndarray): Image with boundaries of nuclei marked as white lines on a black background.
-        - mask (numpy.ndarray): Binary mask image with filled areas representing segmented nuclei.
+            - boundary (numpy.ndarray): Image with boundaries of nuclei marked as white lines on a black background.
+            - mask (numpy.ndarray): Binary mask image with filled areas representing segmented nuclei.
 
         The function initializes the NuclearSegmentation model, processes the input image, and uses the model to predict nuclear masks.
         It then finds and processes boundaries to create clear nuclear boundary and mask images.
 
         Usage Example:
-        boundary, mask = deepcell_segmenter(input_image, mmp=0.5)
+            boundary, mask = deepcell_segmenter(input_image, mmp=0.5)
 
         Note:
-        Ensure the deepcell library is installed and properly set up. The input image should be in grayscale. The mmp parameter is important for physical size representation in medical imaging.
+            Ensure the deepcell library is installed and properly set up. The input image should be in grayscale. The mmp parameter is important for physical size representation in medical imaging.
         """
         from deepcell.applications import NuclearSegmentation
         app = NuclearSegmentation()
@@ -158,13 +158,13 @@ class ImageAnalyzer(object):
         Performs cell segmentation on an input image using the Cellpose model.
 
         Parameters:
-        - input_img (numpy.ndarray): The input image for segmentation.
-        - use_GPU (bool): Flag to indicate whether to use GPU acceleration.
-        - cell_dia (float, optional): Estimated diameter of the cells in pixels. Default is None.
+            - input_img (numpy.ndarray): The input image for segmentation.
+            - use_GPU (bool): Flag to indicate whether to use GPU acceleration.
+            - cell_dia (float, optional): Estimated diameter of the cells in pixels. Default is None.
 
         Returns:
-        - boundary (numpy.ndarray): Image with boundaries of cells marked.
-        - mask (numpy.ndarray): Binary mask image with filled areas representing segmented cells.
+            - boundary (numpy.ndarray): Image with boundaries of cells marked.
+            - mask (numpy.ndarray): Binary mask image with filled areas representing segmented cells.
 
         This function uses the Cellpose model for segmentation. The user can choose between the 'cyto' and 'nuclei' model types
         based on the `NucDetectMethod_currentText` parameter from `gui_params`.
@@ -172,11 +172,11 @@ class ImageAnalyzer(object):
         including optional boundary removal and morphological operations for cleaning the mask.
 
         Usage Example:
-        boundary, mask = cellpose_segmenter(input_image, True, cell_dia=100)
+            boundary, mask = cellpose_segmenter(input_image, True, cell_dia=100)
 
         Note:
-        Requires the Cellpose and OpenCV libraries. The `use_GPU` parameter should be set according to the available hardware.
-        The function adjusts the processing steps based on the `NucRemoveBoundaryCheckBox_isChecked` parameter from `gui_params`.
+            Requires the Cellpose and OpenCV libraries. The `use_GPU` parameter should be set according to the available hardware.
+            The function adjusts the processing steps based on the `NucRemoveBoundaryCheckBox_isChecked` parameter from `gui_params`.
         """
         
         if self.gui_params.NucRemoveBoundaryCheckBox_isChecked == True:
@@ -222,25 +222,25 @@ class ImageAnalyzer(object):
         Performs advanced image segmentation using a combination of blurring, thresholding, and the watershed algorithm.
 
         Parameters:
-        - input_img (numpy.ndarray): The input image for segmentation.
-        - cell_size (int, optional): Size of the kernel for median blurring. If even, it is incremented by 1. Default is None.
-        - first_threshold (int, optional): Threshold value for the first round of thresholding in the watershed algorithm. Default is None.
-        - second_threshold (int, optional): Threshold value for the second round of thresholding in the watershed algorithm. Default is None.
+            - input_img (numpy.ndarray): The input image for segmentation.
+            - cell_size (int, optional): Size of the kernel for median blurring. If even, it is incremented by 1. Default is None.
+            - first_threshold (int, optional): Threshold value for the first round of thresholding in the watershed algorithm. Default is None.
+            - second_threshold (int, optional): Threshold value for the second round of thresholding in the watershed algorithm. Default is None.
 
         Returns:
-        - boundary (numpy.ndarray): Image showing the boundaries of segmented regions.
-        - mask (numpy.ndarray): Binary mask image with segmented regions filled.
+            - boundary (numpy.ndarray): Image showing the boundaries of segmented regions.
+            - mask (numpy.ndarray): Binary mask image with segmented regions filled.
 
         The function applies a series of image processing steps including median and Gaussian blurring, binary thresholding, hole filling, 
         distance transformation, and watershed transformation for accurate segmentation. It returns the boundaries of segmented regions 
         and a binary mask of these regions.
 
         Usage Example:
-        boundary, mask = segmenter_function(input_image, cell_size=5, first_threshold=50, second_threshold=150)
+            boundary, mask = segmenter_function(input_image, cell_size=5, first_threshold=50, second_threshold=150)
 
         Note:
-        Requires OpenCV and SciPy libraries. The cell_size, first_threshold, and second_threshold parameters should be chosen based on 
-        the specific requirements of the image analysis task.
+            Requires OpenCV and SciPy libraries. The cell_size, first_threshold, and second_threshold parameters should be chosen based on 
+            the specific requirements of the image analysis task.
         """
         img_uint8 = cv2.copyMakeBorder(input_img,5,5,5,5,cv2.BORDER_CONSTANT,value=0)
         
@@ -318,23 +318,23 @@ class ImageAnalyzer(object):
         Performs image segmentation using the watershed algorithm implemented in scikit-image.
 
         Parameters:
-        - input_img (numpy.ndarray): The input image for segmentation.
-        - cell_size (int, optional): Not used in the current implementation, but can be included for future use. Default is None.
-        - first_threshold (int, optional): Threshold value for the first distance transform in watershed segmentation. Default is None.
-        - second_threshold (int, optional): Threshold value for the second distance transform in watershed segmentation. Default is None.
+            - input_img (numpy.ndarray): The input image for segmentation.
+            - cell_size (int, optional): Not used in the current implementation, but can be included for future use. Default is None.
+            - first_threshold (int, optional): Threshold value for the first distance transform in watershed segmentation. Default is None.
+            - second_threshold (int, optional): Threshold value for the second distance transform in watershed segmentation. Default is None.
 
         Returns:
-        - boundary (numpy.ndarray): Image showing the boundaries of segmented regions.
-        - mask (numpy.ndarray): Binary mask image with segmented regions filled.
+            - boundary (numpy.ndarray): Image showing the boundaries of segmented regions.
+            - mask (numpy.ndarray): Binary mask image with segmented regions filled.
 
         The function applies median filtering, thresholding, hole filling, and distance transformation, followed by the watershed algorithm for segmentation.
         It identifies and labels the regions of interest in the input image and returns the boundaries and binary mask of these regions.
 
         Usage Example:
-        boundary, mask = watershed_scikit(input_image, first_threshold=0.1, second_threshold=0.2)
+            boundary, mask = watershed_scikit(input_image, first_threshold=0.1, second_threshold=0.2)
 
         Note:
-        Requires scikit-image, OpenCV, and SciPy libraries. The first_threshold and second_threshold parameters are critical for the watershed segmentation process and should be chosen based on the specific requirements of the image analysis task.
+            Requires scikit-image, OpenCV, and SciPy libraries. The first_threshold and second_threshold parameters are critical for the watershed segmentation process and should be chosen based on the specific requirements of the image analysis task.
         """
             
         img_uint8 = cv2.copyMakeBorder(input_img,5,5,5,5,cv2.BORDER_CONSTANT,value=0)
@@ -381,13 +381,14 @@ class ImageAnalyzer(object):
         Performs a maximum intensity projection (max-z projection) on a stack of images.
 
         Parameters:
-        - image_stack (pandas.DataFrame): A DataFrame where each row represents an image. 
-          It must contain the columns 'ImageName' and 'Type'. 'ImageName' should be the path to the image file 
-          or 'dask_array' to indicate the image is in the 'Type' column.
+            - image_stack :pandas.DataFrame
+            A DataFrame where each row represents an image. 
+            It must contain the columns 'ImageName' and 'Type'. 'ImageName' should be the path to the image file 
+            or 'dask_array' to indicate the image is in the 'Type' column.
 
         Returns:
-        - max_project (numpy.ndarray): A 2D array representing the maximum intensity projection 
-          of the input image stack.
+            - max_project (numpy.ndarray): A 2D array representing the maximum intensity projection 
+              of the input image stack.
 
         The function iterates through the image stack, reads each image (either from a file or directly if it's a dask array), 
         and compiles them into a 3D numpy array. It then computes the maximum intensity projection along the z-axis (axis=2) 
@@ -395,11 +396,11 @@ class ImageAnalyzer(object):
         across the stack.
 
         Usage Example:
-        max_projection_image = max_z_project(image_dataframe)
+            max_projection_image = max_z_project(image_dataframe)
 
         Note:
-        The input `image_stack` DataFrame must be properly formatted with 'ImageName' and 'Type' columns. 
-        The function requires 'pandas' for DataFrame handling and 'PIL.Image' for image processing.
+            The input `image_stack` DataFrame must be properly formatted with 'ImageName' and 'Type' columns. 
+            The function requires 'pandas' for DataFrame handling and 'PIL.Image' for image processing.
         """
         z_imglist=[]
         
@@ -420,38 +421,38 @@ class ImageAnalyzer(object):
         intensity thresholding, and Enhanced LOG.
 
         Parameters:
-        - **kwargs (dict): Keyword arguments containing parameters for the spot detection process. 
-          The function expects the following key-value pairs:
-            - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
-            - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
-            - 'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').
-            - 'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').
-            - 'threshold_value' (float): Threshold value for 'Manual' method.
-            - 'kernel_size' (int): Kernel size for filtering.
-            - 'spot_location_coords' (str): Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').
-            - 'remove_bright_junk' (bool): Flag to remove bright artifacts.
-            - 'resize_factor' (float): Factor to resize the image.
-            - 'min_area' (int): Minimum area for spots.
-            - 'max_area' (int): Maximum area for spots.
-            - 'min_integrated_intensity' (int): Minimum integrated intensity for spots.
-            - 'psf_size' (float): Point spread function size.
-            - 'gaussian_fit' (bool): Flag to perform Gaussian fitting.
+            - **kwargs (dict): Keyword arguments containing parameters for the spot detection process. 
+              The function expects the following key-value pairs:
+                - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
+                - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
+                - 'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').
+                - 'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').
+                - 'threshold_value' (float): Threshold value for 'Manual' method.
+                - 'kernel_size' (int): Kernel size for filtering.
+                - 'spot_location_coords' (str): Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').
+                - 'remove_bright_junk' (bool): Flag to remove bright artifacts.
+                - 'resize_factor' (float): Factor to resize the image.
+                - 'min_area' (int): Minimum area for spots.
+                - 'max_area' (int): Maximum area for spots.
+                - 'min_integrated_intensity' (int): Minimum integrated intensity for spots.
+                - 'psf_size' (float): Point spread function size.
+                - 'gaussian_fit' (bool): Flag to perform Gaussian fitting.
 
         Returns:
-        - spot_locations (list): List of coordinates for detected spots.
-        - spots_df (pandas.DataFrame): DataFrame containing information about detected spots.
+            - spot_locations (list): List of coordinates for detected spots.
+            - spots_df (pandas.DataFrame): DataFrame containing information about detected spots.
 
         This function applies various image processing techniques based on the specified spot detection method. 
         It handles pre-processing, spot detection, thresholding, and calculates spot locations based on the specified method.
         The function returns the locations of detected spots along with a DataFrame containing detailed information about these spots.
 
         Usage Example:
-        spot_locations, spots_info = SpotDetector(input_image_raw=img, nuclei_image=nuclei_img, 
-                                                  spot_detection_method="Laplacian of Gaussian",
-                                                  threshold_method="Auto", kernel_size=3)
+            spot_locations, spots_info = SpotDetector(input_image_raw=img, nuclei_image=nuclei_img, 
+                                                      spot_detection_method="Laplacian of Gaussian",
+                                                      threshold_method="Auto", kernel_size=3)
 
         Note:
-        Requires cv2, numpy, scipy, and pandas libraries. The parameters should be carefully chosen based on the characteristics of the input image and the specific requirements of the spot detection task.
+            Requires cv2, numpy, scipy, and pandas libraries. The parameters should be carefully chosen based on the characteristics of the input image and the specific requirements of the spot detection task.
         """
         
         # Extract parameters from kwargs
@@ -640,29 +641,29 @@ class ImageAnalyzer(object):
         performing additional processing and calculations to refine the spot detection results.
 
         Parameters:
-        - bin_img_log (numpy.ndarray): Binary image where spots are identified.
-        - max_project (numpy.ndarray): Maximum projection image used for intensity measurements.
-        - gaussian_fit (bool, optional): Flag to perform Gaussian fitting on spots. Default is False.
-        - min_area (int, optional): Minimum area threshold for spots to be considered. Default is 0.
-        - max_area (int, optional): Maximum area threshold for spots. Default is 100.
-        - min_integrated_intensity (int, optional): Minimum integrated intensity threshold for spots. Default is 0.
-        - psf_size (float, optional): Point spread function size used in Gaussian fitting. Default is 1.6.
+            - bin_img_log (numpy.ndarray): Binary image where spots are identified.
+            - max_project (numpy.ndarray): Maximum projection image used for intensity measurements.
+            - gaussian_fit (bool, optional): Flag to perform Gaussian fitting on spots. Default is False.
+            - min_area (int, optional): Minimum area threshold for spots to be considered. Default is 0.
+            - max_area (int, optional): Maximum area threshold for spots. Default is 100.
+            - min_integrated_intensity (int, optional): Minimum integrated intensity threshold for spots. Default is 0.
+            - psf_size (float, optional): Point spread function size used in Gaussian fitting. Default is 1.6.
 
         Returns:
-        - props_df (pandas.DataFrame): DataFrame containing properties of each spot, including area, intensity metrics, and location.
-        - new_bin_img_log (numpy.ndarray): Refined binary image of spots after processing.
-        - labeled_spots (numpy.ndarray): Image with labeled spots.
+            - props_df (pandas.DataFrame): DataFrame containing properties of each spot, including area, intensity metrics, and location.
+            - new_bin_img_log (numpy.ndarray): Refined binary image of spots after processing.
+            - labeled_spots (numpy.ndarray): Image with labeled spots.
 
         The function performs several operations including labeling of spots, filtering based on area and intensity, 
         and optional Gaussian fitting. It calculates various properties of the spots, such as area, intensity, and location coordinates, 
         and returns a DataFrame with these properties along with refined binary and labeled images of the spots.
 
         Usage Example:
-        spots_props, refined_spots, labeled_spots = spots_information(binary_image, max_projection, gaussian_fit=True, min_area=5)
+            spots_props, refined_spots, labeled_spots = spots_information(binary_image, max_projection, gaussian_fit=True, min_area=5)
 
         Note:
-        Requires scipy, numpy, pandas, and optionally cv2 for Gaussian fitting. The parameters for area and intensity thresholds should be 
-        chosen based on the specific requirements of the image analysis task.
+            Requires scipy, numpy, pandas, and optionally cv2 for Gaussian fitting. The parameters for area and intensity thresholds should be 
+            chosen based on the specific requirements of the image analysis task.
         """
         
         labeled_spots, num_features = label(bin_img_log)
@@ -740,24 +741,24 @@ class ImageAnalyzer(object):
         Performs Gaussian mask fitting on an image to determine the centroid and photon number of a spot.
 
         Parameters:
-        - pic (numpy.ndarray): The image (or a patch of the image) containing the spot to be analyzed.
-        - xy_input (tuple, optional): Initial guess for the centroid coordinates (x0, y0). Required if 'fit' is False.
-        - fit (bool, optional): If True, performs iterative fitting to find the centroid. If False, uses 'xy_input' as the centroid. Default is False.
-        - psf_size (float, optional): Point spread function size, used in the Gaussian mask. Default is 1.6.
+            - pic (numpy.ndarray): The image (or a patch of the image) containing the spot to be analyzed.
+            - xy_input (tuple, optional): Initial guess for the centroid coordinates (x0, y0). Required if 'fit' is False.
+            - fit (bool, optional): If True, performs iterative fitting to find the centroid. If False, uses 'xy_input' as the centroid. Default is False.
+            - psf_size (float, optional): Point spread function size, used in the Gaussian mask. Default is 1.6.
 
         Returns:
-        - results (numpy.ndarray): A numpy array containing the fitted centroid coordinates (x0, y0) and the calculated photon number.
+            - results (numpy.ndarray): A numpy array containing the fitted centroid coordinates (x0, y0) and the calculated photon number.
 
         This function applies a Gaussian mask fitting method to an image to determine the centroid coordinates and the number of photons 
         in a spot. It either uses an iterative fitting process or a fixed position based on the provided initial guess. The function 
         subtracts the local background before the fitting process and uses the error function (erf) to create the Gaussian mask.
 
         Usage Example:
-        fitted_results = gmask_fit(image_patch, xy_input=(10, 10), fit=True, psf_size=1.5)
+            fitted_results = gmask_fit(image_patch, xy_input=(10, 10), fit=True, psf_size=1.5)
 
         Note:
-        Requires numpy and scipy (for the error function). The 'pic' should be a cropped image or a patch containing the spot for accurate fitting. 
-        The 'fit' parameter determines whether to perform iterative fitting or use a fixed centroid position.
+            Requires numpy and scipy (for the error function). The 'pic' should be a cropped image or a patch containing the spot for accurate fitting. 
+            The 'fit' parameter determines whether to perform iterative fitting or use a fixed centroid position.
         """
         s = pic.shape
         x_dim = s[0]
@@ -840,11 +841,11 @@ class ImageAnalyzer(object):
         Calculates the local background of an image using a linear fit to the border pixels.
 
         Parameters:
-        - pic (numpy.ndarray): The input image for which the local background needs to be calculated.
-        - display (bool, optional): Flag to display intermediate calculation steps. Default is False.
+            - pic (numpy.ndarray): The input image for which the local background needs to be calculated.
+            - display (bool, optional): Flag to display intermediate calculation steps. Default is False.
 
         Returns:
-        - plane (numpy.ndarray): An array of the same shape as 'pic', containing the calculated local background plane.
+            - plane (numpy.ndarray): An array of the same shape as 'pic', containing the calculated local background plane.
 
         This function calculates the local background by fitting a linear plane to the border pixels of the input image. 
         It uses a method similar to that described in Bevington's book (p. 96) to calculate the fit parameters and then applies 
@@ -852,11 +853,11 @@ class ImageAnalyzer(object):
         for varying background levels.
 
         Usage Example:
-        background_plane = local_background(image)
+            background_plane = local_background(image)
 
         Note:
-        Designed for use with 2D numpy arrays representing images. The 'display' parameter can be set to True for debugging purposes 
-        to observe the intermediate steps of the calculation.
+            Designed for use with 2D numpy arrays representing images. The 'display' parameter can be set to True for debugging purposes 
+            to observe the intermediate steps of the calculation.
         """
         
         # get the dimensions of the input and extract border coordinates
@@ -904,21 +905,21 @@ class ImageAnalyzer(object):
         Creates an image with circles drawn at specified coordinates.
 
         Parameters:
-        - coordinates (numpy.ndarray): An array of coordinates where each row represents a point (y, x).
-        - ImageForSpots (numpy.ndarray): The base image used to define the shape of the output image.
-        - circ_radius (int, optional): The radius of the circles to be drawn. Default is 5.
+            - coordinates (numpy.ndarray): An array of coordinates where each row represents a point (y, x).
+            - ImageForSpots (numpy.ndarray): The base image used to define the shape of the output image.
+            - circ_radius (int, optional): The radius of the circles to be drawn. Default is 5.
 
         Returns:
-        - circles (numpy.ndarray): An image of the same size as 'ImageForSpots' with circles drawn at the specified coordinates.
+            - circles (numpy.ndarray): An image of the same size as 'ImageForSpots' with circles drawn at the specified coordinates.
 
         This function takes a set of coordinates and draws circles of a given radius at these coordinates on an image. 
         The output is a binary image where the circles are marked in white (255) on a black (0) background.
 
         Usage Example:
-        circle_image = COORDINATES_TO_CIRCLE(coordinates_array, base_image, circ_radius=10)
+            circle_image = COORDINATES_TO_CIRCLE(coordinates_array, base_image, circ_radius=10)
 
         Note:
-        Requires numpy and skimage.draw (for circle_perimeter). Ensure that the coordinates are within the bounds of 'ImageForSpots'.
+            Requires numpy and skimage.draw (for circle_perimeter). Ensure that the coordinates are within the bounds of 'ImageForSpots'.
         """
         circles = np.zeros((ImageForSpots.shape), dtype=np.uint8)
 
@@ -935,19 +936,19 @@ class ImageAnalyzer(object):
         Converts a binary image of spots into an image where the boundaries of these spots are highlighted.
 
         Parameters:
-        - final_spots (numpy.ndarray): A binary image where spots are represented by non-zero pixels.
+            - final_spots (numpy.ndarray): A binary image where spots are represented by non-zero pixels.
 
         Returns:
-        - spot_boundary (numpy.ndarray): An image where the boundaries of the spots in 'final_spots' are marked.
+            - spot_boundary (numpy.ndarray): An image where the boundaries of the spots in 'final_spots' are marked.
 
         This function identifies the boundaries of spots in a binary image and creates a new image where these boundaries are highlighted. 
         The output is a binary image with boundaries marked in white (255) on a black (0) background.
 
         Usage Example:
-        boundary_image = SPOTS_TO_BOUNDARY(spots_image)
+            boundary_image = SPOTS_TO_BOUNDARY(spots_image)
 
         Note:
-        Requires numpy and skimage.segmentation (for find_boundaries). The input should be a binary image with spots marked.
+            Requires numpy and skimage.segmentation (for find_boundaries). The input should be a binary image with spots marked.
         """
         labeled_spots, num_features = label(final_spots)
         boundary = find_boundaries(labeled_spots, connectivity=1, mode='thick', background=0)
