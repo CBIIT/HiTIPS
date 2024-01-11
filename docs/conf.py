@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('/data2/HiTIPS_dist'))
 project = 'HiTIPS'
 copyright = '2024, Adib Keikhosravi'
 author = 'Adib Keikhosravi'
-release = '0.1.19'
+release = '0.1.20'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
