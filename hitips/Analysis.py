@@ -422,21 +422,21 @@ class ImageAnalyzer(object):
 
         Parameters:
             - **kwargs (dict): Keyword arguments containing parameters for the spot detection process. 
-              The function expects the following key-value pairs:
-                - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
-                - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
-                - 'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').
-                - 'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').
-                - 'threshold_value' (float): Threshold value for 'Manual' method.
-                - 'kernel_size' (int): Kernel size for filtering.
-                - 'spot_location_coords' (str): Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').
-                - 'remove_bright_junk' (bool): Flag to remove bright artifacts.
-                - 'resize_factor' (float): Factor to resize the image.
-                - 'min_area' (int): Minimum area for spots.
-                - 'max_area' (int): Maximum area for spots.
-                - 'min_integrated_intensity' (int): Minimum integrated intensity for spots.
-                - 'psf_size' (float): Point spread function size.
-                - 'gaussian_fit' (bool): Flag to perform Gaussian fitting.
+            The function expects the following key-value pairs:
+            - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
+            - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
+            - 'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').
+            - 'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').
+            - 'threshold_value' (float): Threshold value for 'Manual' method.
+            - 'kernel_size' (int): Kernel size for filtering.
+            - 'spot_location_coords' (str): Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').
+            - 'remove_bright_junk' (bool): Flag to remove bright artifacts.
+            - 'resize_factor' (float): Factor to resize the image.
+            - 'min_area' (int): Minimum area for spots.
+            - 'max_area' (int): Maximum area for spots.
+            - 'min_integrated_intensity' (int): Minimum integrated intensity for spots.
+            - 'psf_size' (float): Point spread function size.
+            - 'gaussian_fit' (bool): Flag to perform Gaussian fitting.
 
         Returns:
             - spot_locations (list): List of coordinates for detected spots.
