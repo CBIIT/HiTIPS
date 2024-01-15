@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name="hitips",
-    version="0.1.19",
+    version="0.1.20",
     author="keikhosravi",
     author_email="adib.keikhosravi@nih.gov",
     description="HiTIPS: High-Throughput Image Processing Software for FISH data analysis",
