@@ -108,10 +108,3 @@ hitips.logging\_decorator module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: hitips
-   :members:
-   :undoc-members:
-   :show-inheritance:
