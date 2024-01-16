@@ -23,12 +23,12 @@ class ImageAnalyzer(object):
     """
     A class for analyzing and processing biological images, focusing on segmentation and tracking.
     
-    Attributes:
-    ------------
+    Attributes
+    ----------
     gui_params (object): Configuration parameters from the GUI or other settings.
     
-    Methods:
-    --------
+    Methods
+    -------
     __init__(self, gui_params):
         Initializes the ImageAnalyzer with configuration parameters.
 
@@ -448,7 +448,7 @@ class ImageAnalyzer(object):
         intensity thresholding, and Enhanced LOG.
 
         Parameters:
-            - **kwargs (dict): Keyword arguments containing parameters for the spot detection process. 
+            - **kwargs (dict): Keyword arguments containing parameters for the spot detection process.**
             The function expects the following key-value pairs:
             - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
             - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
