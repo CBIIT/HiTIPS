@@ -21,25 +21,52 @@ from scipy.special import erf
 class ImageAnalyzer(object):
     
     """
-    A suite of methods for analyzing and processing biological images, focusing on segmentation and tracking.
-
+    A class for analyzing and processing biological images, focusing on segmentation and tracking.
+    
     Attributes:
-        gui_params (object): Configuration parameters from the GUI or other settings.
-
+    ------------
+    gui_params (object): Configuration parameters from the GUI or other settings.
+    
     Methods:
-        __init__: Initializes the ImageAnalyzer with GUI parameters.
-        neuceli_segmenter: Segments nuclei using various methods.
-        deepcell_segmenter: Segments nuclei using DeepCell.
-        cellpose_segmenter: Segments cells using CellPose.
-        segmenter_function: Advanced segmentation using blurring, thresholding, and watershed.
-        watershed_scikit: Image segmentation using scikit-image's watershed algorithm.
-        max_z_project: Maximum intensity projection from an image stack.
-        SpotDetector: Detects spots using various methods.
-        spots_information: Analyzes and refines detected spots.
-        gmask_fit: Gaussian mask fitting for spot characteristics.
-        local_background: Calculates local background using linear fit to border pixels.
-        COORDINATES_TO_CIRCLE: Draws circles at specified coordinates on an image.
-        SPOTS_TO_BOUNDARY: Converts a binary image of spots to highlighted boundaries.
+    --------
+    __init__(self, gui_params):
+        Initializes the ImageAnalyzer with configuration parameters.
+
+    neuceli_segmenter(self, input_img, pixpermic=None):
+        Segments nuclei in an image using various methods.
+
+    deepcell_segmenter(self, input_img, mmp=None):
+        Segments nuclei using DeepCell's NuclearSegmentation application.
+
+    cellpose_segmenter(self, input_img, use_GPU, cell_dia=None):
+        Segments cells using the Cellpose model.
+
+    segmenter_function(self, input_img, cell_size=None, first_threshold=None, second_threshold=None):
+        Advanced segmentation using blurring, thresholding, and watershed.
+
+    watershed_scikit(self, input_img, cell_size=None, first_threshold=None, second_threshold=None):
+        Image segmentation using scikit-image's watershed algorithm.
+
+    max_z_project(self, image_stack):
+        Maximum intensity projection from an image stack.
+
+    SpotDetector(self, **kwargs):
+        Detects spots in an image using various methods.
+
+    spots_information(self, bin_img_log, max_project, gaussian_fit=False, min_area=0, max_area=100, min_integrated_intensity=0, psf_size=1.6):
+        Analyzes and refines detected spots.
+
+    gmask_fit(self, pic, xy_input=None, fit=False, psf_size=1.6):
+        Gaussian mask fitting for spot characteristics.
+
+    local_background(self, pic, display=False):
+        Calculates local background using a linear fit to border pixels.
+
+    COORDINATES_TO_CIRCLE(self, coordinates, ImageForSpots, circ_radius=5):
+        Draws circles at specified coordinates on an image.
+
+    SPOTS_TO_BOUNDARY(self, final_spots):
+        Converts a binary image of spots to highlighted boundaries.
     """
     def __init__(self,gui_params):
         """
