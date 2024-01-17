@@ -42,7 +42,7 @@
    
 4. **Launch HiTIPS:**
    ```bash
-   python -m hitips
+   hitips
    
 ## 🚀 Usage
 
