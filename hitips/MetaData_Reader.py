@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import glob
 import json
-from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis
+from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI, BatchAnalyzer, Analysis
 import os
 import sys
 from aicsimageio import AICSImage
@@ -25,7 +25,7 @@ class ImageReader(object):
     - ControlPanel: A reference to the ControlPanel object.
     - analysisgui: A reference to the AnalysisGUI object.
     - inout_resource_gui: A reference to the IO_ResourceGUI object.
-    - displaygui: A reference to the DisplayGUI_Copy1 object.
+    - displaygui: A reference to the DisplayGUI object.
 
     Methods:
     - __init__: Initializes the ImageReader with references to GUI components.
@@ -43,7 +43,7 @@ class ImageReader(object):
         Parameters:
         - ControlPanel: Reference to the ControlPanel object.
         - inout_resource_gui: Reference to the IO_ResourceGUI object.
-        - displaygui: Reference to the DisplayGUI_Copy1 object.
+        - displaygui: Reference to the DisplayGUI object.
         - analysisgui: Reference to the AnalysisGUI object.
         """
         self.ControlPanel =ControlPanel

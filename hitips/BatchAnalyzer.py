@@ -46,12 +46,12 @@ class BatchAnalysis(object):
     """
     A class used to conduct batch analysis of biological image data, focusing on the analysis of cells and spots.
 
-    Attributes:
-    ------------
-    Various shared data lists and attributes for storing analysis results and configuration details.
+    Attributes
+    ----------
+        Various shared data lists and attributes for storing analysis results and configuration details.
 
-    Methods:
-    --------
+    Methods
+    -------
     __init__(self, Gui_Params, image_analyzer):
         Initializes the BatchAnalysis object with required parameters and data structures.
 
@@ -128,15 +128,15 @@ class BatchAnalysis(object):
         Initializes the BatchAnalysis object with necessary parameters and structures for analysis.
 
         Parameters:
-        -----------
+
         Gui_Params : [type]
             Parameters from the GUI for controlling analysis settings.
         image_analyzer : [type]
             The image analyzer object to use for processing the images.
 
         Returns:
-        --------
-        None
+
+            None
         """
         self.ImageAnalyzer = image_analyzer
         self.ch1_spot_df, self.ch2_spot_df, self.ch3_spot_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
@@ -155,13 +155,12 @@ class BatchAnalysis(object):
         Begins the batch analysis process, including setting paths, reading metadata, and initiating analyses.
 
         Parameters:
-        -----------
+
         Meta_Data_df : DataFrame
             Metadata DataFrame containing information about the images to be analyzed.
 
         Returns:
-        --------
-        None
+            None
         """
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.ERROR)
@@ -785,17 +784,15 @@ class BatchAnalysis(object):
         Saves analyzed information about nuclei into designated output files.
 
         Parameters:
-        -----------
-        cell_df : DataFrame
-            DataFrame containing the analyzed nuclei information.
-        columns : list
-            List of column indices in the imaging plate.
-        rows : list
-            List of row indices in the imaging plate.
+            cell_df : DataFrame
+                DataFrame containing the analyzed nuclei information.
+            columns : list
+                List of column indices in the imaging plate.
+            rows : list
+                List of row indices in the imaging plate.
 
         Returns:
-        --------
-        None
+            None
         """
         xlsx_output_folder = os.path.join(self.output_folder, 'whole_plate_resutls')
         if os.path.isdir(xlsx_output_folder) == False:

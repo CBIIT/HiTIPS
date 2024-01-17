@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI_Copy1, BatchAnalyzer, Analysis, MetaData_Reader, Display_Copy1
+from . import AnalysisGUI, IO_ResourceGUI, GridLayout, DisplayGUI, BatchAnalyzer, Analysis, MetaData_Reader, Display
 from .GUI_parameters import Gui_Params
 from PyQt5.QtWidgets import QWidget, QMessageBox
 import pandas as pd
@@ -31,12 +31,12 @@ class ControlPanel(QWidget):
 ######  Instantiating GUI classes
 
         self.inout_resource_gui = IO_ResourceGUI.InOut_resource(self.centralwidget,self.gridLayout_centralwidget)
-        self.displaygui = DisplayGUI_Copy1.display()
+        self.displaygui = DisplayGUI.display()
         self.analysisgui = AnalysisGUI.analyzer(self.centralwidget, self.gridLayout_centralwidget, self.displaygui)
         
         self.gui_params = Gui_Params(self.analysisgui,self.inout_resource_gui, self.displaygui)
         self.analysisgui.set_gui_params(self.gui_params)
-        self.ImDisplay = Display_Copy1.imagedisplayer(self.centralwidget, self.gui_params, self.analysisgui)
+        self.ImDisplay = Display.imagedisplayer(self.centralwidget, self.gui_params, self.analysisgui)
 
         self.gui_params.set_ImDisplay(self.ImDisplay)
         
