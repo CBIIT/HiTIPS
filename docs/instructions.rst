@@ -64,9 +64,11 @@ HiTIPS unser interface consists of two windows: one for displaying the image and
 
 Data loading from CellVoyager
 -----------------------------
-- From “Input Output” tab click on “Load MetaData” button 
-- Using the “Select Metadata Files…” window navigate into the folder containing all the images and metadata saved by the instrument
-- You should only see the file “MeasurementData.mlf”. Select this file and click ”Open”
+- From “Input Output” tab click on “Load MetaData” button.
+
+- Using the “Select Metadata Files…” window navigate into the folder containing all the images and metadata saved by the instrument.
+
+- You should only see the file “MeasurementData.mlf”. Select this file and click ”Open”.
 
 .. image:: images/metadata_loading.png
    :alt: Metadata Loading
@@ -80,9 +82,12 @@ Loading plate information from CellVoyager
    :alt: Display Checkbox
    :align: center
 
-- Now check the “Display” checkbox to see all the wells containing images with their corresponding fields (FOV), Z planes and time points (Time) 
+- Now check the “Display” checkbox to see all the wells containing images with their corresponding fields (FOV), Z planes and time points (Time).
+
   -- The color of wells containing image data on the well-plate layout will change to green now.
+  
   -- To view other images you can click on the well, field, z-plane or timepoint of interest.
+  
   -- This should also load the first image of the dataset into the display window.
 
 .. image:: images/image_selection.png
@@ -104,10 +109,12 @@ Loading Bioformat image files
    :alt: Select Bioformat
    :align: center
    
+   
 Image Display window
 --------------------
 
 - After loading plate information and checking display checkbox all the active channels in the dataset will be active and the channel information will be displayed next to the channel name.
+
 - You can also check the “Max.Z” checkbox for each channel to display the maximum projection of the Z-stack.
 
 .. image:: images/display_window.png
@@ -127,7 +134,8 @@ Adjusting channel intensities
    :align: center 
    
 - You can adjust the intensity of each channel by selecting the specific channel from the combobox under the image and using the right slider to set the maximum intensity and left slider to set the minimum intensity of the image.
--- Note: adjusting the image intensity on the display window will not change the input image intensities for processing algorithms (nuclei segmentation, spot detection, etc.). These algorithms read and process the raw data.
+
+  -- Note: adjusting the image intensity on the display window will not change the input image intensities for processing algorithms (nuclei segmentation, spot detection, etc.). These algorithms read and process the raw data.
 
 .. image:: images/intensity_adjustment.png
    :alt: Intensity Adjustment
@@ -137,6 +145,7 @@ Adjusting channel intensities
 Visualizing nuclei segmentation results
 ---------------------------------------
 - To visualize the nuclei segmentation results, check the “Nuclei” checkbox on the right side of the display window. 
+
 - From the combobox under this checkbox you can select how you would like to visualize the segmentation results. You can select nuclei boundary, area or the nuclei index. The examples are shown below. 
 
 .. image:: images/nuclei_segmentation.png
@@ -148,6 +157,7 @@ Visualizing spot detection results
 ----------------------------------
 
 - To visualize the spot detection results, check the “Spots” checkbox on the right side of the display window. 
+
 - From the combobox under this checkbox you can select how you would like to visualize the spot detection results results. You can select circles around spots or spot boundary. 
 
 .. image:: images/spot_image.png
