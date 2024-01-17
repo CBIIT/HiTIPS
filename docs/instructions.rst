@@ -165,3 +165,90 @@ Visualizing spot detection results
    :align: center 
    
 
+Nuclei Detection Parameter Setting
+----------------------------------
+
+The effect of changing any of the parameters in this toolbox can be observed on display window in real-time to achieve the best possible result.
+
+- Channel: for selecting the channel containing nuclei stain to run nuclei segmentation.
+
+- Method: for selecting nuclei segmentation method from: Int.-based, Marker Controlled, CellPose-CPU, CellPose-GPU, DeepCell.
+
+  -- Note: the first three methods don’t require GPU for processing but the last two methods require GPU for segmentation.
+
+- Detection: Increasing the value of this slider will increase the chance of detecting the nuclei with lower intensity. It might also add noise to segmentation, so choosing the proper value is important.
+
+- Separation: increasing this value would help separating attached nuclei but very high values can result in over segmentation.
+
+  -- Note: Detection and separation sliders are only read but first two segmentation methods (Int.-based and Marker Controlled) and have no effect on other methods.
+
+- Area: estimated area of an average nuclei in the dataset (µm²)
+
+  -- Note: if you are using CellPose, sometimes very high values leads to better results.
+
+- Remove Boundary Nuclei: checking this checkbox will eliminate the nuclei touching the boundary of the image to make sure all the detected nuclei are intact.
+
+- MaxZ Projection: by checking this checkbox, the nuclei segmentation algorithm will run on the maximally projection of the Z-planes. 
+
+  -- Note: if the 2D segmentation of the nuclei is required make sure this chechbox is checked, since it will highly improve 2D segmentation results.
+
+
+.. image:: images/nuc_detection_parameters.png
+   :alt: Nuclei Detection Parameters
+   :align: center 
+   
+   
+Spot Channels
+-------------
+
+- Channels checkboxes: Using these checkboxes you can select the channels containing spots.
+
+- Coordinates: you can select the location on the spot as the defining point of the spot.
+
+  -- CenterOfMass: weighted average of all the pixels on each segmented spot. The weights are pixels intensity.
+  
+  -- MaxIntensity: location of brightest pixel on the segmented spot.
+
+  -- Centroid: average of all the pixels on each segmented spot. Similar to first CenterOfMass, but all the weights are equal to 1.
+
+- Max z-projection: by checking this checkbox, the spot detection algorithm will run on the maximally projection of the Z-planes. 
+
+  -- Note: for achieving best results make sure this chechbox is checked, since it will highly improve the detection of spots in 2D and the Z location will be returned as location of a plane containing the maximum intensity.
+
+
+.. image:: images/spot_channels.png
+   :alt: Spot Channels
+   :align: center 
+
+
+Spot Detection Method
+---------------------
+
+- Channel: If different algorithms or parameters require for different spot channels you can select that specific channel and adjust rest of the parameters for that channel. Otherwise you can choose “All” to use the same parameters for all channels.
+
+- Detection Method: for selecting spot detection method from:
+
+  -- Laplacian of Gaussian: fits an LOG kernel to every pixel.
+
+  -- Gaussian: fits a Gaussian kernel to every pixel.
+  
+  -- Intensity Threshold: segmenting spots usingintensity thresholding.
+
+  -- Enhanced LOG: A combination of first two methods.
+  
+- Threshold Method: for selecting the thresholding method after kernel fitting:
+  
+  -- Auto: for using Otsu’s thresholding method for separating spots from background.
+
+  -- Manual: for setting the threshold manually to separate spots from background.
+  
+  -- Note: Auto thresholding would not work well if you choose Gaussian kernel. A comparison of these methods can be found in slides Appendix 2.
+
+- Threshold Value: set the threshold for spot segmentation after kernel fitting. This threshold will only be applied when the “Threshold Method” is set to “Manual”.
+
+- Kernel Size: to set the kernel size for Gaussian and LOG methods. A smaller value makes the algorithm more sensitive to detect spots but may result in many false positives. Higher values would result in less false positives but may not be sensitive enough to detect all true positives. This value should be set according to dataset while observing the results.
+
+
+.. image:: images/spot_detection_method.png
+   :alt: Spot Detection Method
+   :align: center 
