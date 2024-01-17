@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="python">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>HiTIPS &#8212; HiTIPS 0.1.20 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=4f649999" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=cb25574f" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=76e81226"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="hitips package" href="hitips.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="hitips">
+<h1>HiTIPS<a class="headerlink" href="#hitips" title="Permalink to this heading">¶</a></h1>
+<p><strong>HiTIPS</strong> (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Automated Segmentation</strong>: Efficiently segments cells and nuclei.</p></li>
+<li><p><strong>FISH Signal Identification</strong>: Accurate localization and identification of FISH signals.</p></li>
+<li><p><strong>Quantitative Analysis</strong>: Measures signal intensity and distribution.</p></li>
+<li><p><strong>Customizable Interface</strong>: Provides flexibility for customization and integrating plugins.</p></li>
+<li><p><strong>High-Throughput Support</strong>: Designed for processing large-scale imaging datasets.</p></li>
+<li><p><strong>Extendable Algorithms</strong>: Incorporates new methodologies for enhancing current analysis routines.</p></li>
+<li><p><strong>Plugin Support</strong>: Supports the creation and integration of new analysis routines.</p></li>
+</ul>
+</section>
+<section id="hardware-and-software-prerequisites">
+<h2>Hardware and Software Prerequisites<a class="headerlink" href="#hardware-and-software-prerequisites" title="Permalink to this heading">¶</a></h2>
+<section id="hardware-requirements">
+<h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>CPU</strong>: Multi-core processor (e.g., Intel i7 or AMD Ryzen 7).</p></li>
+<li><p><strong>RAM</strong>: Minimum 16GB (32GB recommended for large datasets).</p></li>
+<li><p><strong>Storage</strong>: SSD with 500GB or more of available space.</p></li>
+<li><p><strong>GPU</strong>: Optional but recommended, especially if using CUDA-enhanced functionalities.</p></li>
+</ul>
+</section>
+<section id="software-requirements">
+<h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Operating System</strong>: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora).</p></li>
+<li><p><strong>Python</strong>: Version 3.7 or newer.</p></li>
+<li><p><strong>Package Manager</strong>: Latest version of <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or <a class="reference external" href="https://www.anaconda.com/products/distribution">Anaconda</a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
+<section id="using-conda-and-pip">
+<h3>Using Conda and Pip<a class="headerlink" href="#using-conda-and-pip" title="Permalink to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>Create a Conda Environment</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Install HiTIPS</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">hitips</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Launch HiTIPS</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hitips</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Launch HiTIPS using the command hitips.</p></li>
+<li><p>Introduce your high-throughput imaging dataset into the software.</p></li>
+<li><p>Navigate through the available analysis options and specify your desired tasks.</p></li>
+<li><p>Modify the analysis parameters fitting your requirements.</p></li>
+<li><p>Initiate the analysis process.</p></li>
+<li><p>Review and interpret the produced outcomes.</p></li>
+<li><p>Save or export the results as required.</p></li>
+</ul>
+</section>
+<section id="hitips-user-interface">
+<h2>HiTIPS user interface<a class="headerlink" href="#hitips-user-interface" title="Permalink to this heading">¶</a></h2>
+<p>HiTIPS unser interface consists of two windows: one for displaying the image and realtime results of cell and spots segmentation, and the other one for image and dataset loading, image selection for display and selecting analsysis parameters as well as running the analysis.</p>
+<img alt="User Interface" class="align-center" src="_images/user_interface.png" />
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HiTIPS</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">hitips</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HiTIPS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hardware-and-software-prerequisites">Hardware and Software Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hitips-user-interface">HiTIPS user interface</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="hitips.html" title="previous chapter">hitips package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Adib Keikhosravi.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/instructions.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

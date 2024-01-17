@@ -36,18 +36,10 @@ hitips.Cell\_Spot\_Tracker module
    :undoc-members:
    :show-inheritance:
 
-hitips.DisplayGUI\_Copy1 module
--------------------------------
+hitips.Display module
+---------------------
 
-.. automodule:: hitips.DisplayGUI_Copy1
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-hitips.Display\_Copy1 module
-----------------------------
-
-.. automodule:: hitips.Display_Copy1
+.. automodule:: hitips.Display
    :members:
    :undoc-members:
    :show-inheritance:
@@ -108,10 +100,3 @@ hitips.logging\_decorator module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: hitips
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -11,6 +11,7 @@ Welcome to HiTIPS's documentation!
    :caption: Contents:
    
    modules
+   instructions
 
 
 

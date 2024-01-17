@@ -13,6 +13,8 @@
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HiTIPS" href="instructions.html" />
+    <link rel="prev" title="hitips" href="modules.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,99 +42,98 @@
 <dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.Analysis.</span></span><span class="sig-name descname"><span class="pre">ImageAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A suite of methods for analyzing and processing biological images, focusing on segmentation and tracking.</p>
+<p>A class for analyzing and processing biological images, focusing on segmentation and tracking.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.gui_params">
-<span class="sig-name descname"><span class="pre">gui_params</span></span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.gui_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Configuration parameters from the GUI or other settings.</p>
-<dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">gui_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.gui_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>object</p>
+<dd class="field-odd"><p>Configuration parameters from the GUI or other settings.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes the ImageAnalyzer with GUI parameters.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__(self,</span> <span class="pre">gui_params):</span></span></dt>
+<dd><p>Initializes the ImageAnalyzer with configuration parameters.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.neuceli_segmenter">
-<span class="sig-name descname"><span class="pre">neuceli_segmenter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.neuceli_segmenter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Segments nuclei using various methods.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">neuceli_segmenter(self,</span> <span class="pre">input_img,</span> <span class="pre">pixpermic=None):</span></span></dt>
+<dd><p>Segments nuclei in an image using various methods.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.deepcell_segmenter">
-<span class="sig-name descname"><span class="pre">deepcell_segmenter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.deepcell_segmenter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Segments nuclei using DeepCell.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">deepcell_segmenter(self,</span> <span class="pre">input_img,</span> <span class="pre">mmp=None):</span></span></dt>
+<dd><p>Segments nuclei using DeepCell's NuclearSegmentation application.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.cellpose_segmenter">
-<span class="sig-name descname"><span class="pre">cellpose_segmenter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.cellpose_segmenter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Segments cells using CellPose.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">cellpose_segmenter(self,</span> <span class="pre">input_img,</span> <span class="pre">use_GPU,</span> <span class="pre">cell_dia=None):</span></span></dt>
+<dd><p>Segments cells using the Cellpose model.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.segmenter_function">
-<span class="sig-name descname"><span class="pre">segmenter_function</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.segmenter_function" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">segmenter_function(self,</span> <span class="pre">input_img,</span> <span class="pre">cell_size=None,</span> <span class="pre">first_threshold=None,</span> <span class="pre">second_threshold=None):</span></span></dt>
 <dd><p>Advanced segmentation using blurring, thresholding, and watershed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.watershed_scikit">
-<span class="sig-name descname"><span class="pre">watershed_scikit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.watershed_scikit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">watershed_scikit(self,</span> <span class="pre">input_img,</span> <span class="pre">cell_size=None,</span> <span class="pre">first_threshold=None,</span> <span class="pre">second_threshold=None):</span></span></dt>
 <dd><p>Image segmentation using scikit-image's watershed algorithm.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.max_z_project">
-<span class="sig-name descname"><span class="pre">max_z_project</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.max_z_project" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">max_z_project(self,</span> <span class="pre">image_stack):</span></span></dt>
 <dd><p>Maximum intensity projection from an image stack.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.SpotDetector">
-<span class="sig-name descname"><span class="pre">SpotDetector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.SpotDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Detects spots using various methods.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SpotDetector(self,</span> <span class="pre">\*\*kwargs):</span></span></dt>
+<dd><p>Detects spots in an image using various methods.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.spots_information">
-<span class="sig-name descname"><span class="pre">spots_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.spots_information" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">spots_information(self,</span> <span class="pre">bin_img_log,</span> <span class="pre">max_project,</span> <span class="pre">gaussian_fit=False,</span> <span class="pre">min_area=0,</span> <span class="pre">max_area=100,</span> <span class="pre">min_integrated_intensity=0,</span> <span class="pre">psf_size=1.6):</span></span></dt>
 <dd><p>Analyzes and refines detected spots.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.gmask_fit">
-<span class="sig-name descname"><span class="pre">gmask_fit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.gmask_fit" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">gmask_fit(self,</span> <span class="pre">pic,</span> <span class="pre">xy_input=None,</span> <span class="pre">fit=False,</span> <span class="pre">psf_size=1.6):</span></span></dt>
 <dd><p>Gaussian mask fitting for spot characteristics.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.local_background">
-<span class="sig-name descname"><span class="pre">local_background</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.local_background" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates local background using linear fit to border pixels.</p>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">local_background(self,</span> <span class="pre">pic,</span> <span class="pre">display=False):</span></span></dt>
+<dd><p>Calculates local background using a linear fit to border pixels.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.COORDINATES_TO_CIRCLE">
-<span class="sig-name descname"><span class="pre">COORDINATES_TO_CIRCLE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.COORDINATES_TO_CIRCLE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">COORDINATES_TO_CIRCLE(self,</span> <span class="pre">coordinates,</span> <span class="pre">ImageForSpots,</span> <span class="pre">circ_radius=5):</span></span></dt>
 <dd><p>Draws circles at specified coordinates on an image.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.SPOTS_TO_BOUNDARY">
-<span class="sig-name descname"><span class="pre">SPOTS_TO_BOUNDARY</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.SPOTS_TO_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SPOTS_TO_BOUNDARY(self,</span> <span class="pre">final_spots):</span></span></dt>
 <dd><p>Converts a binary image of spots to highlighted boundaries.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the ImageAnalyzer with configuration parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -142,8 +143,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">neuceli_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixpermic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.neuceli_segmenter">
+<span class="sig-name descname"><span class="pre">neuceli_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixpermic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.neuceli_segmenter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segments nuclei in an image using various methods based on GUI settings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -173,8 +174,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">deepcell_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.deepcell_segmenter">
+<span class="sig-name descname"><span class="pre">deepcell_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.deepcell_segmenter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs nuclear segmentation on an input image using DeepCell's NuclearSegmentation application.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -207,8 +208,8 @@ It then finds and processes boundaries to create clear nuclear boundary and mask
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">cellpose_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_GPU</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dia</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.cellpose_segmenter">
+<span class="sig-name descname"><span class="pre">cellpose_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_GPU</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_dia</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.cellpose_segmenter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs cell segmentation on an input image using the Cellpose model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -245,8 +246,8 @@ The function adjusts the processing steps based on the <cite>NucRemoveBoundaryCh
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">segmenter_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.segmenter_function">
+<span class="sig-name descname"><span class="pre">segmenter_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.segmenter_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs advanced image segmentation using a combination of blurring, thresholding, and the watershed algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -283,8 +284,8 @@ the specific requirements of the image analysis task.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">watershed_scikit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.watershed_scikit">
+<span class="sig-name descname"><span class="pre">watershed_scikit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.watershed_scikit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs image segmentation using the watershed algorithm implemented in scikit-image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -319,26 +320,27 @@ It identifies and labels the regions of interest in the input image and returns 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">max_z_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stack</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.max_z_project">
+<span class="sig-name descname"><span class="pre">max_z_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_stack</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.max_z_project" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a maximum intensity projection (max-z projection) on a stack of images.</p>
-<p>Parameters:
-- image_stack :pandas.DataFrame</p>
-<blockquote>
-<div><p>A DataFrame where each row represents an image.
-It must contain the columns 'ImageName' and 'Type'. 'ImageName' should be the path to the image file
-or 'dask_array' to indicate the image is in the 'Type' column.</p>
-</div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><dl class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_stack</strong> (<em>-</em>) -- pandas.DataFrame</p></li>
+<li><p><strong>image.</strong> (<em>A DataFrame where each row represents an</em>) -- </p></li>
+<li><p><strong>file</strong> (<em>It must contain the columns 'ImageName' and 'Type'. 'ImageName' should be the path to the image</em>) -- </p></li>
+<li><p><strong>column.</strong> (<em>or 'dask_array' to indicate the image is in the 'Type'</em>) -- </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
 <dt>A 2D array representing the maximum intensity projection</dt><dd><p>of the input image stack.</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
 <li><p>max_project (numpy.ndarray)</p></li>
 </ul>
 </p>
@@ -360,40 +362,37 @@ The function requires 'pandas' for DataFrame handling and 'PIL.Image' for image 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">SpotDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.SpotDetector">
+<span class="sig-name descname"><span class="pre">SpotDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.SpotDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs spot detection in an input image using various methods such as Laplacian of Gaussian, Gaussian filtering,
 intensity thresholding, and Enhanced LOG.</p>
-<p>Parameters:
-- <a href="#id8"><span class="problematic" id="id9">**</span></a>kwargs (dict): Keyword arguments containing parameters for the spot detection process.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>The function expects the following key-value pairs:</dt><dd><ul class="simple">
-<li><p>'input_image_raw' (numpy.ndarray): Raw input image for spot detection.</p></li>
-<li><p>'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.</p></li>
-<li><p>'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').</p></li>
-<li><p>'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').</p></li>
-<li><p>'threshold_value' (float): Threshold value for 'Manual' method.</p></li>
-<li><p>'kernel_size' (int): Kernel size for filtering.</p></li>
-<li><p>'spot_location_coords' (str): Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').</p></li>
-<li><p>'remove_bright_junk' (bool): Flag to remove bright artifacts.</p></li>
-<li><p>'resize_factor' (float): Factor to resize the image.</p></li>
-<li><p>'min_area' (int): Minimum area for spots.</p></li>
-<li><p>'max_area' (int): Maximum area for spots.</p></li>
-<li><p>'min_integrated_intensity' (int): Minimum integrated intensity for spots.</p></li>
-<li><p>'psf_size' (float): Point spread function size.</p></li>
-<li><p>'gaussian_fit' (bool): Flag to perform Gaussian fitting.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>-</em>) -- Keyword arguments containing parameters for the spot detection process.</p></li>
+<li><p><strong>pairs</strong> (<em>The function expects the following key-value</em>) -- </p></li>
+<li><p><strong>'input_image_raw'</strong> (<em>-</em>) -- Raw input image for spot detection.</p></li>
+<li><p><strong>'nuclei_image'</strong> (<em>-</em>) -- Image of nuclei, used in preprocessing.</p></li>
+<li><p><strong>'spot_detection_method'</strong> (<em>-</em>) -- Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').</p></li>
+<li><p><strong>'threshold_method'</strong> (<em>-</em>) -- Method for thresholding ('Auto' or 'Manual').</p></li>
+<li><p><strong>'threshold_value'</strong> (<em>-</em>) -- Threshold value for 'Manual' method.</p></li>
+<li><p><strong>'kernel_size'</strong> (<em>-</em>) -- Kernel size for filtering.</p></li>
+<li><p><strong>'spot_location_coords'</strong> (<em>-</em>) -- Method to calculate spot locations ('CenterOfMass', 'MaxIntensity', 'Centroid').</p></li>
+<li><p><strong>'remove_bright_junk'</strong> (<em>-</em>) -- Flag to remove bright artifacts.</p></li>
+<li><p><strong>'resize_factor'</strong> (<em>-</em>) -- Factor to resize the image.</p></li>
+<li><p><strong>'min_area'</strong> (<em>-</em>) -- Minimum area for spots.</p></li>
+<li><p><strong>'max_area'</strong> (<em>-</em>) -- Maximum area for spots.</p></li>
+<li><p><strong>'min_integrated_intensity'</strong> (<em>-</em>) -- Minimum integrated intensity for spots.</p></li>
+<li><p><strong>'psf_size'</strong> (<em>-</em>) -- Point spread function size.</p></li>
+<li><p><strong>'gaussian_fit'</strong> (<em>-</em>) -- Flag to perform Gaussian fitting.</p></li>
 </ul>
 </dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List of coordinates for detected spots.
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of coordinates for detected spots.
 - spots_df (pandas.DataFrame): DataFrame containing information about detected spots.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
 <li><p>spot_locations (list)</p></li>
 </ul>
 </p>
@@ -417,8 +416,8 @@ threshold_method=&quot;Auto&quot;, kernel_size=3)</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id10">
-<span class="sig-name descname"><span class="pre">spots_information</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_img_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_project</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_integrated_intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.spots_information">
+<span class="sig-name descname"><span class="pre">spots_information</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_img_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_project</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaussian_fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_area</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_integrated_intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.spots_information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts and analyzes information about spots detected in an image,
 performing additional processing and calculations to refine the spot detection results.</p>
 <dl class="field-list simple">
@@ -460,8 +459,8 @@ chosen based on the specific requirements of the image analysis task.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id11">
-<span class="sig-name descname"><span class="pre">gmask_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.gmask_fit">
+<span class="sig-name descname"><span class="pre">gmask_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.gmask_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs Gaussian mask fitting on an image to determine the centroid and photon number of a spot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -497,8 +496,8 @@ The 'fit' parameter determines whether to perform iterative fitting or use a fix
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id12">
-<span class="sig-name descname"><span class="pre">local_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id12" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.local_background">
+<span class="sig-name descname"><span class="pre">local_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.local_background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the local background of an image using a linear fit to the border pixels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -533,8 +532,8 @@ to observe the intermediate steps of the calculation.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id13">
-<span class="sig-name descname"><span class="pre">COORDINATES_TO_CIRCLE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForSpots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circ_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id13" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.COORDINATES_TO_CIRCLE">
+<span class="sig-name descname"><span class="pre">COORDINATES_TO_CIRCLE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForSpots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circ_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.COORDINATES_TO_CIRCLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an image with circles drawn at specified coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -567,8 +566,8 @@ The output is a binary image where the circles are marked in white (255) on a bl
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id14">
-<span class="sig-name descname"><span class="pre">SPOTS_TO_BOUNDARY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">final_spots</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id14" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.SPOTS_TO_BOUNDARY">
+<span class="sig-name descname"><span class="pre">SPOTS_TO_BOUNDARY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">final_spots</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.SPOTS_TO_BOUNDARY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a binary image of spots into an image where the boundaries of these spots are highlighted.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -660,134 +659,134 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.BatchAnalyzer.</span></span><span class="sig-name descname"><span class="pre">BatchAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class used to conduct batch analysis of biological image data, focusing on the analysis of cells and spots.</p>
-<section id="attributes">
-<h3>Attributes:<a class="headerlink" href="#attributes" title="Permalink to this heading">¶</a></h3>
-<blockquote>
-<div><p>Various shared data lists and attributes for storing analysis results and configuration details.</p>
-</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Various</span> <span class="pre">shared</span> <span class="pre">data</span> <span class="pre">lists</span> <span class="pre">and</span> <span class="pre">attributes</span> <span class="pre">for</span> <span class="pre">storing</span> <span class="pre">analysis</span> <span class="pre">results</span> <span class="pre">and</span> <span class="pre">configuration</span> <span class="pre">details.</span></span></dt>
+<dd></dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__init__(self,</span> <span class="pre">Gui_Params,</span> <span class="pre">image_analyzer):</span></span></dt>
 <dd><p>Initializes the BatchAnalysis object with required parameters and data structures.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ON_APPLYBUTTON">
-<span class="sig-name descname"><span class="pre">ON_APPLYBUTTON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Meta_Data_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ON_APPLYBUTTON" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ON_APPLYBUTTON(self,</span> <span class="pre">Meta_Data_df):</span></span></dt>
 <dd><p>Begins the batch analysis process, setting paths, reading metadata, and initiating various analyses.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_NUCLEI_INFORMATION">
-<span class="sig-name descname"><span class="pre">SAVE_NUCLEI_INFORMATION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_NUCLEI_INFORMATION" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SAVE_NUCLEI_INFORMATION(self,</span> <span class="pre">cell_df,</span> <span class="pre">columns,</span> <span class="pre">rows):</span></span></dt>
 <dd><p>Saves analyzed information about nuclei into designated output files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO">
-<span class="sig-name descname"><span class="pre">SAVE_SPOT_INFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SAVE_SPOT_INFO(self,</span> <span class="pre">spot_df,</span> <span class="pre">coordinates_method,</span> <span class="pre">columns,</span> <span class="pre">rows,</span> <span class="pre">channel_name):</span></span></dt>
 <dd><p>Saves the analyzed spot information for specific channels and methods.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.process_channel">
-<span class="sig-name descname"><span class="pre">process_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_spot_df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.process_channel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">process_channel(self,</span> <span class="pre">channel_spot_df_list,</span> <span class="pre">columns,</span> <span class="pre">rows,</span> <span class="pre">channel_name):</span></span></dt>
 <dd><p>Processes each channel and saves spot information if necessary.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS">
-<span class="sig-name descname"><span class="pre">PROCESS_ALL_SPOT_CHANNELS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">PROCESS_ALL_SPOT_CHANNELS(self):</span></span></dt>
 <dd><p>Processes all spot channels and compiles their analyzed information.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel">
-<span class="sig-name descname"><span class="pre">update_cell_index_in_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">update_cell_index_in_channel(self,</span> <span class="pre">channel_attr,</span> <span class="pre">col,</span> <span class="pre">row,</span> <span class="pre">fov,</span> <span class="pre">time_point,</span> <span class="pre">previous_index,</span> <span class="pre">new_index):</span></span></dt>
 <dd><p>Updates cell indices in a specified channel's DataFrame.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels">
-<span class="sig-name descname"><span class="pre">update_cell_index_in_all_spot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">update_cell_index_in_all_spot_channels(self,</span> <span class="pre">col,</span> <span class="pre">row,</span> <span class="pre">fov,</span> <span class="pre">time_point,</span> <span class="pre">previous_index,</span> <span class="pre">new_index):</span></span></dt>
 <dd><p>Updates cell indices across all spot channels.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.normalize_stack">
-<span class="sig-name descname"><span class="pre">normalize_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.normalize_stack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">normalize_stack(self,</span> <span class="pre">images):</span></span></dt>
 <dd><p>Normalizes a stack of images.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name">
-<span class="sig-name descname"><span class="pre">cell_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">cell_level_file_name(self,</span> <span class="pre">top_folder,</span> <span class="pre">folder_name,</span> <span class="pre">name_prefix,</span> <span class="pre">name_extention,</span> <span class="pre">col,</span> <span class="pre">row,</span> <span class="pre">fov,</span> <span class="pre">cell_ind,</span> <span class="pre">spot_ch=None):</span></span></dt>
 <dd><p>Generates file names for saving cell level data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name">
-<span class="sig-name descname"><span class="pre">spot_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">spot_level_file_name(self,</span> <span class="pre">top_folder,</span> <span class="pre">folder_name,</span> <span class="pre">name_prefix,</span> <span class="pre">name_extention,</span> <span class="pre">col,</span> <span class="pre">row,</span> <span class="pre">fov,</span> <span class="pre">cell_ind,</span> <span class="pre">spot_ch,</span> <span class="pre">spot_ind):</span></span></dt>
 <dd><p>Generates file names for saving spot level data.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER">
-<span class="sig-name descname"><span class="pre">BATCH_ANALYZER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">BATCH_ANALYZER(self,</span> <span class="pre">col,</span> <span class="pre">row,</span> <span class="pre">fov,</span> <span class="pre">t):</span></span></dt>
 <dd><p>Analyzes a batch of images for nuclei and spots, updating the results lists.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances">
-<span class="sig-name descname"><span class="pre">Calculate_Spot_Distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Calculate_Spot_Distances(self,</span> <span class="pre">row,</span> <span class="pre">col):</span></span></dt>
 <dd><p>Calculates the distances between spots for given cells.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator">
-<span class="sig-name descname"><span class="pre">DISTANCE_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_pd_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DISTANCE_calculator(self,</span> <span class="pre">spot_pd_dict,</span> <span class="pre">key1,</span> <span class="pre">key2,</span> <span class="pre">select_cell,</span> <span class="pre">row,</span> <span class="pre">col):</span></span></dt>
 <dd><p>A helper function for calculating distances between spots.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK">
-<span class="sig-name descname"><span class="pre">IMG_FOR_NUC_MASK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">IMG_FOR_NUC_MASK(self):</span></span></dt>
 <dd><p>Loads the image used for creating nuclei masks.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER">
-<span class="sig-name descname"><span class="pre">RAW_IMAGE_LOADER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskchannel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RAW_IMAGE_LOADER(self,</span> <span class="pre">maskchannel):</span></span></dt>
 <dd><p>Loads raw images for a specified channel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER">
-<span class="sig-name descname"><span class="pre">Z_STACK_NUC_SEGMENTER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Z_STACK_NUC_SEGMENTER(self,</span> <span class="pre">ImageForNucMask):</span></span></dt>
 <dd><p>Segments nuclei from a z-stack of images.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER">
-<span class="sig-name descname"><span class="pre">Z_STACK_NUC_LABLER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForLabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Z_STACK_NUC_LABLER(self,</span> <span class="pre">ImageForLabel):</span></span></dt>
 <dd><p>Labels nuclei in a z-stack of images.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION">
-<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION(self,</span> <span class="pre">ImageForNucMask):</span></span></dt>
 <dd><p>Prepares images for spot detection and retrieves coordinates.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES">
-<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES(self,</span> <span class="pre">images_pd_df,</span> <span class="pre">ImageForNucMask,</span> <span class="pre">spot_channel):</span></span></dt>
 <dd><p>Retrieves XYZ coordinates for spots in a specified channel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC">
-<span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xyz_round</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_nuc_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_dist_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC(self,</span> <span class="pre">xyz_round,</span> <span class="pre">spot_nuc_labels,</span> <span class="pre">radial_dist_df,</span> <span class="pre">dist_img):</span></span></dt>
 <dd><p>Calculates radial distances for spots.</p>
 </dd></dl>
 
@@ -827,8 +826,8 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id15">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id15" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the BatchAnalysis object with necessary parameters and structures for analysis.</p>
 <p>Parameters:</p>
 <dl class="simple">
@@ -850,8 +849,8 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id16">
-<span class="sig-name descname"><span class="pre">ON_APPLYBUTTON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Meta_Data_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id16" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ON_APPLYBUTTON">
+<span class="sig-name descname"><span class="pre">ON_APPLYBUTTON</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Meta_Data_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ON_APPLYBUTTON" title="Permalink to this definition">¶</a></dt>
 <dd><p>Begins the batch analysis process, including setting paths, reading metadata, and initiating analyses.</p>
 <p>Parameters:</p>
 <dl class="simple">
@@ -871,8 +870,8 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id17">
-<span class="sig-name descname"><span class="pre">SAVE_NUCLEI_INFORMATION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id17" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_NUCLEI_INFORMATION">
+<span class="sig-name descname"><span class="pre">SAVE_NUCLEI_INFORMATION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_NUCLEI_INFORMATION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves analyzed information about nuclei into designated output files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -892,11 +891,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id18">
-<span class="sig-name descname"><span class="pre">SAVE_SPOT_INFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id18" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO">
+<span class="sig-name descname"><span class="pre">SAVE_SPOT_INFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the analyzed spot information for specific channels and methods.</p>
 <section id="parameters">
-<h4>Parameters:<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h4>
+<h3>Parameters:<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>spot_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing the analyzed spot information.</p>
 </dd>
@@ -911,17 +910,17 @@ List of row indices in the imaging plate.</p></li>
 </dl>
 </section>
 <section id="returns">
-<h4>Returns:<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h4>
+<h3>Returns:<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id19">
-<span class="sig-name descname"><span class="pre">process_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_spot_df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id19" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.process_channel">
+<span class="sig-name descname"><span class="pre">process_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_spot_df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.process_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes each channel and saves spot information if necessary.</p>
-<section id="id20">
-<h4>Parameters:<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h4>
+<section id="id1">
+<h3>Parameters:<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>channel_spot_df_list<span class="classifier">list</span></dt><dd><p>A list of DataFrames, each containing spot information for a specific channel.</p>
 </dd>
@@ -933,28 +932,28 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id21">
-<h4>Returns:<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h4>
+<section id="id2">
+<h3>Returns:<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id22">
-<span class="sig-name descname"><span class="pre">PROCESS_ALL_SPOT_CHANNELS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id22" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS">
+<span class="sig-name descname"><span class="pre">PROCESS_ALL_SPOT_CHANNELS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes all spot channels and compiles their analyzed information.</p>
-<section id="id23">
-<h4>Returns:<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h4>
+<section id="id3">
+<h3>Returns:<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id24">
-<span class="sig-name descname"><span class="pre">update_cell_index_in_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id24" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel">
+<span class="sig-name descname"><span class="pre">update_cell_index_in_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates cell indices in a specified channel's DataFrame.</p>
-<section id="id25">
-<h4>Parameters:<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h4>
+<section id="id4">
+<h3>Parameters:<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>channel_attr<span class="classifier">str</span></dt><dd><p>The attribute name of the channel DataFrame to be updated.</p>
 </dd>
@@ -972,18 +971,18 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id26">
-<h4>Returns:<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h4>
+<section id="id5">
+<h3>Returns:<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id27">
-<span class="sig-name descname"><span class="pre">update_cell_index_in_all_spot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id27" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels">
+<span class="sig-name descname"><span class="pre">update_cell_index_in_all_spot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates cell indices across all spot channels.</p>
-<section id="id28">
-<h4>Parameters:<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h4>
+<section id="id6">
+<h3>Parameters:<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
@@ -999,25 +998,25 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id29">
-<h4>Returns:<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h4>
+<section id="id7">
+<h3>Returns:<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id30">
-<span class="sig-name descname"><span class="pre">normalize_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id30" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.normalize_stack">
+<span class="sig-name descname"><span class="pre">normalize_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.normalize_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalizes a stack of images.</p>
-<section id="id31">
-<h4>Parameters:<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h4>
+<section id="id8">
+<h3>Parameters:<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>images<span class="classifier">ndarray</span></dt><dd><p>A stack of images to be normalized.</p>
 </dd>
 </dl>
 </section>
-<section id="id32">
-<h4>Returns:<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h4>
+<section id="id9">
+<h3>Returns:<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>The stack of normalized images.</p>
 </dd>
@@ -1026,11 +1025,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id33">
-<span class="sig-name descname"><span class="pre">cell_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id33" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name">
+<span class="sig-name descname"><span class="pre">cell_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates file names for saving cell level data.</p>
-<section id="id34">
-<h4>Parameters:<a class="headerlink" href="#id34" title="Permalink to this heading">¶</a></h4>
+<section id="id10">
+<h3>Parameters:<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>top_folder<span class="classifier">str</span></dt><dd><p>The top level directory where the files will be saved.</p>
 </dd>
@@ -1052,8 +1051,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id35">
-<h4>Returns:<a class="headerlink" href="#id35" title="Permalink to this heading">¶</a></h4>
+<section id="id11">
+<h3>Returns:<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>str</dt><dd><p>The generated file path for saving the data.</p>
 </dd>
@@ -1062,11 +1061,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id36">
-<span class="sig-name descname"><span class="pre">spot_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id36" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name">
+<span class="sig-name descname"><span class="pre">spot_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates file names for saving spot level data.</p>
-<section id="id37">
-<h4>Parameters:<a class="headerlink" href="#id37" title="Permalink to this heading">¶</a></h4>
+<section id="id12">
+<h3>Parameters:<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>top_folder<span class="classifier">str</span></dt><dd><p>The top level directory where the files will be saved.</p>
 </dd>
@@ -1090,8 +1089,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id38">
-<h4>Returns:<a class="headerlink" href="#id38" title="Permalink to this heading">¶</a></h4>
+<section id="id13">
+<h3>Returns:<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>str</dt><dd><p>The generated file path for saving the data.</p>
 </dd>
@@ -1100,11 +1099,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id39">
-<span class="sig-name descname"><span class="pre">BATCH_ANALYZER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id39" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER">
+<span class="sig-name descname"><span class="pre">BATCH_ANALYZER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyzes a batch of images for nuclei and spots, updating the results lists.</p>
-<section id="id40">
-<h4>Parameters:<a class="headerlink" href="#id40" title="Permalink to this heading">¶</a></h4>
+<section id="id14">
+<h3>Parameters:<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
@@ -1116,18 +1115,18 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id41">
-<h4>Returns:<a class="headerlink" href="#id41" title="Permalink to this heading">¶</a></h4>
+<section id="id15">
+<h3>Returns:<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id42">
-<span class="sig-name descname"><span class="pre">Calculate_Spot_Distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id42" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances">
+<span class="sig-name descname"><span class="pre">Calculate_Spot_Distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the distances between spots for given cells.</p>
-<section id="id43">
-<h4>Parameters:<a class="headerlink" href="#id43" title="Permalink to this heading">¶</a></h4>
+<section id="id16">
+<h3>Parameters:<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
 </dd>
@@ -1135,18 +1134,18 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id44">
-<h4>Returns:<a class="headerlink" href="#id44" title="Permalink to this heading">¶</a></h4>
+<section id="id17">
+<h3>Returns:<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
 <p>None</p>
 </section>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id45">
-<span class="sig-name descname"><span class="pre">DISTANCE_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_pd_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id45" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator">
+<span class="sig-name descname"><span class="pre">DISTANCE_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_pd_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>A helper function for calculating distances between spots.</p>
-<section id="id46">
-<h4>Parameters:<a class="headerlink" href="#id46" title="Permalink to this heading">¶</a></h4>
+<section id="id18">
+<h3>Parameters:<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>spot_pd_dict<span class="classifier">dict</span></dt><dd><p>Dictionary of spot DataFrames keyed by channel name.</p>
 </dd>
@@ -1162,8 +1161,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id47">
-<h4>Returns:<a class="headerlink" href="#id47" title="Permalink to this heading">¶</a></h4>
+<section id="id19">
+<h3>Returns:<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>DataFrame</dt><dd><p>A DataFrame containing the calculated distances.</p>
 </dd>
@@ -1172,11 +1171,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id48">
-<span class="sig-name descname"><span class="pre">IMG_FOR_NUC_MASK</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id48" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK">
+<span class="sig-name descname"><span class="pre">IMG_FOR_NUC_MASK</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the image used for creating nuclei masks.</p>
-<section id="id49">
-<h4>Returns:<a class="headerlink" href="#id49" title="Permalink to this heading">¶</a></h4>
+<section id="id20">
+<h3>Returns:<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>The loaded image for creating nuclei masks.</p>
 </dd>
@@ -1185,18 +1184,18 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id50">
-<span class="sig-name descname"><span class="pre">RAW_IMAGE_LOADER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskchannel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id50" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER">
+<span class="sig-name descname"><span class="pre">RAW_IMAGE_LOADER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskchannel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads raw images for a specified channel.</p>
-<section id="id51">
-<h4>Parameters:<a class="headerlink" href="#id51" title="Permalink to this heading">¶</a></h4>
+<section id="id21">
+<h3>Parameters:<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>maskchannel<span class="classifier">str</span></dt><dd><p>The channel for which the raw images are to be loaded.</p>
 </dd>
 </dl>
 </section>
-<section id="id52">
-<h4>Returns:<a class="headerlink" href="#id52" title="Permalink to this heading">¶</a></h4>
+<section id="id22">
+<h3>Returns:<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>The loaded raw image for the specified channel.</p>
 </dd>
@@ -1205,18 +1204,18 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id53">
-<span class="sig-name descname"><span class="pre">Z_STACK_NUC_SEGMENTER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id53" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER">
+<span class="sig-name descname"><span class="pre">Z_STACK_NUC_SEGMENTER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segments nuclei from a z-stack of images.</p>
-<section id="id54">
-<h4>Parameters:<a class="headerlink" href="#id54" title="Permalink to this heading">¶</a></h4>
+<section id="id23">
+<h3>Parameters:<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ImageForNucMask<span class="classifier">ndarray</span></dt><dd><p>The z-stack image for nuclei segmentation.</p>
 </dd>
 </dl>
 </section>
-<section id="id55">
-<h4>Returns:<a class="headerlink" href="#id55" title="Permalink to this heading">¶</a></h4>
+<section id="id24">
+<h3>Returns:<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing the boundary and mask images for segmented nuclei.</p>
 </dd>
@@ -1225,18 +1224,18 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id56">
-<span class="sig-name descname"><span class="pre">Z_STACK_NUC_LABLER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForLabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id56" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER">
+<span class="sig-name descname"><span class="pre">Z_STACK_NUC_LABLER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForLabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Labels nuclei in a z-stack of images.</p>
-<section id="id57">
-<h4>Parameters:<a class="headerlink" href="#id57" title="Permalink to this heading">¶</a></h4>
+<section id="id25">
+<h3>Parameters:<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ImageForLabel<span class="classifier">ndarray</span></dt><dd><p>The z-stack image for nuclei labeling.</p>
 </dd>
 </dl>
 </section>
-<section id="id58">
-<h4>Returns:<a class="headerlink" href="#id58" title="Permalink to this heading">¶</a></h4>
+<section id="id26">
+<h3>Returns:<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>The labeled nuclei image stack.</p>
 </dd>
@@ -1245,18 +1244,18 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id59">
-<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id59" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION">
+<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares images for spot detection and retrieves coordinates.</p>
-<section id="id60">
-<h4>Parameters:<a class="headerlink" href="#id60" title="Permalink to this heading">¶</a></h4>
+<section id="id27">
+<h3>Parameters:<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ImageForNucMask<span class="classifier">ndarray</span></dt><dd><p>The image used for nuclei mask to assist in spot detection.</p>
 </dd>
 </dl>
 </section>
-<section id="id61">
-<h4>Returns:<a class="headerlink" href="#id61" title="Permalink to this heading">¶</a></h4>
+<section id="id28">
+<h3>Returns:<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing the XYZ coordinates and final spots for different channels.</p>
 </dd>
@@ -1265,11 +1264,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id62">
-<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id62" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES">
+<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates XYZ coordinates of spots in given images, processing each z-slice and generating a max projection.</p>
-<section id="id63">
-<h4>Parameters:<a class="headerlink" href="#id63" title="Permalink to this heading">¶</a></h4>
+<section id="id29">
+<h3>Parameters:<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>images_pd_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing image data, including image paths and z-slice information.</p>
 </dd>
@@ -1279,8 +1278,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id64">
-<h4>Returns:<a class="headerlink" href="#id64" title="Permalink to this heading">¶</a></h4>
+<section id="id30">
+<h3>Returns:<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing three elements:
 1. xyz_coordinates (ndarray): Array of XYZ coordinates of detected spots in the max projection.
@@ -1292,11 +1291,11 @@ List of row indices in the imaging plate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="id65">
-<span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_round</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_nuc_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_dist_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id65" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC">
+<span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_round</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_nuc_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_dist_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the radial distance of each spot from the center of its respective nucleus.</p>
-<section id="id66">
-<h4>Parameters:<a class="headerlink" href="#id66" title="Permalink to this heading">¶</a></h4>
+<section id="id31">
+<h3>Parameters:<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>xyz_round<span class="classifier">ndarray</span></dt><dd><p>Rounded XYZ coordinates of detected spots.</p>
 </dd>
@@ -1308,8 +1307,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id67">
-<h4>Returns:<a class="headerlink" href="#id67" title="Permalink to this heading">¶</a></h4>
+<section id="id32">
+<h3>Returns:<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>Array containing the radial distance of each spot from the center of its nucleus.</p>
 </dd>
@@ -1317,7 +1316,6 @@ List of row indices in the imaging plate.</p></li>
 </section>
 </dd></dl>
 
-</section>
 </dd></dl>
 
 </section>
@@ -1503,199 +1501,90 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 </dd></dl>
 
 </section>
-<section id="module-hitips.DisplayGUI_Copy1">
-<span id="hitips-displaygui-copy1-module"></span><h2>hitips.DisplayGUI_Copy1 module<a class="headerlink" href="#module-hitips.DisplayGUI_Copy1" title="Permalink to this heading">¶</a></h2>
+<section id="module-hitips.Display">
+<span id="hitips-display-module"></span><h2>hitips.Display module<a class="headerlink" href="#module-hitips.Display" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.DisplayGUI_Copy1.</span></span><span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImDisplay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImDisplay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.set_analysisgui">
-<span class="sig-name descname"><span class="pre">set_analysisgui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.set_analysisgui" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.set_imdisplay">
-<span class="sig-name descname"><span class="pre">set_imdisplay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImDisplay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.set_imdisplay" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.createContextMenu">
-<span class="sig-name descname"><span class="pre">createContextMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nuclei</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.createContextMenu" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.setColor">
-<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.setColor" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.maxProjection">
-<span class="sig-name descname"><span class="pre">maxProjection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.maxProjection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.display.meanProjection">
-<span class="sig-name descname"><span class="pre">meanProjection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.display.meanProjection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.DisplayGUI_Copy1.</span></span><span class="sig-name descname"><span class="pre">PhotoViewer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGraphicsView</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.photoClicked">
-<span class="sig-name descname"><span class="pre">photoClicked</span></span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.photoClicked" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.first_photo">
-<span class="sig-name descname"><span class="pre">first_photo</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.first_photo" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.hasPhoto">
-<span class="sig-name descname"><span class="pre">hasPhoto</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.hasPhoto" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.fitInView">
-<span class="sig-name descname"><span class="pre">fitInView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QRectF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qt.AspectRatioMode</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Qt.IgnoreAspectRatio</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.fitInView" title="Permalink to this definition">¶</a></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">fitInView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QGraphicsItem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Qt.AspectRatioMode</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Qt.IgnoreAspectRatio</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">fitInView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode:</span> <span class="pre">Qt.AspectRatioMode</span> <span class="pre">=</span> <span class="pre">Qt.IgnoreAspectRatio</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.setPhoto">
-<span class="sig-name descname"><span class="pre">setPhoto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.setPhoto" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.wheelEvent">
-<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QWheelEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.wheelEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.toggleDragMode">
-<span class="sig-name descname"><span class="pre">toggleDragMode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.toggleDragMode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.mousePressEvent">
-<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QMouseEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.mousePressEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.contextMenuEvent">
-<span class="sig-name descname"><span class="pre">contextMenuEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QContextMenuEvent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hitips.DisplayGUI_Copy1.PhotoViewer.saveImage">
-<span class="sig-name descname"><span class="pre">saveImage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.DisplayGUI_Copy1.PhotoViewer.saveImage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-hitips.Display_Copy1">
-<span id="hitips-display-copy1-module"></span><h2>hitips.Display_Copy1 module<a class="headerlink" href="#module-hitips.Display_Copy1" title="Permalink to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.Display_Copy1.</span></span><span class="sig-name descname"><span class="pre">imagedisplayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centralwidget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.Display.</span></span><span class="sig-name descname"><span class="pre">imagedisplayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centralwidget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.METADATA_DATAFRAME">
-<span class="sig-name descname"><span class="pre">METADATA_DATAFRAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Empty</span> <span class="pre">DataFrame</span> <span class="pre">Columns:</span> <span class="pre">[]</span> <span class="pre">Index:</span> <span class="pre">[]</span></em><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.METADATA_DATAFRAME" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.METADATA_DATAFRAME">
+<span class="sig-name descname"><span class="pre">METADATA_DATAFRAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Empty</span> <span class="pre">DataFrame</span> <span class="pre">Columns:</span> <span class="pre">[]</span> <span class="pre">Index:</span> <span class="pre">[]</span></em><a class="headerlink" href="#hitips.Display.imagedisplayer.METADATA_DATAFRAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.imgchannels">
-<span class="sig-name descname"><span class="pre">imgchannels</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Empty</span> <span class="pre">DataFrame</span> <span class="pre">Columns:</span> <span class="pre">[]</span> <span class="pre">Index:</span> <span class="pre">[]</span></em><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.imgchannels" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.imgchannels">
+<span class="sig-name descname"><span class="pre">imgchannels</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Empty</span> <span class="pre">DataFrame</span> <span class="pre">Columns:</span> <span class="pre">[]</span> <span class="pre">Index:</span> <span class="pre">[]</span></em><a class="headerlink" href="#hitips.Display.imagedisplayer.imgchannels" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.grid_data">
-<span class="sig-name descname"><span class="pre">grid_data</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0])</span></em><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.grid_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.grid_data">
+<span class="sig-name descname"><span class="pre">grid_data</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0])</span></em><a class="headerlink" href="#hitips.Display.imagedisplayer.grid_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centralwidget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">centralwidget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.display_initializer">
-<span class="sig-name descname"><span class="pre">display_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IO_GUI</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.display_initializer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.display_initializer">
+<span class="sig-name descname"><span class="pre">display_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">IO_GUI</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.display_initializer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.MAX_HIST_SLIDER_UPDATE">
-<span class="sig-name descname"><span class="pre">MAX_HIST_SLIDER_UPDATE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.MAX_HIST_SLIDER_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.MAX_HIST_SLIDER_UPDATE">
+<span class="sig-name descname"><span class="pre">MAX_HIST_SLIDER_UPDATE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.MAX_HIST_SLIDER_UPDATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.MIN_HIST_SLIDER_UPDATE">
-<span class="sig-name descname"><span class="pre">MIN_HIST_SLIDER_UPDATE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.MIN_HIST_SLIDER_UPDATE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.MIN_HIST_SLIDER_UPDATE">
+<span class="sig-name descname"><span class="pre">MIN_HIST_SLIDER_UPDATE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.MIN_HIST_SLIDER_UPDATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.GET_IMAGE_NAME">
-<span class="sig-name descname"><span class="pre">GET_IMAGE_NAME</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.GET_IMAGE_NAME" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.GET_IMAGE_NAME">
+<span class="sig-name descname"><span class="pre">GET_IMAGE_NAME</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.GET_IMAGE_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.READ_IMAGE">
-<span class="sig-name descname"><span class="pre">READ_IMAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.READ_IMAGE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.READ_IMAGE">
+<span class="sig-name descname"><span class="pre">READ_IMAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_channels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.READ_IMAGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.ADJUST_IMAGE_CONTRAST">
-<span class="sig-name descname"><span class="pre">ADJUST_IMAGE_CONTRAST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_channels_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.ADJUST_IMAGE_CONTRAST" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.ADJUST_IMAGE_CONTRAST">
+<span class="sig-name descname"><span class="pre">ADJUST_IMAGE_CONTRAST</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_channels_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.ADJUST_IMAGE_CONTRAST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.MERGEIAMGES">
-<span class="sig-name descname"><span class="pre">MERGEIAMGES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_channels_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.MERGEIAMGES" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.MERGEIAMGES">
+<span class="sig-name descname"><span class="pre">MERGEIAMGES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_channels_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.MERGEIAMGES" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.apply_lut_color">
-<span class="sig-name descname"><span class="pre">apply_lut_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.apply_lut_color" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.apply_lut_color">
+<span class="sig-name descname"><span class="pre">apply_lut_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.apply_lut_color" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.SHOWIMAGE">
-<span class="sig-name descname"><span class="pre">SHOWIMAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalBytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.SHOWIMAGE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.SHOWIMAGE">
+<span class="sig-name descname"><span class="pre">SHOWIMAGE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">totalBytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.SHOWIMAGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.IMAGE_TO_BE_MASKED">
-<span class="sig-name descname"><span class="pre">IMAGE_TO_BE_MASKED</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.IMAGE_TO_BE_MASKED" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.IMAGE_TO_BE_MASKED">
+<span class="sig-name descname"><span class="pre">IMAGE_TO_BE_MASKED</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.IMAGE_TO_BE_MASKED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.IMAGE_FOR_SPOT_DETECTION">
-<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nuclei_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.IMAGE_FOR_SPOT_DETECTION" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.IMAGE_FOR_SPOT_DETECTION">
+<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nuclei_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.IMAGE_FOR_SPOT_DETECTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hitips.Display_Copy1.imagedisplayer.ON_ADJUST_INTENSITY">
-<span class="sig-name descname"><span class="pre">ON_ADJUST_INTENSITY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_range</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display_Copy1.imagedisplayer.ON_ADJUST_INTENSITY" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="hitips.Display.imagedisplayer.ON_ADJUST_INTENSITY">
+<span class="sig-name descname"><span class="pre">ON_ADJUST_INTENSITY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_range</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.ON_ADJUST_INTENSITY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1922,7 +1811,7 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 - ControlPanel: A reference to the ControlPanel object.
 - analysisgui: A reference to the AnalysisGUI object.
 - inout_resource_gui: A reference to the IO_ResourceGUI object.
-- displaygui: A reference to the DisplayGUI_Copy1 object.</p>
+- displaygui: A reference to the DisplayGUI object.</p>
 <p>Methods:
 - __init__: Initializes the ImageReader with references to GUI components.
 - ON_CLICK_LOADBUTTON: Handles the action to load metadata from selected files.
@@ -1937,7 +1826,7 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <p>Parameters:
 - ControlPanel: Reference to the ControlPanel object.
 - inout_resource_gui: Reference to the IO_ResourceGUI object.
-- displaygui: Reference to the DisplayGUI_Copy1 object.
+- displaygui: Reference to the DisplayGUI object.
 - analysisgui: Reference to the AnalysisGUI object.</p>
 </dd></dl>
 
@@ -2004,9 +1893,6 @@ organizing this information into a structured DataFrame format.</p>
 <dd></dd></dl>
 
 </section>
-<section id="module-hitips">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hitips" title="Permalink to this heading">¶</a></h2>
-</section>
 </section>
 
 
@@ -2026,11 +1912,23 @@ organizing this information into a structured DataFrame format.</p>
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">hitips</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">hitips package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">HiTIPS</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">hitips</a><ul>
+      <li>Previous: <a href="modules.html" title="previous chapter">hitips</a></li>
+      <li>Next: <a href="instructions.html" title="next chapter">HiTIPS</a></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>
