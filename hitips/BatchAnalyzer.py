@@ -148,6 +148,7 @@ class BatchAnalysis(object):
         self.output_prefix = []
         self.output_folder = []
         self.gui_params = Gui_Params
+        self.spot_cell_index = False
         
     @log_errors(logging.getLogger(__name__))            
     def ON_APPLYBUTTON(self, Meta_Data_df):
@@ -263,6 +264,13 @@ class BatchAnalysis(object):
             xlsx_name = ['Nuclei_Information.csv']
             xlsx_full_name = os.path.join(os.path.join(self.output_folder,"whole_plate_resutls"), xlsx_name[0])
             self.cell_df = pd.read_csv(xlsx_full_name).drop(["Unnamed: 0"], axis=1)
+            for spot_file in os.listdir(os.path.join(self.output_folder,"whole_plate_resutls")):
+                for i in range(5):
+                    if 'Ch' + str(i+1) + '_Spot_Locations_' in spot_file:
+                        setattr(self, 'ch' + str(i+1) + '_spot_df', 
+                                pd.read_csv(os.path.join(self.output_folder,"whole_plate_resutls",spot_file)).drop(["Unnamed: 0"], axis=1)) 
+                        print(getattr(self, 'ch' + str(i+1) + '_spot_df'))
+                        
             cell_tracking_folder = os.path.join(self.output_folder, 'cell_tracking')
             if os.path.isdir(cell_tracking_folder) == False:
                 os.mkdir(cell_tracking_folder)
@@ -298,8 +306,7 @@ class BatchAnalysis(object):
                         spot_channels=np.array([])
                     else:
                         spot_channels = spots_loc['channel'].unique()
-                        
-                        
+        
                     for fov in fovs:
                         
                         spot_images,spot_dict_stack = {}, {}
@@ -370,9 +377,9 @@ class BatchAnalysis(object):
                             # Update 'cell_index' in self.cell_df
                             previous_index = self.cell_df.loc[row_index_celldf, 'cell_index']
                             self.cell_df.loc[row_index_celldf, 'cell_index'] = trck_row["cell_index"]
-                            
+                            print(col, row, fov, trck_row["time_point"], previous_index, trck_row["cell_index"])
                             self.update_cell_index_in_all_spot_channels( col, row, fov, trck_row["time_point"], previous_index, trck_row["cell_index"])
-
+                        
                             
                         ##########save whole field track images
                         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -764,6 +771,7 @@ class BatchAnalysis(object):
                             print("saved track: "+ 'col' + str(col) + r'_row' + str(row) + r'_field' + str(fov) + r'_cell' + str(id_))
                             
         self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
+        self.spot_cell_index = True
         self.PROCESS_ALL_SPOT_CHANNELS()
         seconds2 = time.time()
         
@@ -877,7 +885,10 @@ class BatchAnalysis(object):
         None
         """
         if len(channel_spot_df_list) > 0:
-            channel_spot_df = pd.concat(channel_spot_df_list)
+            if self.spot_cell_index:
+                channel_spot_df = channel_spot_df_list
+            else:
+                channel_spot_df = pd.concat(channel_spot_df_list)
             if self.gui_params.SpotsLocation_check_status:
                 self.SAVE_SPOT_INFO(channel_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, channel_name)
     
@@ -891,14 +902,21 @@ class BatchAnalysis(object):
         """
         columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
         rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
-    
-        # Process each channel
-        self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
-        self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
-        self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
-        self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
-        self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
-        
+        if self.spot_cell_index:
+            self.process_channel(self.ch1_spot_df, columns, rows, 'Ch1')
+            self.process_channel(self.ch2_spot_df, columns, rows, 'Ch2')
+            self.process_channel(self.ch3_spot_df, columns, rows, 'Ch3')
+            self.process_channel(self.ch4_spot_df, columns, rows, 'Ch4')
+            self.process_channel(self.ch5_spot_df, columns, rows, 'Ch5')
+
+            
+        else:
+            self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
+            self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
+            self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
+            self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
+            self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
+
     def update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
         """
         Updates cell indices in a specified channel's DataFrame.
@@ -924,6 +942,7 @@ class BatchAnalysis(object):
         --------
         None
         """
+        
         channel_df = getattr(self, channel_attr)
         if not channel_df.empty:
             row_index_spotdf = channel_df.loc[
@@ -931,7 +950,10 @@ class BatchAnalysis(object):
                 (channel_df['row'] == row) & (channel_df["time_point"] == time_point) & 
                 (channel_df["cell_index"] == previous_index)
             ].index
+            # print(channel_df.loc[row_index_spotdf, 'cell_index'])
             channel_df.loc[row_index_spotdf, 'cell_index'] = new_index
+            # print(channel_df.loc[row_index_spotdf, 'cell_index'])
+            
         setattr(self, channel_attr, channel_df) # Update the class variable
     
     def update_cell_index_in_all_spot_channels(self, col, row, fov, time_point, previous_index, new_index):
@@ -960,6 +982,7 @@ class BatchAnalysis(object):
         """
         
         for channel in ['ch1_spot_df', 'ch2_spot_df', 'ch3_spot_df', 'ch4_spot_df', 'ch5_spot_df']:
+
             self.update_cell_index_in_channel(channel, col, row, fov, time_point, previous_index, new_index)
         
     def normalize_stack(self, images):
