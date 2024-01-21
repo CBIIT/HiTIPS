@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name="hitips",
-    version="0.1.21",
+    version="0.1.22",
     author="keikhosravi",
     author_email="adib.keikhosravi@nih.gov",
     description="HiTIPS: High-Throughput Image Processing Software for FISH data analysis",
@@ -39,6 +39,7 @@ setup(
         'qimage2ndarray',
         'spatial_efd',
         'pydantic==1.10.9',
+        'aicspylibczi',
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
