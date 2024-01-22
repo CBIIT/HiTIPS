@@ -1,5 +1,5 @@
-HiTIPS
-======
+Instructions
+============
 
 **HiTIPS** (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.
 
@@ -252,3 +252,60 @@ Spot Detection Method
 .. image:: images/spot_detection_method.png
    :alt: Spot Detection Method
    :align: center 
+   
+   
+Nuclei and Spot Tracking
+------------------------
+
+- Nuclei Tracking: for selecting nuclei tracking method. Currently there are two options: Bayesian and DeepCell. 
+
+- Nuc Search Radius (Pix): the radius of search for Bayesian method in pixels. It is recommended to use the default value(100). If the accuracy of tracking not satisfactory, you can reduce or increase this value.
+
+- Spot search Radius (pix): maximum displacement for the spot to be considered the same for intial clustering of the spots.
+
+- Secondary Spot Search Radius: maximum displacement for the spot to be considered the same for retrospective assignment of the spots.
+
+  -- Note: Both these methods will be applied after aligment of the spots over time. So the nuceli movement and rotation don't need to be considered for adjusting 
+     these parameters.
+     
+- Min Track Length (Frames): Do not include the nuclei that have been tracked less than this value in the results.
+
+- Track Registration Method: You can currently choose between 'Phase Correlation' (Default) and 'Intensity Based' registration methods. 
+  The 'Intensity Based' registration approach has been proven to work better when cells shape changes during along the movement on their trajectory, however, large frame-to-frame intensity variations can introduce angle shift or translation in the registration results. On the other hand, the 'Phase Correlation' is more robust to intensity change and less robust to frame-to-frame shape deformation.
+  
+- Fitting Method: For choosing the the method to fit a two or three state HMM model to the intensity of the tracked spots.
+
+- Max Spots Per Cell: In a tracked nuclei, if for one frame more spots are detected than this value due to the background noise, that frame will be ignored for spot tracking. 
+
+- Min Burst Duration (frames): Remove that spots from analysis, if they are only present in less number of frames than this value. This will also help remving the background noise detected in a smallnumber of frames due to background noise.
+
+- Patch Size (pix): Size of image image patch for saving the nuclei time stacks.
+
+.. image:: images/nuc_spot_tracking.png
+   :alt: Nuclei Spot Tracking
+   :align: center 
+
+
+Results
+-------
+
+This tab included the resutls that are needed to be saved after the analysis is done.
+
+- Nuclei Mask: this will save the binary mask images for the channel selected as nuclei.
+
+- Nuclei Info: this will save all information related to each nuclei in the dataset (location, shape information, intensity etc.).
+
+- Spots Location: this will save all information related to each spot in the dataset.
+
+- Cell Tracking: this will save all images and results table for every tracked nuclei.
+
+- Spot Tracking: this will save all images and results table for every tracked spot in the dataset.
+
+-Note if you need to save Nuclei or Spot tracking results, all the boxes need to be checked.
+
+
+.. image:: images/results.png
+   :alt: Results
+   :align: center 
+
+
