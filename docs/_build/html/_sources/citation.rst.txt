@@ -17,11 +17,10 @@ BibTeX Entry
       title={HiTIPS: High-Throughput Image Processing Software for the Study of Nuclear Architecture and Gene Expression},
       author={Keikhosravi, Adib and Almansour, Faisal and Bohrer, Christopher H and Fursova, Nadezda A and Guin, Krishnendu and Sood, Varun and Misteli, Tom and Larson, Daniel R and Pegoraro, Gianluca},
       journal={bioRxiv},
-      year={Year},
+      year=2023,
       publisher={Cold Spring Harbor Laboratory}
     }
 
-.. note:: Replace "Year" with the publication year once the paper is officially published.
 
 Acknowledgments
 ---------------
