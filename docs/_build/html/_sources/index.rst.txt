@@ -11,8 +11,12 @@ Welcome to HiTIPS's documentation!
    :caption: Contents:
    
    modules
+   installation
    instructions
-
+   results
+   troubleshooting
+   Pluggins
+   citation
 
 
 Indices and tables
