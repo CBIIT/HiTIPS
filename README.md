@@ -10,7 +10,7 @@
 - 🎨 **Customizable Interface**: Provides flexibility for customization and integrating plugins.
 - 🚀 **High-Throughput Support**: Designed for processing large-scale imaging datasets.
 - ⚙️ **Extendable Algorithms**: Incorporates new methodologies for enhancing current analysis routines.
-- 🧩 **Plugin Support**: Supports the creation and integration of new analysis routines.
+- 🧩 **Plugin Support**: Supports the creation and integration of new analysis methods.
   
 ## 🔧 Hardware and Software Prerequisites
 
@@ -46,7 +46,6 @@
    
 ## 🚀 Usage
 
-- Launch HiTIPS using the command `python -m hitips`.
 - Introduce your high-throughput imaging dataset into the software.
 - Navigate through the available analysis options and specify your desired tasks.
 - Modify the analysis parameters fitting your requirements.
