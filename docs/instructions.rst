@@ -13,7 +13,7 @@ Key Features
 - **High-Throughput Support**: Designed for processing large-scale imaging datasets.
 - **Extendable Algorithms**: Incorporates new methodologies for enhancing current analysis routines.
 - **Plugin Support**: Supports the creation and integration of new analysis routines.
-  
+
 
 HiTIPS user interface
 ---------------------

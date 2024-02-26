@@ -373,7 +373,7 @@ intensity thresholding, and Enhanced LOG.</p>
 <li><p><strong>kwargs</strong> (<em>-</em>) -- Keyword arguments containing parameters for the spot detection process.</p></li>
 <li><p><strong>pairs</strong> (<em>The function expects the following key-value</em>) -- </p></li>
 <li><p><strong>'input_image_raw'</strong> (<em>-</em>) -- Raw input image for spot detection.</p></li>
-<li><p><strong>'nuclei_image'</strong> (<em>-</em>) -- Image of nuclei, used in preprocessing.</p></li>
+<li><p><strong>'nuclei_image'</strong> (<em>-</em>) -- Mask of nuclei, used in preprocessing.</p></li>
 <li><p><strong>'spot_detection_method'</strong> (<em>-</em>) -- Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').</p></li>
 <li><p><strong>'threshold_method'</strong> (<em>-</em>) -- Method for thresholding ('Auto' or 'Manual').</p></li>
 <li><p><strong>'threshold_value'</strong> (<em>-</em>) -- Threshold value for 'Manual' method.</p></li>
@@ -1246,17 +1246,15 @@ List of row indices in the imaging plate.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION">
-<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION" title="Link to this definition">¶</a></dt>
 <dd><p>Prepares images for spot detection and retrieves coordinates.</p>
+<p>Parameters:
+nuc_mask : ndarray</p>
+<blockquote>
+<div><p>The nuclei mask to assist in spot detection.</p>
+</div></blockquote>
 <section id="id27">
-<h3>Parameters:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
-<dl class="simple">
-<dt>ImageForNucMask<span class="classifier">ndarray</span></dt><dd><p>The image used for nuclei mask to assist in spot detection.</p>
-</dd>
-</dl>
-</section>
-<section id="id28">
-<h3>Returns:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<h3>Returns:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing the XYZ coordinates and final spots for different channels.</p>
 </dd>
@@ -1266,10 +1264,10 @@ List of row indices in the imaging plate.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES">
-<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuc_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates XYZ coordinates of spots in given images, processing each z-slice and generating a max projection.</p>
-<section id="id29">
-<h3>Parameters:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h3>
+<section id="id28">
+<h3>Parameters:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>images_pd_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing image data, including image paths and z-slice information.</p>
 </dd>
@@ -1279,8 +1277,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id30">
-<h3>Returns:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h3>
+<section id="id29">
+<h3>Returns:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>tuple</dt><dd><p>A tuple containing three elements:
 1. xyz_coordinates (ndarray): Array of XYZ coordinates of detected spots in the max projection.
@@ -1295,8 +1293,8 @@ List of row indices in the imaging plate.</p></li>
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC">
 <span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_round</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_nuc_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_dist_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the radial distance of each spot from the center of its respective nucleus.</p>
-<section id="id31">
-<h3>Parameters:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
+<section id="id30">
+<h3>Parameters:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>xyz_round<span class="classifier">ndarray</span></dt><dd><p>Rounded XYZ coordinates of detected spots.</p>
 </dd>
@@ -1308,8 +1306,8 @@ List of row indices in the imaging plate.</p></li>
 </dd>
 </dl>
 </section>
-<section id="id32">
-<h3>Returns:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h3>
+<section id="id31">
+<h3>Returns:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
 <dl class="simple">
 <dt>ndarray</dt><dd><p>Array containing the radial distance of each spot from the center of its nucleus.</p>
 </dd>
@@ -1580,7 +1578,7 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.Display.imagedisplayer.IMAGE_FOR_SPOT_DETECTION">
-<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nuclei_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.IMAGE_FOR_SPOT_DETECTION" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nuclei_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Display.imagedisplayer.IMAGE_FOR_SPOT_DETECTION" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

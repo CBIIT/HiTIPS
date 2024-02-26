@@ -12,6 +12,7 @@ Welcome to HiTIPS's documentation!
    
    modules
    installation
+   datasets
    instructions
    results
    troubleshooting

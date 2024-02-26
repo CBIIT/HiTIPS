@@ -49,15 +49,37 @@
 <h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Operating System</strong>: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora), Windows (10 and after)</p></li>
-<li><p><strong>Python</strong>: Version 3.7 or newer.</p></li>
+<li><p><strong>Python</strong>: Version 3.8 or newer.</p></li>
 <li><p><strong>Package Manager</strong>: Latest version of <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or <a class="reference external" href="https://www.anaconda.com/products/distribution">Anaconda</a>.</p></li>
 </ul>
 </section>
 </section>
 <section id="id1">
 <h2>Installation<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<section id="using-conda-and-pip">
-<h3>Using Conda and Pip<a class="headerlink" href="#using-conda-and-pip" title="Link to this heading">¶</a></h3>
+<p>To install HiTIPS, we highly recommend using conda. To install conda,
+you must first pick the right installer for you.
+The following are the most popular installers currently available:</p>
+<dl class="simple glossary">
+<dt id="term-Miniconda"><a class="reference external" href="https://docs.anaconda.com/free/miniconda/">Miniconda</a><a class="headerlink" href="#term-Miniconda" title="Link to this term">¶</a></dt><dd><p>Miniconda is a minimal installer provided by Anaconda. Use this installer
+if you want to install most packages yourself.</p>
+</dd>
+<dt id="term-Anaconda-Distribution"><a class="reference external" href="https://www.anaconda.com/download">Anaconda Distribution</a><a class="headerlink" href="#term-Anaconda-Distribution" title="Link to this term">¶</a></dt><dd><p>Anaconda Distribution is a full featured installer that comes with a suite
+of packages for data science, as well as Anaconda Navigator, a GUI application
+for working with conda environments.</p>
+</dd>
+<dt id="term-Miniforge"><a class="reference external" href="https://github.com/conda-forge/miniforge">Miniforge</a><a class="headerlink" href="#term-Miniforge" title="Link to this term">¶</a></dt><dd><p>Miniforge is an installer maintained by the conda-forge community that comes
+preconfigured for use with the conda-forge channel. To learn more about conda-forge,
+visit <a class="reference external" href="https://conda-forge.org">their website</a>.</p>
+</dd>
+</dl>
+<div class="admonition-tip admonition">
+<p class="admonition-title">Tip</p>
+<p>If you are just starting out, we recommend installing conda via the
+<a class="reference external" href="https://docs.anaconda.com/free/miniconda/">Miniconda installer</a>.</p>
+</div>
+</section>
+<section id="installing-hitips-using-conda-and-pip">
+<h2>Installing HiTIPS Using Conda and Pip<a class="headerlink" href="#installing-hitips-using-conda-and-pip" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p><strong>Create a Conda Environment</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
@@ -77,8 +99,8 @@
 </li>
 </ol>
 </section>
-<section id="using-requirements-files">
-<h3>Using Requirements Files<a class="headerlink" href="#using-requirements-files" title="Link to this heading">¶</a></h3>
+<section id="installing-hitips-using-requirements-files">
+<h2>Installing HiTIPS Using Requirements Files<a class="headerlink" href="#installing-hitips-using-requirements-files" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p><strong>Create a Conda Environment from `hitips_env.yml`</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">hitips_env</span><span class="o">.</span><span class="n">yml</span>
@@ -98,27 +120,27 @@
 </li>
 </ol>
 </section>
-<section id="using-docker">
-<h3>Using Docker<a class="headerlink" href="#using-docker" title="Link to this heading">¶</a></h3>
+<section id="installing-hitips-using-docker">
+<h2>Installing HiTIPS Using Docker<a class="headerlink" href="#installing-hitips-using-docker" title="Link to this heading">¶</a></h2>
 <ol class="arabic">
 <li><p><strong>Install Docker</strong>:</p>
-<blockquote>
-<div><p>Follow the official Docker installation instructions for your platform: <a class="reference external" href="https://docs.docker.com/get-docker/">https://docs.docker.com/get-docker/</a></p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Follow</span> <span class="n">the</span> <span class="n">official</span> <span class="n">Docker</span> <span class="n">installation</span> <span class="n">instructions</span> <span class="k">for</span> <span class="n">your</span> <span class="n">platform</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">docker</span><span class="o">/</span>
+</pre></div>
+</div>
 </li>
 <li><p><strong>Pull the HiTIPS Docker Image</strong>:</p>
-<blockquote>
-<div><p>docker pull adibkeikhosravi991/hitips:tagname</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
 </li>
 <li><p><strong>Run HiTIPS in a Docker Container</strong>:</p>
-<blockquote>
-<div><p>Start a HiTIPS container with the following command:</p>
-<p>docker run -it --rm adibkeikhosravi991/hitips:latest</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span> <span class="n">a</span> <span class="n">HiTIPS</span> <span class="n">container</span> <span class="k">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command</span><span class="p">:</span>
+
+<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
+</pre></div>
+</div>
 </li>
 </ol>
-</section>
 </section>
 </section>
 
@@ -145,6 +167,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hardware-and-software-requirements">Hardware and Software Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-conda-and-pip">Installing HiTIPS Using Conda and Pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-requirements-files">Installing HiTIPS Using Requirements Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-docker">Installing HiTIPS Using Docker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
