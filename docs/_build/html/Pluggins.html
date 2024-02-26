@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="python" data-content_root="./">
+<html lang="python">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>Adding Analysis Method &#8212; HiTIPS 0.1.22 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=c2113480"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=57796aeb"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Citing HiTIPS" href="citation.html" />
@@ -33,10 +33,10 @@
           <div class="body" role="main">
             
   <section id="adding-analysis-method">
-<h1>Adding Analysis Method<a class="headerlink" href="#adding-analysis-method" title="Link to this heading">¶</a></h1>
+<h1>Adding Analysis Method<a class="headerlink" href="#adding-analysis-method" title="Permalink to this heading">¶</a></h1>
 <p>This guide explains how to add new nuclei or spot detection methods to the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for biological image analysis.</p>
 <section id="define-the-new-nuclei-detection-method">
-<h2>1. Define the New Nuclei Detection Method<a class="headerlink" href="#define-the-new-nuclei-detection-method" title="Link to this heading">¶</a></h2>
+<h2>1. Define the New Nuclei Detection Method<a class="headerlink" href="#define-the-new-nuclei-detection-method" title="Permalink to this heading">¶</a></h2>
 <p>Define a new method within the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for nuclei detection. For example, <code class="docutils literal notranslate"><span class="pre">custom_nuclei_segmenter</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_nuclei_segmenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -55,7 +55,7 @@
 </div>
 </section>
 <section id="integrate-the-new-nuclei-method">
-<h2>2. Integrate the New Nuclei Method<a class="headerlink" href="#integrate-the-new-nuclei-method" title="Link to this heading">¶</a></h2>
+<h2>2. Integrate the New Nuclei Method<a class="headerlink" href="#integrate-the-new-nuclei-method" title="Permalink to this heading">¶</a></h2>
 <p>Update the <code class="docutils literal notranslate"><span class="pre">neuceli_segmenter</span></code> method to include your new detection method. Add an <cite>if</cite> condition that checks for your method's name and calls your custom function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">neuceli_segmenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="n">pixpermic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="c1"># Existing code</span>
@@ -69,7 +69,7 @@
 </div>
 </section>
 <section id="define-the-new-spot-detection-method">
-<h2>3. Define the New Spot Detection Method<a class="headerlink" href="#define-the-new-spot-detection-method" title="Link to this heading">¶</a></h2>
+<h2>3. Define the New Spot Detection Method<a class="headerlink" href="#define-the-new-spot-detection-method" title="Permalink to this heading">¶</a></h2>
 <p>Define a new method within the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for spot detection. For example, <code class="docutils literal notranslate"><span class="pre">custom_spot_detector</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_spot_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -88,7 +88,7 @@
 </div>
 </section>
 <section id="integrate-the-new-spot-detection-method">
-<h2>4. Integrate the New Spot Detection Method<a class="headerlink" href="#integrate-the-new-spot-detection-method" title="Link to this heading">¶</a></h2>
+<h2>4. Integrate the New Spot Detection Method<a class="headerlink" href="#integrate-the-new-spot-detection-method" title="Permalink to this heading">¶</a></h2>
 <p>Update the <code class="docutils literal notranslate"><span class="pre">SpotDetector</span></code> method to include your new spot detection method. Add code at the beginning to handle your method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">SpotDetector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">spot_detection_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spot_detection_method&#39;</span><span class="p">,</span> <span class="s2">&quot;DefaultMethod&quot;</span><span class="p">)</span>
@@ -102,27 +102,27 @@
 </div>
 </section>
 <section id="implement-your-algorithms">
-<h2>5. Implement Your Algorithms<a class="headerlink" href="#implement-your-algorithms" title="Link to this heading">¶</a></h2>
+<h2>5. Implement Your Algorithms<a class="headerlink" href="#implement-your-algorithms" title="Permalink to this heading">¶</a></h2>
 <p>Implement the segmentation or detection algorithms within the respective methods. Use libraries like OpenCV or TensorFlow as needed.</p>
 </section>
 <section id="update-class-and-method-documentation">
-<h2>6. Update Class and Method Documentation<a class="headerlink" href="#update-class-and-method-documentation" title="Link to this heading">¶</a></h2>
+<h2>6. Update Class and Method Documentation<a class="headerlink" href="#update-class-and-method-documentation" title="Permalink to this heading">¶</a></h2>
 <p>Update the class and method docstrings to include descriptions of your new methods, their parameters, and usage examples.</p>
 </section>
 <section id="test-your-methods">
-<h2>7. Test Your Methods<a class="headerlink" href="#test-your-methods" title="Link to this heading">¶</a></h2>
+<h2>7. Test Your Methods<a class="headerlink" href="#test-your-methods" title="Permalink to this heading">¶</a></h2>
 <p>Test the new methods with various images to ensure accuracy and robustness.</p>
 </section>
 <section id="update-the-documentation">
-<h2>8. Update the Documentation<a class="headerlink" href="#update-the-documentation" title="Link to this heading">¶</a></h2>
+<h2>8. Update the Documentation<a class="headerlink" href="#update-the-documentation" title="Permalink to this heading">¶</a></h2>
 <p>Document your methods in the project's documentation, detailing their overview, usage, and any specific requirements.</p>
 </section>
 <section id="commit-your-changes">
-<h2>9. Commit Your Changes<a class="headerlink" href="#commit-your-changes" title="Link to this heading">¶</a></h2>
+<h2>9. Commit Your Changes<a class="headerlink" href="#commit-your-changes" title="Permalink to this heading">¶</a></h2>
 <p>Commit the changes to the project repository, ensuring all new code is properly documented and tested.</p>
 </section>
 <section id="conclusion">
-<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">¶</a></h2>
 <p>Adding new detection methods to the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class expands its capabilities for biological image analysis. Adhere to best practices in coding, documentation, and testing for successful integration.</p>
 </section>
 </section>
@@ -148,6 +148,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="modules.html">hitips</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
@@ -202,7 +203,7 @@
       &#169;2024, Adib Keikhosravi.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.1.2</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |

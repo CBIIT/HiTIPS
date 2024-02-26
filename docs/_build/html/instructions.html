@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="python" data-content_root="./">
+<html lang="python">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,9 +8,9 @@
     <title>Instructions &#8212; HiTIPS 0.1.22 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=c2113480"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=57796aeb"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Results" href="results.html" />
@@ -33,10 +33,10 @@
           <div class="body" role="main">
             
   <section id="instructions">
-<h1>Instructions<a class="headerlink" href="#instructions" title="Link to this heading">¶</a></h1>
+<h1>Instructions<a class="headerlink" href="#instructions" title="Permalink to this heading">¶</a></h1>
 <p><strong>HiTIPS</strong> (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.</p>
 <section id="key-features">
-<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">¶</a></h2>
+<h2>Key Features<a class="headerlink" href="#key-features" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><strong>Automated Segmentation</strong>: Efficiently segments cells and nuclei.</p></li>
 <li><p><strong>FISH Signal Identification</strong>: Accurate localization and identification of FISH signals.</p></li>
@@ -48,12 +48,12 @@
 </ul>
 </section>
 <section id="hitips-user-interface">
-<h2>HiTIPS user interface<a class="headerlink" href="#hitips-user-interface" title="Link to this heading">¶</a></h2>
+<h2>HiTIPS user interface<a class="headerlink" href="#hitips-user-interface" title="Permalink to this heading">¶</a></h2>
 <p>HiTIPS unser interface consists of two windows: one for displaying the image and realtime results of cell and spots segmentation, and the other one for image and dataset loading, image selection for display and selecting analsysis parameters as well as running the analysis.</p>
 <img alt="User Interface" class="align-center" src="_images/user_interface.png" />
 </section>
 <section id="data-loading-from-cellvoyager">
-<h2>Data loading from CellVoyager<a class="headerlink" href="#data-loading-from-cellvoyager" title="Link to this heading">¶</a></h2>
+<h2>Data loading from CellVoyager<a class="headerlink" href="#data-loading-from-cellvoyager" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>From “Input Output” tab click on “Load MetaData” button.</p></li>
 <li><p>Using the “Select Metadata Files…” window navigate into the folder containing all the images and metadata saved by the instrument.</p></li>
@@ -62,7 +62,7 @@
 <img alt="Metadata Loading" class="align-center" src="_images/metadata_loading.png" />
 </section>
 <section id="loading-plate-information-from-cellvoyager">
-<h2>Loading plate information from CellVoyager<a class="headerlink" href="#loading-plate-information-from-cellvoyager" title="Link to this heading">¶</a></h2>
+<h2>Loading plate information from CellVoyager<a class="headerlink" href="#loading-plate-information-from-cellvoyager" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Once the plate information is loaded in HiTIPS you should see the “pixel size” value under device label and the ”Display” checkbox is active.</p></li>
 </ul>
@@ -77,7 +77,7 @@
 <img alt="Image Selection" class="align-center" src="_images/image_selection.png" />
 </section>
 <section id="loading-bioformat-image-files">
-<h2>Loading Bioformat image files<a class="headerlink" href="#loading-bioformat-image-files" title="Link to this heading">¶</a></h2>
+<h2>Loading Bioformat image files<a class="headerlink" href="#loading-bioformat-image-files" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>From “Input Output” tab click on “Load Images” button</p></li>
 </ul>
@@ -88,7 +88,7 @@
 <img alt="Select Bioformat" class="align-center" src="_images/select_bioformat.png" />
 </section>
 <section id="image-display-window">
-<h2>Image Display window<a class="headerlink" href="#image-display-window" title="Link to this heading">¶</a></h2>
+<h2>Image Display window<a class="headerlink" href="#image-display-window" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>After loading plate information and checking display checkbox all the active channels in the dataset will be active and the channel information will be displayed next to the channel name.</p></li>
 <li><p>You can also check the “Max.Z” checkbox for each channel to display the maximum projection of the Z-stack.</p></li>
@@ -99,7 +99,7 @@
 </ul>
 </section>
 <section id="adjusting-channel-intensities">
-<h2>Adjusting channel intensities<a class="headerlink" href="#adjusting-channel-intensities" title="Link to this heading">¶</a></h2>
+<h2>Adjusting channel intensities<a class="headerlink" href="#adjusting-channel-intensities" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Up to five channels can be displayed in displayed and the display intensity can be separately adjusted for each channel separately.</p></li>
 </ul>
@@ -112,7 +112,7 @@
 <img alt="Intensity Adjustment" class="align-center" src="_images/intensity_adjustment.png" />
 </section>
 <section id="visualizing-nuclei-segmentation-results">
-<h2>Visualizing nuclei segmentation results<a class="headerlink" href="#visualizing-nuclei-segmentation-results" title="Link to this heading">¶</a></h2>
+<h2>Visualizing nuclei segmentation results<a class="headerlink" href="#visualizing-nuclei-segmentation-results" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>To visualize the nuclei segmentation results, check the “Nuclei” checkbox on the right side of the display window.</p></li>
 <li><p>From the combobox under this checkbox you can select how you would like to visualize the segmentation results. You can select nuclei boundary, area or the nuclei index. The examples are shown below.</p></li>
@@ -120,7 +120,7 @@
 <img alt="Nuclei Segmentation" class="align-center" src="_images/nuclei_segmentation.png" />
 </section>
 <section id="visualizing-spot-detection-results">
-<h2>Visualizing spot detection results<a class="headerlink" href="#visualizing-spot-detection-results" title="Link to this heading">¶</a></h2>
+<h2>Visualizing spot detection results<a class="headerlink" href="#visualizing-spot-detection-results" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>To visualize the spot detection results, check the “Spots” checkbox on the right side of the display window.</p></li>
 <li><p>From the combobox under this checkbox you can select how you would like to visualize the spot detection results results. You can select circles around spots or spot boundary.</p></li>
@@ -128,7 +128,7 @@
 <img alt="Spot Image" class="align-center" src="_images/spot_image.png" />
 </section>
 <section id="nuclei-detection-parameter-setting">
-<h2>Nuclei Detection Parameter Setting<a class="headerlink" href="#nuclei-detection-parameter-setting" title="Link to this heading">¶</a></h2>
+<h2>Nuclei Detection Parameter Setting<a class="headerlink" href="#nuclei-detection-parameter-setting" title="Permalink to this heading">¶</a></h2>
 <p>The effect of changing any of the parameters in this toolbox can be observed on display window in real-time to achieve the best possible result.</p>
 <ul>
 <li><p>Channel: for selecting the channel containing nuclei stain to run nuclei segmentation.</p></li>
@@ -150,7 +150,7 @@
 <img alt="Nuclei Detection Parameters" class="align-center" src="_images/nuc_detection_parameters.png" />
 </section>
 <section id="spot-channels">
-<h2>Spot Channels<a class="headerlink" href="#spot-channels" title="Link to this heading">¶</a></h2>
+<h2>Spot Channels<a class="headerlink" href="#spot-channels" title="Permalink to this heading">¶</a></h2>
 <ul>
 <li><p>Channels checkboxes: Using these checkboxes you can select the channels containing spots.</p></li>
 <li><p>Coordinates: you can select the location on the spot as the defining point of the spot.</p>
@@ -165,7 +165,7 @@
 <img alt="Spot Channels" class="align-center" src="_images/spot_channels.png" />
 </section>
 <section id="spot-detection-method">
-<h2>Spot Detection Method<a class="headerlink" href="#spot-detection-method" title="Link to this heading">¶</a></h2>
+<h2>Spot Detection Method<a class="headerlink" href="#spot-detection-method" title="Permalink to this heading">¶</a></h2>
 <ul>
 <li><p>Channel: If different algorithms or parameters require for different spot channels you can select that specific channel and adjust rest of the parameters for that channel. Otherwise you can choose “All” to use the same parameters for all channels.</p></li>
 <li><p>Detection Method: for selecting spot detection method from:</p>
@@ -185,7 +185,7 @@
 <img alt="Spot Detection Method" class="align-center" src="_images/spot_detection_method.png" />
 </section>
 <section id="nuclei-and-spot-tracking">
-<h2>Nuclei and Spot Tracking<a class="headerlink" href="#nuclei-and-spot-tracking" title="Link to this heading">¶</a></h2>
+<h2>Nuclei and Spot Tracking<a class="headerlink" href="#nuclei-and-spot-tracking" title="Permalink to this heading">¶</a></h2>
 <ul>
 <li><p>Nuclei Tracking: for selecting nuclei tracking method. Currently there are two options: Bayesian and DeepCell.</p></li>
 <li><p>Nuc Search Radius (Pix): the radius of search for Bayesian method in pixels. It is recommended to use the default value(100). If the accuracy of tracking not satisfactory, you can reduce or increase this value.</p></li>
@@ -207,7 +207,7 @@ The 'Intensity Based' registration approach has been proven to work better when 
 <img alt="Nuclei Spot Tracking" class="align-center" src="_images/nuc_spot_tracking.png" />
 </section>
 <section id="results">
-<h2>Results<a class="headerlink" href="#results" title="Link to this heading">¶</a></h2>
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this heading">¶</a></h2>
 <p>This tab included the resutls that are needed to be saved after the analysis is done.</p>
 <ul class="simple">
 <li><p>Nuclei Mask: this will save the binary mask images for the channel selected as nuclei.</p></li>
@@ -301,7 +301,7 @@ The 'Intensity Based' registration approach has been proven to work better when 
       &#169;2024, Adib Keikhosravi.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.1.2</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |

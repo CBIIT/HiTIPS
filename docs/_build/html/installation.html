@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="python" data-content_root="./">
+<html lang="python">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,12 +8,12 @@
     <title>Installation &#8212; HiTIPS 0.1.22 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=c2113480"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=57796aeb"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Instructions" href="instructions.html" />
+    <link rel="next" title="Example Datasets" href="datasets.html" />
     <link rel="prev" title="hitips package" href="hitips.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -33,11 +33,11 @@
           <div class="body" role="main">
             
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <section id="hardware-and-software-requirements">
-<h2>Hardware and Software Requirements<a class="headerlink" href="#hardware-and-software-requirements" title="Link to this heading">¶</a></h2>
+<h2>Hardware and Software Requirements<a class="headerlink" href="#hardware-and-software-requirements" title="Permalink to this heading">¶</a></h2>
 <section id="hardware-requirements">
-<h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Link to this heading">¶</a></h3>
+<h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>CPU</strong>: Multi-core processor (e.g., Intel i7 or AMD Ryzen 7).</p></li>
 <li><p><strong>RAM</strong>: Minimum 16GB (32GB recommended for large datasets).</p></li>
@@ -46,7 +46,7 @@
 </ul>
 </section>
 <section id="software-requirements">
-<h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Link to this heading">¶</a></h3>
+<h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Operating System</strong>: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora), Windows (10 and after)</p></li>
 <li><p><strong>Python</strong>: Version 3.8 or newer.</p></li>
@@ -55,21 +55,20 @@
 </section>
 </section>
 <section id="id1">
-<h2>Installation<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<h2>Installation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <p>To install HiTIPS, we highly recommend using conda. To install conda,
 you must first pick the right installer for you.
 The following are the most popular installers currently available:</p>
 <dl class="simple glossary">
-<dt id="term-Miniconda"><a class="reference external" href="https://docs.anaconda.com/free/miniconda/">Miniconda</a><a class="headerlink" href="#term-Miniconda" title="Link to this term">¶</a></dt><dd><p>Miniconda is a minimal installer provided by Anaconda. Use this installer
-if you want to install most packages yourself.</p>
+<dt id="term-Miniconda"><a class="reference external" href="https://docs.anaconda.com/free/miniconda/">Miniconda</a><a class="headerlink" href="#term-Miniconda" title="Permalink to this term">¶</a></dt><dd><p>Miniconda is a minimal installer for Anaconda. Use this installer
+if you want to manage most packages yourself.</p>
 </dd>
-<dt id="term-Anaconda-Distribution"><a class="reference external" href="https://www.anaconda.com/download">Anaconda Distribution</a><a class="headerlink" href="#term-Anaconda-Distribution" title="Link to this term">¶</a></dt><dd><p>Anaconda Distribution is a full featured installer that comes with a suite
-of packages for data science, as well as Anaconda Navigator, a GUI application
-for working with conda environments.</p>
+<dt id="term-Anaconda-Distribution"><a class="reference external" href="https://www.anaconda.com/download">Anaconda Distribution</a><a class="headerlink" href="#term-Anaconda-Distribution" title="Permalink to this term">¶</a></dt><dd><p>Anaconda Distribution is a full-featured installer that includes a suite
+of packages for data science, plus Anaconda Navigator, a GUI for managing
+conda environments.</p>
 </dd>
-<dt id="term-Miniforge"><a class="reference external" href="https://github.com/conda-forge/miniforge">Miniforge</a><a class="headerlink" href="#term-Miniforge" title="Link to this term">¶</a></dt><dd><p>Miniforge is an installer maintained by the conda-forge community that comes
-preconfigured for use with the conda-forge channel. To learn more about conda-forge,
-visit <a class="reference external" href="https://conda-forge.org">their website</a>.</p>
+<dt id="term-Miniforge"><a class="reference external" href="https://github.com/conda-forge/miniforge">Miniforge</a><a class="headerlink" href="#term-Miniforge" title="Permalink to this term">¶</a></dt><dd><p>Miniforge is maintained by the conda-forge community, preconfigured for the
+conda-forge channel. Learn more about conda-forge at <a class="reference external" href="https://conda-forge.org">their website</a>.</p>
 </dd>
 </dl>
 <div class="admonition-tip admonition">
@@ -77,70 +76,6 @@ visit <a class="reference external" href="https://conda-forge.org">their website
 <p>If you are just starting out, we recommend installing conda via the
 <a class="reference external" href="https://docs.anaconda.com/free/miniconda/">Miniconda installer</a>.</p>
 </div>
-</section>
-<section id="installing-hitips-using-conda-and-pip">
-<h2>Installing HiTIPS Using Conda and Pip<a class="headerlink" href="#installing-hitips-using-conda-and-pip" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p><strong>Create a Conda Environment</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
-<span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Install HiTIPS using Pip</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">hitips</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Launch HiTIPS</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hitips</span>
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="installing-hitips-using-requirements-files">
-<h2>Installing HiTIPS Using Requirements Files<a class="headerlink" href="#installing-hitips-using-requirements-files" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p><strong>Create a Conda Environment from `hitips_env.yml`</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">hitips_env</span><span class="o">.</span><span class="n">yml</span>
-<span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Install HiTIPS using Pip from `requirements.txt`</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Launch HiTIPS</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hitips</span>
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="installing-hitips-using-docker">
-<h2>Installing HiTIPS Using Docker<a class="headerlink" href="#installing-hitips-using-docker" title="Link to this heading">¶</a></h2>
-<ol class="arabic">
-<li><p><strong>Install Docker</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Follow</span> <span class="n">the</span> <span class="n">official</span> <span class="n">Docker</span> <span class="n">installation</span> <span class="n">instructions</span> <span class="k">for</span> <span class="n">your</span> <span class="n">platform</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">docker</span><span class="o">/</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Pull the HiTIPS Docker Image</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Run HiTIPS in a Docker Container</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span> <span class="n">a</span> <span class="n">HiTIPS</span> <span class="n">container</span> <span class="k">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command</span><span class="p">:</span>
-
-<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
-</pre></div>
-</div>
-</li>
-</ol>
 </section>
 </section>
 
@@ -167,11 +102,9 @@ visit <a class="reference external" href="https://conda-forge.org">their website
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#hardware-and-software-requirements">Hardware and Software Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-conda-and-pip">Installing HiTIPS Using Conda and Pip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-requirements-files">Installing HiTIPS Using Requirements Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-docker">Installing HiTIPS Using Docker</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
@@ -184,7 +117,7 @@ visit <a class="reference external" href="https://conda-forge.org">their website
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="hitips.html" title="previous chapter">hitips package</a></li>
-      <li>Next: <a href="instructions.html" title="next chapter">Instructions</a></li>
+      <li>Next: <a href="datasets.html" title="next chapter">Example Datasets</a></li>
   </ul></li>
 </ul>
 </div>
@@ -214,7 +147,7 @@ visit <a class="reference external" href="https://conda-forge.org">their website
       &#169;2024, Adib Keikhosravi.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.1.2</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
       |
