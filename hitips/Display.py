@@ -15,6 +15,7 @@ from .IO_ResourceGUI import InOut_resource
 from scipy.ndimage import label
 from skimage.color import label2rgb, gray2rgb
 from skimage.io import imread
+import time
 
 class imagedisplayer(object):
     METADATA_DATAFRAME = pd.DataFrame()
@@ -35,6 +36,8 @@ class imagedisplayer(object):
                                   "Orange": [255, 165, 0], "Spring": [0, 255, 127], "Violet": [238, 130, 238], "Pink": [255, 192, 203], "HotPink": [255, 105, 180],
                                   "Goldenrod": [218, 165, 32], "Rainbow": [127, 127, 127], "Ocean": [0, 127, 255], "Terrain": [139, 69, 19], "Neon": [255, 0, 102]}
         
+        self.start_time = 0
+        self.end_time = 0
     def display_initializer(self, out_df, displaygui, IO_GUI):
 
         # Initial setup
@@ -110,7 +113,7 @@ class imagedisplayer(object):
             
     def GET_IMAGE_NAME(self,displaygui):
 
-        
+            self.start_time = time.time()
             self.imgchannels = self.METADATA_DATAFRAME.loc[
                                     (self.METADATA_DATAFRAME['column'] == str(self.grid_data[0])) & 
                                     (self.METADATA_DATAFRAME['row'] == str(self.grid_data[1])) & 
@@ -248,7 +251,13 @@ class imagedisplayer(object):
         if displaygui.SpotsCheckBox.isChecked() == True:
 
             self.input_image = self.IMAGE_TO_BE_MASKED()
-            ch1_spots_img, ch2_spots_img, ch3_spots_img, ch4_spots_img, ch5_spots_img = self.IMAGE_FOR_SPOT_DETECTION(self.input_image, displaygui)
+            
+            if 'filled_res' in locals() or 'filled_res' in globals():
+                pass
+            else:
+                filled_res = None
+                
+            ch1_spots_img, ch2_spots_img, ch3_spots_img, ch4_spots_img, ch5_spots_img = self.IMAGE_FOR_SPOT_DETECTION(self.input_image, displaygui, filled_res)
 
 
             if ch1_spots_img.size != 0:
@@ -292,7 +301,8 @@ class imagedisplayer(object):
             
                         
             displaygui.viewer.setPhoto(QtGui.QPixmap.fromImage(qimage2ndarray.array2qimage(img)))
-            
+            self.end_time = time.time()
+            print("image was processed in " + str(self.end_time - self.start_time) + "   seconds...")
     def IMAGE_TO_BE_MASKED(self):
         
         if self.AnalysisGui.NucMaxZprojectCheckBox.isChecked() == True:
@@ -325,7 +335,7 @@ class imagedisplayer(object):
         
         return ImageForNucMask
        
-    def IMAGE_FOR_SPOT_DETECTION(self, nuclei_image, displaygui):
+    def IMAGE_FOR_SPOT_DETECTION(self, nuclei_image, displaygui, nuc_mask=None):
         # Store results in a dictionary for each channel
         spots_images = {'Ch1': np.array([]), 'Ch2': np.array([]), 'Ch3': np.array([]), 'Ch4': np.array([]), 'Ch5': np.array([])}
 
@@ -351,8 +361,8 @@ class imagedisplayer(object):
                         loadedimg_forspot = imread(spot_img_name)
 
                 ImageForSpots = cv2.normalize(loadedimg_forspot, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-                # coordinates, final_spots = self.ImageAnalyzer.SpotDetector(loadedimg_forspot, self.AnalysisGui, nuclei_image, ch_str)
 
+                
                 detection_methods = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
                 threshold_methods = ["Auto", "Manual"]
                 
@@ -366,7 +376,7 @@ class imagedisplayer(object):
                 
                 coordinates, final_spots = self.ImageAnalyzer.SpotDetector(
                                                                             input_image_raw=loadedimg_forspot, 
-                                                                            nuclei_image=nuclei_image, 
+                                                                            nuc_mask=nuc_mask, 
                                                                             spot_detection_method= detection_methods[params_to_pass[0]],
                                                                             threshold_method= threshold_methods[params_to_pass[1]],
                                                                             threshold_value= params_to_pass[2],

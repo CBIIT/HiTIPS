@@ -13,7 +13,7 @@ from skimage.metrics import mean_squared_error, peak_signal_noise_ratio
 from skimage.registration import phase_cross_correlation
 from scipy import ndimage
 from skimage.metrics import structural_similarity as ssim
-
+from btrack.constants import BayesianUpdates
 import btrack  
 
 

@@ -463,8 +463,9 @@ class analyzer(QWidget):
         self.spotanalysismethod.addItem("IntensityThreshold")
         self.spotanalysismethod.addItem("EnhancedLOG")
         self.spotanalysismethod.setFont(font)
-        self.spotanalysismethod.currentIndexChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.spotanalysismethod.currentIndexChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.spotanalysismethod.currentIndexChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
         
         self.thresholdmethod = QtWidgets.QComboBox(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.thresholdmethod, 2, 1, 1, 1)
@@ -478,8 +479,9 @@ class analyzer(QWidget):
         self.ThresholdSlider.setOrientation(QtCore.Qt.Horizontal)
         self.ThresholdSlider.setObjectName("ThresholdSlider")
         self.ThresholdSlider.valueChanged.connect(lambda: self.SPOT_THRESH_LABEL_UPDATE())
-        self.ThresholdSlider.sliderReleased.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.ThresholdSlider.sliderReleased.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.ThresholdSlider.sliderReleased.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
 
         self.SpotThreshSliderValue = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotThreshSliderValue, 3, 2, 1, 1)
@@ -509,8 +511,9 @@ class analyzer(QWidget):
         self.SensitivitySpinBox.setMaximum(9)
         self.SensitivitySpinBox.setMinimum(1)
         self.SensitivitySpinBox.setValue(3)
-        self.SensitivitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.SensitivitySpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.SensitivitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
         
         
         
@@ -521,8 +524,9 @@ class analyzer(QWidget):
         self.ResizeFactor.setFont(font)
         self.ResizeFactor.setObjectName("ResizeFactor")
         self.ResizeFactor.setValue(1)
-        self.ResizeFactor.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.ResizeFactor.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.ResizeFactor.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
         
         self.ResizeFactorLabel = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.ResizeFactorLabel, 5, 0, 1, 1)
@@ -544,8 +548,9 @@ class analyzer(QWidget):
         self.SpotareaminSpinBox.setFont(font)
         self.SpotareaminSpinBox.setObjectName("SpotareaminSpinBox")
         self.SpotareaminSpinBox.setValue(0)
-        self.SpotareaminSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.SpotareaminSpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.SpotareaminSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
           
         self.SpotareamaxLbl = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotareamaxLbl, 6, 2, 1, 1)
@@ -560,8 +565,9 @@ class analyzer(QWidget):
         self.SpotareamaxSpinBox.setFont(font)
         self.SpotareamaxSpinBox.setObjectName("SpotareamaxSpinBox")
         self.SpotareamaxSpinBox.setValue(99)
-        self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.SpotareamaxSpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
         
         self.SpotIntegratedIntensityLbl = QtWidgets.QLabel(self.SpotAnalysis)
         self.gridLayout_SpotAnalysis.addWidget(self.SpotIntegratedIntensityLbl, 7, 0, 1, 1)
@@ -578,8 +584,9 @@ class analyzer(QWidget):
         self.SpotIntegratedIntensitySpinBox.setMinimum(0)
         self.SpotIntegratedIntensitySpinBox.setMaximum(200000)
         self.SpotIntegratedIntensitySpinBox.setValue(100) 
-        self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
         self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.gui_params.UPDATE_SPOT_ANALYSIS_PARAMS())
+        self.SpotIntegratedIntensitySpinBox.valueChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
+        
         
         self.AnalysisMode.addItem(self.SpotAnalysis, "")
         #############################################

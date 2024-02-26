@@ -274,7 +274,7 @@ class ImageAnalyzer(object):
         ## First blurring round
         if (cell_size %2)==0:
             cell_size = cell_size + 1
-        median_img = cv2.medianBlur(img_uint8,cell_size)
+        median_img = cv2.medianBlur(img_uint8,7)
         gaussian_blurred = cv2.GaussianBlur(median_img,(5,5),0)
         ## Threhsolding and Binarizing
         ret, thresh = cv2.threshold(gaussian_blurred,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
@@ -451,7 +451,7 @@ class ImageAnalyzer(object):
             - kwargs (dict): Keyword arguments containing parameters for the spot detection process.
             The function expects the following key-value pairs:
             - 'input_image_raw' (numpy.ndarray): Raw input image for spot detection.
-            - 'nuclei_image' (numpy.ndarray): Image of nuclei, used in preprocessing.
+            - 'nuclei_image' (numpy.ndarray): Mask of nuclei, used in preprocessing.
             - 'spot_detection_method' (str): Method for spot detection ('Laplacian of Gaussian', 'Gaussian', 'Intensity Threshold', 'Enhanced LOG').
             - 'threshold_method' (str): Method for thresholding ('Auto' or 'Manual').
             - 'threshold_value' (float): Threshold value for 'Manual' method.
@@ -484,7 +484,7 @@ class ImageAnalyzer(object):
         
         # Extract parameters from kwargs
         input_image_raw = kwargs.get('input_image_raw', None)
-        nuclei_image = kwargs.get('nuclei_image', None)
+        nuc_mask = kwargs.get('nuc_mask', None)
         spot_detection_method = kwargs.get('spot_detection_method', "Laplacian of Gaussian")
         threshold_method = kwargs.get('threshold_method', "Auto")
         threshold_value = kwargs.get('threshold_value', 0)
@@ -503,17 +503,9 @@ class ImageAnalyzer(object):
         uint8_max_val = 255
         input_image = cv2.normalize(input_image_raw, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
         input_image1 = input_image
-        ## First blurring round
-        median_img = cv2.medianBlur(nuclei_image,11)
-        ## Threhsolding and Binarizing
-        ret, thresh = cv2.threshold(median_img,0,uint8_max_val,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-        bin_img = (1-thresh/uint8_max_val).astype('bool')
-        ## Binary image filling
-        filled = ndimage.binary_fill_holes(bin_img)
-        struct = ndimage.generate_binary_structure(2, 2)
-        filled = ndimage.binary_dilation(filled, structure=struct).astype(filled.dtype)
-        filled = ndimage.binary_dilation(filled, structure=struct).astype(filled.dtype)
-        boundary, filled = self.neuceli_segmenter(nuclei_image, 0.2)
+        filled = nuc_mask
+        if filled is None:
+            filled = np.ones(input_image_raw.shape)
         #### this part is for removing bright junk in the image################
         if remove_bright_junk == True:
             labeled_nuc, num_features_nuc = label(filled)
@@ -610,8 +602,9 @@ class ImageAnalyzer(object):
             spot_openned_g = cv2.morphologyEx(spots_img_g, cv2.MORPH_OPEN, kernel)
             
             final_spots = np.multiply(spot_openned_g,filled)
-            spots_df, bin_img_g, labeled_spots = self.spots_information(final_spots, input_image_raw, gaussian_fit=gaussian_fit,  min_area=min_area, max_area=max_area,
-                                                                          min_integrated_intensity=min_integrated_intensity, psf_size=psf_size)
+            spots_df, bin_img_g, labeled_spots = self.spots_information(final_spots, input_image_raw, 
+                                                                        gaussian_fit=gaussian_fit,  min_area=min_area, max_area=max_area,
+                                                                        min_integrated_intensity=min_integrated_intensity, psf_size=psf_size)
 
         if spot_detection_method == "Enhanced LOG":
             input_image2  = ndimage.gaussian_filter(input_image1, sigma=kernel_size/2)
