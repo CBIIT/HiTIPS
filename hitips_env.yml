@@ -1,4 +1,4 @@
-name: hitips_ims_clone
+name: hitips_env
 channels:
   - conda-forge
   - anaconda
@@ -316,4 +316,4 @@ dependencies:
     - xmltodict==0.13.0
     - zarr==2.11.3
     - zipp==3.8.0
-prefix: /home/nciadmin/anaconda3/envs/hitips_ims_clone
+prefix: /home/nciadmin/anaconda3/envs/hitips_env
