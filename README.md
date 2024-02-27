@@ -44,45 +44,45 @@ For detailed installation instructions, visit our [installation guide](https://h
 
 ### Installing HiTIPS Using Conda and Pip
 
-1. **Create a Conda Environment**::
+1. **Create a Conda Environment**:
 
     conda create --name hitips_env python=3.8
     conda activate hitips_env
 
-2. **Install HiTIPS using Pip**::
+2. **Install HiTIPS using Pip**:
 
     pip install hitips
 
-3. **Launch HiTIPS**::
+3. **Launch HiTIPS**:
 
     hitips
 
 ### Installing HiTIPS Using Requirements Files
 
-1. **Create a Conda Environment from `hitips_env.yml`**::
+1. **Create a Conda Environment from `hitips_env.yml`**:
 
     conda env create -f hitips_env.yml
     conda activate hitips_env
 
-2. **Install HiTIPS using Pip from `requirements.txt`**::
+2. **Install HiTIPS using Pip from `requirements.txt`**:
 
     pip install -r requirements.txt
 
-3. **Launch HiTIPS**::
+3. **Launch HiTIPS**:
 
     hitips
 
 ### Installing HiTIPS Using Docker
 
-1. **Install Docker**::
+1. **Install Docker**:
 
     Follow the official Docker installation instructions for your platform: https://docs.docker.com/get-docker/
 
-2. **Pull the HiTIPS Docker Image**::
+2. **Pull the HiTIPS Docker Image**:
 
     docker pull adibkeikhosravi991/hitips:latest
 
-3. **Run HiTIPS in a Docker Container**::
+3. **Run HiTIPS in a Docker Container**:
 
     Start a HiTIPS container with the following command:
 
