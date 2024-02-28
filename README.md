@@ -104,12 +104,46 @@ For example datasets for testing, please visit [example datasets](https://hitips
 ## 🤝 Contributing
 
 We warmly welcome contributions to HiTIPS! If you're keen on contributing, please adhere to the following guidelines:
-- Fork and Branch: `git checkout -b feature/your-feature-name`
-- Ensure that your changes align with the project's coding standards.
-- Validate your modifications with appropriate tests.
-- Commit your changes, ensuring your commit messages are descriptive.
-- Push your updates to your fork.
-- Submit a pull request on the primary HiTIPS repository detailing your changes.
+
+Creating a Pull Request
+-----------------------
+
+Before adding your new method, ensure your changes are ready to be shared with the HiTIPS repository:
+
+1. Fork the repository on GitHub.
+2. Clone your fork locally and create a new branch for your feature.
+3. Make your changes locally, committing them to your branch.
+
+   .. code-block:: bash
+
+       git add .
+       git commit -m "Add new nuclei detection method"
+
+4. Push your changes to your fork on GitHub.
+
+   .. code-block:: bash
+
+       git push origin feature_branch_name
+
+5. Go to your fork on GitHub and click the ‘New pull request’ button.
+6. Ensure the base repository is set to CBIIT/HiTIPS and the base branch is the one you want your changes pulled into.
+7. Review your changes, then create the pull request.
+
+Merging the Pull Request
+------------------------
+
+Once your pull request has been reviewed and approved:
+
+1. Merge the pull request via the GitHub interface.
+2. Fetch the updated main branch to your local repository.
+
+   .. code-block:: bash
+
+       git checkout main
+       git pull origin main
+
+3. Delete your local feature branch if desired.
+
 
 ## 📜 License
 
