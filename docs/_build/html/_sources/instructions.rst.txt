@@ -70,7 +70,13 @@ Loading Bioformat image files
 .. image:: images/select_bioformat.png
    :alt: Select Bioformat
    :align: center
-   
+
+Loading Configuration File
+-----------------------------
+
+- The configuration files from previous analyses can be loaded to run the new analysis. To load the configuration file, from dropdown menus, go to "Tool" => "Load Configuration" and using the select window openned, select the configuration file and click "Open".
+
+- Configuration files are automatically saved in the output folder when running the analysis. However, they can also be saved indipendently by clicking "Tool" => "Save Configuration".
    
 Image Display window
 --------------------
@@ -271,3 +277,18 @@ This tab included the resutls that are needed to be saved after the analysis is 
    :align: center 
 
 
+Running Batch Analysis
+----------------------
+
+- Before running the analysis, make sure you have selected a location to save the output files. Under "Input Output" tab, click "Output folder" and select the location to save the results.
+
+
+.. image:: images/output_folder.png
+   :alt: Output Folder
+   :align: center 
+   
+- If you are running HiTIPs in parallel mode, under "Available Resources" tab, select the number of CPU cores you would like to use for your analysis. If you are only using CPU methods, the number of cores you can use will be determined by the number of cores that are avaible to you and the system memory. However, if you are using any GPU method (such as CellPose) in your analysis pipeline, we recommend using maximum 5 cores. The GPU selection is depricated and will be removed in new versions.
+
+.. image:: images/available_resources.png
+   :alt: Available Resources
+   :align: center 

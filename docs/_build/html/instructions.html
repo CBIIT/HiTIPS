@@ -87,6 +87,13 @@
 </ul>
 <img alt="Select Bioformat" class="align-center" src="_images/select_bioformat.png" />
 </section>
+<section id="loading-configuration-file">
+<h2>Loading Configuration File<a class="headerlink" href="#loading-configuration-file" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The configuration files from previous analyses can be loaded to run the new analysis. To load the configuration file, from dropdown menus, go to &quot;Tool&quot; =&gt; &quot;Load Configuration&quot; and using the select window openned, select the configuration file and click &quot;Open&quot;.</p></li>
+<li><p>Configuration files are automatically saved in the output folder when running the analysis. However, they can also be saved indipendently by clicking &quot;Tool&quot; =&gt; &quot;Save Configuration&quot;.</p></li>
+</ul>
+</section>
 <section id="image-display-window">
 <h2>Image Display window<a class="headerlink" href="#image-display-window" title="Permalink to this heading">¶</a></h2>
 <ul class="simple">
@@ -219,6 +226,17 @@ The 'Intensity Based' registration approach has been proven to work better when 
 <p>-Note if you need to save Nuclei or Spot tracking results, all the boxes need to be checked.</p>
 <img alt="Results" class="align-center" src="_images/results.png" />
 </section>
+<section id="running-batch-analysis">
+<h2>Running Batch Analysis<a class="headerlink" href="#running-batch-analysis" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Before running the analysis, make sure you have selected a location to save the output files. Under &quot;Input Output&quot; tab, click &quot;Output folder&quot; and select the location to save the results.</p></li>
+</ul>
+<img alt="Output Folder" class="align-center" src="_images/output_folder.png" />
+<ul class="simple">
+<li><p>If you are running HiTIPs in parallel mode, under &quot;Available Resources&quot; tab, select the number of CPU cores you would like to use for your analysis. If you are only using CPU methods, the number of cores you can use will be determined by the number of cores that are avaible to you and the system memory. However, if you are using any GPU method (such as CellPose) in your analysis pipeline, we recommend using maximum 5 cores. The GPU selection is depricated and will be removed in new versions.</p></li>
+</ul>
+<img alt="Available Resources" class="align-center" src="_images/available_resources.png" />
+</section>
 </section>
 
 
@@ -249,6 +267,7 @@ The 'Intensity Based' registration approach has been proven to work better when 
 <li class="toctree-l2"><a class="reference internal" href="#data-loading-from-cellvoyager">Data loading from CellVoyager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loading-plate-information-from-cellvoyager">Loading plate information from CellVoyager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#loading-bioformat-image-files">Loading Bioformat image files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-configuration-file">Loading Configuration File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#image-display-window">Image Display window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adjusting-channel-intensities">Adjusting channel intensities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#visualizing-nuclei-segmentation-results">Visualizing nuclei segmentation results</a></li>
@@ -258,6 +277,7 @@ The 'Intensity Based' registration approach has been proven to work better when 
 <li class="toctree-l2"><a class="reference internal" href="#spot-detection-method">Spot Detection Method</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#nuclei-and-spot-tracking">Nuclei and Spot Tracking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#results">Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-batch-analysis">Running Batch Analysis</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
