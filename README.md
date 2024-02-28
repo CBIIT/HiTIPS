@@ -1,8 +1,11 @@
 # HiTIPS
 
-[![Build Status](https://example.com/build-status.svg)](https://example.com/build-status)
 [![Documentation Status](https://readthedocs.org/projects/hitips/badge/?version=latest)](https://hitips.readthedocs.io/en/latest/?badge=latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+![Project Logo](hitips.png)
+
 
 **HiTIPS** (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.
 
