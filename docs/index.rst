@@ -5,6 +5,11 @@
 
 Welcome to HiTIPS's documentation!
 ==================================
+.. image:: images/hitips.png
+   :alt: User Interface
+   :align: center
+
+
 
 .. toctree::
    :maxdepth: 2
