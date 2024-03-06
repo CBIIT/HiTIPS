@@ -1,11 +1,11 @@
 Example Datasets
 ================
 
-To test all the functionalities present in HiTIPS, we have uploaded several datasets to the `BioImage Archive <https://www.ebi.ac.uk/biostudies/bioimages/studies/S-BIAD1043>`_, under accession number S-BIAD1043. These datasets were also used for the `HiTIPS paper <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_, and a more detailed explanation of the results can be found in the paper.
+To test all the functionalities present in HiTIPS, we have uploaded several datasets to the `BioImage Archive <https://www.ebi.ac.uk/biostudies/bioimages/studies/S-BIAD1043>`_, under accession number S-BIAD1043. These datasets were also used for the `Preprint <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_, and a more detailed explanation of the results can be found in the paper.
 
-The full description of the datasets can be found on its `BioImage Archive page <https://www.ebi.ac.uk/biostudies/bioimages/studies/S-BIAD1043>`_ as well as in the `HiTIPS paper <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_. However, we provide a brief description of the data here.
+The full description of the datasets can be found on its `BioImage Archive page <https://www.ebi.ac.uk/biostudies/bioimages/studies/S-BIAD1043>`_ as well as in the `Preprint <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_. However, we provide a brief description of the data here.
 
-There are three subfolders within this dataset that correspond to figures 3, 4, and 5 in the `HiTIPS paper <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_:
+There are three subfolders within this dataset that correspond to figures 3, 4, and 5 in the `Preprint <https://www.biorxiv.org/content/10.1101/2023.11.02.565366v1.abstract>`_:
 
 1. **Fig. 3**: 3D maximally projected images of HCT116-RAD21-AID cells stained with DNA FISH probes targeted to the 5’ and 3’ boundaries of the EGFR TAD, respectively.
 

@@ -1,6 +1,36 @@
 Results
 =======
 
+Results Folder
+--------------
+
+The results folder is organized into several subfolders to store different types of output data from the HiTIPS analysis:
+
+- `configuration_files`: Includes the 'analysis_configuration' file that were used or generated during the analysis, 'dependencies_versions' that includes all the packages and their versions used for the analysis, and 'erros_log' that logs the errors (if any) during the analysis.
+
+- `nuclei_masks`: Holds the generated masks for the segmented cell nuclei, crucial for identifying and analyzing individual cells and nuclei tracking.
+
+- `well_nuclei_results`: Results related to the nuclei that have been analyzed and saved separately for each well of the plate.
+
+- `well_spots_locations`: Contains information about the locations of spots detected and saved separately for each well of the plate.
+
+- `whole_plate_results`: Stores comprehensive results that pertain to the entire plate rather than individual wells or nuclei.
+
+- `cell_tracking`: Contains files related to the tracking of nuclei and spots across different time points. This folder contais the followinng subfolders:
+
+    - 'annotated_spot_image_patches': Contains time-stacks of the nuclei with detected spots. Spots are tracked over time and annotated by spot label.
+    
+    - 'single_track_images': This folder includes time-stacks of the each tracked nuclei before and after frame to frame registration.
+    
+    - 'single_track_tables': Contains information related to each tracked nucleous over time. Each file is for a separate nucleus.
+    
+    - 'spot_image_patches': Contains time-stacks of the nuclei with detected spots. Spots are tracked over time and but are not annotated.
+
+    - 'spot_intensity_tables': This contais both csv and txt file for each spot that stores the location, intensity and HMM information related to the spots.
+    
+    -'whole_field_track_images': This folder contains tracked and annotated nuclei within each field over time.
+
+
 Table of information for the segmented cell nuclei
 --------------------------------------------------
 

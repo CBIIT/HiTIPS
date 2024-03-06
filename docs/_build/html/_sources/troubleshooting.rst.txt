@@ -1,6 +1,15 @@
 Troubleshooting
 ===============
 
+
+Reporting Issues
+----------------
+
+If you encounter any issues or errors while using HiTIPS, we encourage you to report them on our GitHub repository's issue tracker. This helps us to improve the software and assist you with troubleshooting. Please provide as much detail as possible, including steps to reproduce the problem, error messages, and screenshots if relevant.
+
+Report issues here: https://github.com/CBIIT/HiTIPS/issues
+
+
 Installation troubleshooting
 ----------------------------
 

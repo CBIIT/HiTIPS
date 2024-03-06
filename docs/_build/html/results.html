@@ -34,6 +34,29 @@
             
   <section id="results">
 <h1>Results<a class="headerlink" href="#results" title="Permalink to this heading">¶</a></h1>
+<section id="results-folder">
+<h2>Results Folder<a class="headerlink" href="#results-folder" title="Permalink to this heading">¶</a></h2>
+<p>The results folder is organized into several subfolders to store different types of output data from the HiTIPS analysis:</p>
+<ul>
+<li><p><cite>configuration_files</cite>: Includes the 'analysis_configuration' file that were used or generated during the analysis, 'dependencies_versions' that includes all the packages and their versions used for the analysis, and 'erros_log' that logs the errors (if any) during the analysis.</p></li>
+<li><p><cite>nuclei_masks</cite>: Holds the generated masks for the segmented cell nuclei, crucial for identifying and analyzing individual cells and nuclei tracking.</p></li>
+<li><p><cite>well_nuclei_results</cite>: Results related to the nuclei that have been analyzed and saved separately for each well of the plate.</p></li>
+<li><p><cite>well_spots_locations</cite>: Contains information about the locations of spots detected and saved separately for each well of the plate.</p></li>
+<li><p><cite>whole_plate_results</cite>: Stores comprehensive results that pertain to the entire plate rather than individual wells or nuclei.</p></li>
+<li><p><cite>cell_tracking</cite>: Contains files related to the tracking of nuclei and spots across different time points. This folder contais the followinng subfolders:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>'annotated_spot_image_patches': Contains time-stacks of the nuclei with detected spots. Spots are tracked over time and annotated by spot label.</p></li>
+<li><p>'single_track_images': This folder includes time-stacks of the each tracked nuclei before and after frame to frame registration.</p></li>
+<li><p>'single_track_tables': Contains information related to each tracked nucleous over time. Each file is for a separate nucleus.</p></li>
+<li><p>'spot_image_patches': Contains time-stacks of the nuclei with detected spots. Spots are tracked over time and but are not annotated.</p></li>
+<li><p>'spot_intensity_tables': This contais both csv and txt file for each spot that stores the location, intensity and HMM information related to the spots.</p></li>
+</ul>
+<p>-'whole_field_track_images': This folder contains tracked and annotated nuclei within each field over time.</p>
+</div></blockquote>
+</li>
+</ul>
+</section>
 <section id="table-of-information-for-the-segmented-cell-nuclei">
 <h2>Table of information for the segmented cell nuclei<a class="headerlink" href="#table-of-information-for-the-segmented-cell-nuclei" title="Permalink to this heading">¶</a></h2>
 <p>The table below describes the individual columns in that contain all the extracted information from the cell nuceli using HiTIPS.</p>
@@ -396,6 +419,7 @@
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Results</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#results-folder">Results Folder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#table-of-information-for-the-segmented-cell-nuclei">Table of information for the segmented cell nuclei</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#table-of-information-for-the-detected-spots">Table of information for the detected spots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cell-tracking-tables">Cell Tracking Tables</a></li>
