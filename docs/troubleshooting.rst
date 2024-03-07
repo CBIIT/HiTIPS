@@ -63,10 +63,6 @@ Once your system is equipped with the necessary C++ tools, retry installing the 
 
 Monitor the installation process for any errors. If encountered, review the error messages for specifics that might indicate missing dependencies or additional required configurations.
 
-6. Environment Setup
---------------------
-
-Verify that your Python environment is correctly set up and that the version of Python used is compatible with the `deepcell-toolbox` package. The package may not support older Python versions.
 
 Ensure these steps are followed accurately to resolve the installation issues related to the `deepcell-toolbox` package.
 
