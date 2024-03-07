@@ -33,4 +33,40 @@ General Usage Tips
 - If you are running HiTIPS on live cell data and need to track cells and spots, maks sure you also check "Nuclei Mask", "Nuclei Info", and "Spots Location" checkboxes under "Results" tab.
 
 
+Resolve Installation Issues for deepcell-toolbox On Windows
+===========================================================
+
+The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater due to the need to compile C extensions in the Python package. Follow these steps to resolve the issue:
+
+1. Install Microsoft C++ Build Tools
+------------------------------------
+
+Visit the `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ website and download the installer. Ensure to select C++ build tools during installation, including the Windows 10 SDK and the latest MSVC v142 x64/x86 build tools.
+
+2. Run the Installer
+--------------------
+
+Execute the downloaded installer and follow the prompts. Make sure the necessary components for C++ development are selected, especially the MSVC build tools and the Windows SDK.
+
+3. Restart Your Computer
+------------------------
+
+After installing the C++ Build Tools, restart your computer to ensure the new configurations are applied and the necessary paths are set.
+
+4. Re-attempt Installation
+--------------------------
+
+Once your system is equipped with the necessary C++ tools, retry installing the `deepcell-toolbox` package. The package should now compile successfully.
+
+5. Check for Errors
+-------------------
+
+Monitor the installation process for any errors. If encountered, review the error messages for specifics that might indicate missing dependencies or additional required configurations.
+
+6. Environment Setup
+--------------------
+
+Verify that your Python environment is correctly set up and that the version of Python used is compatible with the `deepcell-toolbox` package. The package may not support older Python versions.
+
+Ensure these steps are followed accurately to resolve the installation issues related to the `deepcell-toolbox` package.
 
