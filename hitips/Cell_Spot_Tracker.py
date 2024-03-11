@@ -37,13 +37,13 @@ class Tracking():
     - run_clustering: Performs clustering on points with options for handling outliers.
     """
 
-    def RUN_BTRACK(label_stack, gui_params):
+    def RUN_BTRACK(label_stack, parms_dict):
         """
         Performs Bayesian tracking on a stack of labeled images.
 
         Parameters:
         - label_stack (numpy.ndarray): Stack of labeled images to be tracked.
-        - gui_params (object): Parameters from the GUI controlling tracking behavior.
+        - parms_dict (object): Parameters from the GUI controlling tracking behavior.
 
         Returns:
         - tracks_pd (pandas.DataFrame): DataFrame containing the tracking information.
@@ -65,7 +65,7 @@ class Tracking():
             if label_stack.shape[0] > 1250:
                 tracker.update_method = BayesianUpdates.APPROXIMATE
             # tracker.configure_from_file('/data2/HiTIPS_hmm/HiTIPS/BayesianTracker/models/cell_config.json')
-            tracker.max_search_radius = gui_params.NucSearchRadiusSpinbox_current_value
+            tracker.max_search_radius = parms_dict["NucSearchRadiusSpinbox_current_value"]
 
             # append the objects to be tracked
             tracker.append(obj_from_generator)
@@ -97,14 +97,14 @@ class Tracking():
 
         return tracks_pd
     
-    def deepcell_tracking(t_stack_nuc,masks_stack, gui_params):
+    def deepcell_tracking(t_stack_nuc,masks_stack, params_dict):
         """
         Performs cell tracking using the DeepCell tracking algorithm.
 
         Parameters:
         - t_stack_nuc (numpy.ndarray): Time-lapse stack of nuclear images.
         - masks_stack (numpy.ndarray): Corresponding stack of masks for the nuclei.
-        - gui_params (object): GUI parameters for tracking.
+        - parms_dict (object): GUI parameters for tracking.
 
         Returns:
         - tracks_pd (pandas.DataFrame): DataFrame containing tracked cell information over time.

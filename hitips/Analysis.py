@@ -68,14 +68,14 @@ class ImageAnalyzer(object):
     SPOTS_TO_BOUNDARY(self, final_spots):
         Converts a binary image of spots to highlighted boundaries.
     """
-    def __init__(self,gui_params):
+    def __init__(self,params_dict):
         """
         Initializes the ImageAnalyzer with configuration parameters.
 
         Parameters:
             gui_params (object): Configuration parameters for image analysis.
         """
-        self.gui_params = gui_params
+        self.params_dict = params_dict
     
     def neuceli_segmenter(self, input_img, pixpermic=None):
         """
@@ -94,48 +94,48 @@ class ImageAnalyzer(object):
             boundary, mask = image_analyzer.neuceli_segmenter(input_image, pixpermic=0.5)
         """
         
-        self.gui_params.update_values()
-        if self.gui_params.NucDetectMethod_currentText == "Int.-based":
+        
+        if self.params_dict['NucDetectMethod_currentText'] == "Int.-based":
             
-            first_tresh = self.gui_params.NucSeparationSlider_value*2.55
-            second_thresh = 255-(self.gui_params.NucDetectionSlider_value*2.55)
-            Cell_Size = self.gui_params.NucleiAreaSlider_value
+            first_tresh = self.params_dict['NucSeparationSlider_value']*2.55
+            second_thresh = 255-(self.params_dict['NucDetectionSlider_value']*2.55)
+            Cell_Size = self.params_dict['NucleiAreaSlider_value']
             
             boundary, mask = self.segmenter_function(input_img, cell_size=Cell_Size, first_threshold=first_tresh, second_threshold=second_thresh)
             
-        if self.gui_params.NucDetectMethod_currentText == "Marker Controlled":
+        if self.params_dict['NucDetectMethod_currentText'] == "Marker Controlled":
             
-            Cell_Size = self.gui_params.NucleiAreaSlider_value
+            Cell_Size = self.params_dict['NucleiAreaSlider_value']
             max_range = np.sqrt(Cell_Size/3.14)*2/float(pixpermic)
-            nuc_detect_sldr = self.gui_params.NucDetectionSlider_value
+            nuc_detect_sldr = self.params_dict['NucDetectionSlider_value']
             first_tresh = np.ceil((1-(nuc_detect_sldr/100))*max_range).astype(int)
             
-            second_thresh = self.gui_params.NucSeparationSlider_value
+            second_thresh = self.params_dict['NucSeparationSlider_value']
             
             boundary, mask = self.watershed_scikit(input_img, cell_size=Cell_Size, first_threshold=first_tresh, second_threshold=second_thresh)
 
-        if self.gui_params.NucDetectMethod_currentText == "CellPose-GPU":
+        if self.params_dict['NucDetectMethod_currentText'] == "CellPose-GPU":
 
-            Cell_Size = self.gui_params.NucleiAreaSlider_value
+            Cell_Size = self.params_dict['NucleiAreaSlider_value']
             cell_diameter = np.sqrt(Cell_Size/(float(pixpermic)*float(pixpermic)))*2/3.14
             
             boundary, mask = self.cellpose_segmenter(input_img, use_GPU=1, cell_dia=cell_diameter)
             
-        if self.gui_params.NucDetectMethod_currentText == "CellPose-CPU":
+        if self.params_dict['NucDetectMethod_currentText'] == "CellPose-CPU":
             
-            Cell_Size = self.gui_params.NucleiAreaSlider_value
+            Cell_Size = self.params_dict['NucleiAreaSlider_value']
             cell_diameter = np.sqrt(Cell_Size/(float(pixpermic)*float(pixpermic)))*2/3.14
             
             boundary, mask = self.cellpose_segmenter(input_img, use_GPU=0, cell_dia=cell_diameter)
             
-        if self.gui_params.NucDetectMethod_currentText == "CellPose-Cyto":
+        if self.params_dict['NucDetectMethod_currentText'] == "CellPose-Cyto":
             
-            Cell_Size = self.gui_params.NucleiAreaSlider_value
+            Cell_Size = self.params_dict['NucleiAreaSlider_value']
             cell_diameter = np.sqrt(Cell_Size/(float(pixpermic)*float(pixpermic)))*2/3.14
             
             boundary, mask = self.cellpose_segmenter(input_img, use_GPU=1, cell_dia=cell_diameter)
                 
-        if self.gui_params.NucDetectMethod_currentText == "DeepCell":
+        if self.params_dict['NucDetectMethod_currentText'] == "DeepCell":
                         
             boundary, mask = self.deepcell_segmenter(input_img, mmp=float(pixpermic))
         
@@ -206,12 +206,12 @@ class ImageAnalyzer(object):
             The function adjusts the processing steps based on the `NucRemoveBoundaryCheckBox_isChecked` parameter from `gui_params`.
         """
         
-        if self.gui_params.NucRemoveBoundaryCheckBox_isChecked == True:
+        if self.params_dict['NucRemoveBoundaryCheckBox_isChecked'] == True:
             img_uint8 = input_img
         else:
             img_uint8 = cv2.copyMakeBorder(input_img,5,5,5,5,cv2.BORDER_CONSTANT,value=0)
 
-        if self.gui_params.NucDetectMethod_currentText == "CellPose-Cyto":
+        if self.params_dict['NucDetectMethod_currentText'] == "CellPose-Cyto":
             model = models.Cellpose(gpu=use_GPU, model_type='cyto')
         else:
             model = models.Cellpose(gpu=use_GPU, model_type='nuclei')
@@ -219,7 +219,7 @@ class ImageAnalyzer(object):
                 
         boundary = find_boundaries(masks, connectivity=1, mode='thick', background=0)
 
-        if self.gui_params.NucRemoveBoundaryCheckBox_isChecked == True:
+        if self.params_dict['NucRemoveBoundaryCheckBox_isChecked'] == True:
 
             boundary_img = (255*boundary).astype('uint8')
             filled1 = ndimage.binary_fill_holes(boundary_img)

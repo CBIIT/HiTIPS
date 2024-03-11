@@ -17,7 +17,7 @@ class Gui_Params(object):
         self.Output_dir = []
         self.update_values()
         
-
+        
         self.NucInfoChkBox_check_status = self.AnalysisGui.NucInfoChkBox.isChecked()
         self.SpotsLocation_check_status = self.AnalysisGui.SpotsLocation.isChecked()
         self.Spot_Tracking_check_status = self.AnalysisGui.Spot_Tracking.isChecked()
@@ -62,6 +62,59 @@ class Gui_Params(object):
         self.SpotIntegratedIntensitySpinBox_value = self.AnalysisGui.SpotIntegratedIntensitySpinBox.value()
         self.PSFsizeSpinBox_value = self.AnalysisGui.PSFsizeSpinBox.value()
         
+        self.params_dict = self.gather_analysis_params()
+        
+    def gather_analysis_params(self):
+        
+        params_dict = {
+            "spot_params_dict": self.INITIALIZE_SPOT_ANALYSIS_PARAMS(),
+            "NucInfoChkBox_check_status": self.AnalysisGui.NucInfoChkBox.isChecked(),
+            "SpotsLocation_check_status": self.AnalysisGui.SpotsLocation.isChecked(),
+            "Spot_Tracking_check_status": self.AnalysisGui.Spot_Tracking.isChecked(),
+            "SpotLocationCbox_currentText": self.AnalysisGui.SpotLocationCbox.currentText(),
+            "SpotsDistance_check_status": self.AnalysisGui.SpotsDistance.isChecked(),
+            "NucMaskCheckBox_status_check": self.AnalysisGui.NucMaskCheckBox.isChecked(),
+            "NucMaxZprojectCheckBox_status_check": self.AnalysisGui.NucMaxZprojectCheckBox.isChecked(),
+            "SpotMaxZProject_status_check": self.AnalysisGui.SpotMaxZProject.isChecked(),
+            "RemoveBrightJunk_status_check": self.AnalysisGui.RemoveBrightJunk.isChecked(),
+            "SpotCh1CheckBox_status_check": self.AnalysisGui.SpotCh1CheckBox.isChecked(),
+            "SpotCh2CheckBox_status_check": self.AnalysisGui.SpotCh2CheckBox.isChecked(),
+            "SpotCh3CheckBox_status_check": self.AnalysisGui.SpotCh3CheckBox.isChecked(),
+            "SpotCh4CheckBox_status_check": self.AnalysisGui.SpotCh4CheckBox.isChecked(),
+            "SpotCh5CheckBox_status_check": self.AnalysisGui.SpotCh5CheckBox.isChecked(),
+            "NucleiChannel": self.AnalysisGui.NucleiChannel.currentText(),
+            "NumCPUsSpinBox_value": self.inout_resource_gui.NumCPUsSpinBox.value(),
+            "Cell_Tracking_check_status": self.AnalysisGui.Cell_Tracking.isChecked(),
+            "NucTrackingMethod_currentText": self.AnalysisGui.NucTrackMethod.currentText(),
+            "NucSearchRadiusSpinbox_current_value": self.AnalysisGui.NucSearchRadiusSpinbox.value(),
+            "SpotSearchRadiusSpinbox_current_value": self.AnalysisGui.SpotSearchRadiusSpinbox.value(),
+            "Sec_SpotSearchRadiusSpinbox_current_value": self.AnalysisGui.Sec_SpotSearchRadiusSpinbox.value(),
+            "spotchannelselect_currentText": self.AnalysisGui.spotchannelselect.currentText(),
+            "SecChannel_current_index": self.AnalysisGui.SecChannel.currentIndex(),
+            "SecArea_current_index": self.AnalysisGui.SecArea.currentIndex(),
+            "MintrackLengthSpinbox_current_value": self.AnalysisGui.MintrackLengthSpinbox.value(),
+            "maxspotspercellSpinbox_current_value": self.AnalysisGui.maxspotspercellSpinbox.value(),
+            "minburstdurationSpinbox_current_value": self.AnalysisGui.minburstdurationSpinbox.value(),
+            "FittingMethod_index": self.AnalysisGui.Fittingnmethod.currentIndex(),
+            "patchsize_currentText": int(self.AnalysisGui.patchsize.currentText()),
+            "IntegratedIntensity_fitStatus": self.AnalysisGui.IntegratedIntensityCbox.currentIndex(),
+            "NucDetectMethod_currentText": self.AnalysisGui.NucDetectMethod.currentText(),
+            "Registrationmethod_currentText": self.AnalysisGui.Registrationmethod.currentText(),
+            "NucSeparationSlider_value": self.AnalysisGui.NucSeparationSlider.value(),
+            "NucDetectionSlider_value": self.AnalysisGui.NucDetectionSlider.value(),
+            "NucleiAreaSlider_value": self.AnalysisGui.NucleiAreaSlider.value(),
+            "NucRemoveBoundaryCheckBox_isChecked": self.AnalysisGui.NucRemoveBoundaryCheckBox.isChecked(),
+            "Resize_Factor": self.AnalysisGui.ResizeFactor.value(),
+            "IntegratedIntensityCbox_currentIndex": self.AnalysisGui.IntegratedIntensityCbox.currentIndex(),
+            "SpotareaminSpinBox_value": self.AnalysisGui.SpotareaminSpinBox.value(),
+            "SpotareamaxSpinBox_value": self.AnalysisGui.SpotareamaxSpinBox.value(),
+            "SpotIntegratedIntensitySpinBox_value": self.AnalysisGui.SpotIntegratedIntensitySpinBox.value(),
+            "PSFsizeSpinBox_value": self.AnalysisGui.PSFsizeSpinBox.value(),
+            "Output_dir": self.Output_dir
+        }
+    
+        return params_dict
+    
     def update_values(self):
         
         self.NucInfoChkBox_check_status = self.AnalysisGui.NucInfoChkBox.isChecked()
@@ -106,6 +159,8 @@ class Gui_Params(object):
         self.SpotIntegratedIntensitySpinBox_value = self.AnalysisGui.SpotIntegratedIntensitySpinBox.value()
         self.PSFsizeSpinBox_value = self.AnalysisGui.PSFsizeSpinBox.value()
         self.spotchannelselect_currentText = self.AnalysisGui.spotchannelselect.currentText()
+        self.params_dict = self.gather_analysis_params()
+    
     def set_ImDisplay(self, ImDisplay):
         self.ImDisplay = ImDisplay
     
@@ -364,3 +419,4 @@ class Gui_Params(object):
         
         options = QtWidgets.QFileDialog.Options()
         self.Output_dir = QtWidgets.QFileDialog.getExistingDirectory(None, caption= "Select Output Directory", options=options)
+        self.params_dict["Output_dir"] = self.Output_dir

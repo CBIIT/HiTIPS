@@ -30,7 +30,7 @@ class imagedisplayer(object):
         self.hist_min = {'Ch 1': 0, 'Ch 2': 0, 'Ch 3': 0, 'Ch 4': 0, 'Ch 5': 0}
         self.AnalysisGui = analysisgui
         self.gui_params = gui_params
-        self.ImageAnalyzer = ImageAnalyzer(self.gui_params)
+        self.ImageAnalyzer = ImageAnalyzer(self.gui_params.params_dict)
         self.lookup_table_rgb = { "Fire": [255, 128, 0], "Grays": [128, 128, 128], "Ice": [128, 128, 255], "Red": [255, 0, 0], "Green": [0, 255, 0],
                                   "Blue": [0, 0, 255], "Cyan": [0, 255, 255], "Magenta": [255, 0, 255], "Yellow": [255, 255, 0], "Royal": [65, 105, 225],  
                                   "Orange": [255, 165, 0], "Spring": [0, 255, 127], "Violet": [238, 130, 238], "Pink": [255, 192, 203], "HotPink": [255, 105, 180],
@@ -212,6 +212,7 @@ class imagedisplayer(object):
         if displaygui.NuclMaskCheckBox.isChecked() == True:
 
             self.input_image = self.IMAGE_TO_BE_MASKED()
+            self.gui_params.update_values()
             bound, filled_res = self.ImageAnalyzer.neuceli_segmenter(self.input_image,
                                                                      self.METADATA_DATAFRAME["PixPerMic"].iloc[0])
 

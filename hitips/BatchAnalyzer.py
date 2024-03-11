@@ -4,6 +4,8 @@ import math
 import os
 import time
 import sys
+import shutil
+import stat
 from skimage.measure import regionprops, regionprops_table
 from skimage.io import imread
 from scipy import ndimage
@@ -12,8 +14,7 @@ import pandas as pd
 from PIL import Image, ImageQt
 from scipy.ndimage import label, distance_transform_edt
 import multiprocessing
-from multiprocessing import Pool, Process, Manager
-from .GUI_parameters import Gui_Params
+from multiprocessing import Pool, Process, Manager, freeze_support
 import btrack
 import imageio
 from tifffile import imwrite
@@ -38,6 +39,7 @@ from .Cell_Spot_Tracker import Tracking
 import pkg_resources
 from .logging_decorator import log_errors
 import logging
+from .Analysis import ImageAnalyzer
 
 WELL_PLATE_ROWS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
@@ -114,19 +116,9 @@ class BatchAnalysis(object):
     RADIAL_DIST_CALC(self, xyz_round, spot_nuc_labels, radial_dist_df, dist_img):
         Calculates radial distances for spots.
     """
-    output_folder = []
-    if os.name == 'nt':
-        cell_pd_list, ch1_spot_df_list, ch2_spot_df_list = [], [], []
-        ch3_spot_df_list, ch4_spot_df_list, ch5_spot_df_list = [], [], []
-    else:
-        manager = Manager()
-        cell_pd_list, ch1_spot_df_list, ch2_spot_df_list = manager.list(), manager.list(), manager.list()
-        ch3_spot_df_list, ch4_spot_df_list, ch5_spot_df_list = manager.list(), manager.list(), manager.list()
-        ### make sure all the lists are clear
-        cell_pd_list[:], ch1_spot_df_list[:], ch2_spot_df_list[:] = [], [], []
-        ch3_spot_df_list[:], ch4_spot_df_list[:], ch5_spot_df_list[:] = [], [], []
     
-    def __init__(self,Gui_Params, image_analyzer):
+    
+    def __init__(self, params_dict = None):
         """
         Initializes the BatchAnalysis object with necessary parameters and structures for analysis.
 
@@ -141,7 +133,7 @@ class BatchAnalysis(object):
 
             None
         """
-        self.ImageAnalyzer = image_analyzer
+        
         self.ch1_spot_df, self.ch2_spot_df, self.ch3_spot_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         self.ch4_spot_df, self.ch5_spot_df, self.cell_df = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         self.df_checker = pd.DataFrame()
@@ -150,8 +142,38 @@ class BatchAnalysis(object):
         self.experiment_name = []
         self.output_prefix = []
         self.output_folder = []
-        self.gui_params = Gui_Params
+        self.params_dict = params_dict
         self.spot_cell_index = False
+
+
+    def _process_jobs_nt(self, func_args):
+        # This is the new helper method for processing jobs on Windows.
+        args_length, _ = func_args.shape
+        for ind1 in range(args_length):
+            self.BATCH_ANALYZER(func_args[ind1, 0], func_args[ind1, 1], func_args[ind1, 2], func_args[ind1, 3])
+
+    def _process_jobs_posix(self, func_args, jobs_number):
+        # This is the new helper method for processing jobs on POSIX systems.
+        arg_len, _ = func_args.shape
+        start_pos = np.arange(0, arg_len, jobs_number)
+        for st in start_pos:
+            if st + jobs_number - 1 >= arg_len:
+                data_ind = np.arange(st, arg_len)
+            else:
+                data_ind = np.arange(st, st + jobs_number)
+
+            processes = []
+            for ind1 in data_ind:
+                process_args = np.array(func_args[ind1, :], dtype=int)
+                processes.append(Process(target=self.BATCH_ANALYZER, args=(process_args[0], process_args[1], process_args[2], process_args[3])))
+            
+            for process in processes:
+                process.start()
+            for process in processes:
+                process.join()
+
+    def update_params_dict(self, params_dict):
+        self.params_dict=params_dict
         
     @log_errors(logging.getLogger(__name__))            
     def ON_APPLYBUTTON(self, Meta_Data_df):
@@ -169,25 +191,28 @@ class BatchAnalysis(object):
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.ERROR)
         
-        self.gui_params.update_values()
         seconds1 = time.time()
         
-        while self.gui_params.Output_dir ==[]:
+        # while self.params_dict["Output_dir"] ==[]:
                 
-            self.gui_params.OUTPUT_FOLDER_LOADBTN()
+        #     self.gui_params.OUTPUT_FOLDER_LOADBTN()
         self.Meta_Data_df = Meta_Data_df
         path_list = os.path.split(self.Meta_Data_df["ImageName"][0])[0].split(r'/')
         self.experiment_name = path_list[path_list.__len__()-2]
         self.output_prefix  = path_list[path_list.__len__()-1]
-        self.output_folder = os.path.join(self.gui_params.Output_dir,self.experiment_name)
+        self.output_folder = os.path.join(self.params_dict["Output_dir"],self.experiment_name)
         if os.path.isdir(self.output_folder) == False:
             os.mkdir(self.output_folder) 
-            
+
+        self.temp_dir =  os.path.join(self.output_folder,"temp")
+        if os.path.isdir(self.temp_dir) == False:
+            os.mkdir(self.temp_dir) 
+        
         csv_config_folder = os.path.join(self.output_folder, 'configuration_files')
         if os.path.isdir(csv_config_folder) == False:
             os.mkdir(csv_config_folder) 
         self.config_file = os.path.join(csv_config_folder, 'analysis_configuration.csv')
-        self.gui_params.SAVE_CONFIGURATION(self.config_file)
+        self.SAVE_CONFIGURATION(self.config_file, self.params_dict)
         
         ### error logs
         
@@ -213,7 +238,7 @@ class BatchAnalysis(object):
         time_points = np.unique(np.asarray(self.Meta_Data_df['time_point'], dtype=int))
         actionindices = np.unique(np.asarray(self.Meta_Data_df['action_index'], dtype=int))
         
-        jobs_number=self.gui_params.NumCPUsSpinBox_value
+        jobs_number=self.params_dict['NumCPUsSpinBox_value']
 
         func_args=np.zeros((0,4),dtype=int)
         for t in time_points:
@@ -227,48 +252,34 @@ class BatchAnalysis(object):
                         if df_parallel.empty == False:
 
                             func_args=np.append(func_args,np.array([col,row,fov,t]).reshape(1,4),axis=0)
-        if os.name == 'nt':
-            args_length, _ = func_args.shape
-            for ind1 in range(args_length):
-                self.BATCH_ANALYZER(func_args[ind1, 0], func_args[ind1, 1], func_args[ind1, 2], func_args[ind1, 3])
+        if (os.name == 'nt'):
+            # Windows does not fork, so it's safe to use the multiprocessing directly.
+            self._process_jobs_posix(func_args, jobs_number)
+        else:
+            # For POSIX systems, ensure safe multiprocessing context
+            self._process_jobs_posix(func_args, jobs_number)
+
+
+        if self.params_dict['NucInfoChkBox_check_status'] == True:
+
+            pickle_files = [f for f in os.listdir(self.temp_dir) if 'temp_cell_df' in f and f.endswith('.pickle')]
             
-        else:    
-            arg_len,_=func_args.shape
-            start_pos=np.arange(0,arg_len,jobs_number)
-            for st in start_pos:
-
-                if st+jobs_number-1 >= arg_len:
-
-                    data_ind=np.arange(st, arg_len)
-                else:
-                    data_ind=np.arange(st, st+jobs_number)
-
-                processes=[]
-                for ind1 in data_ind:
-                    process_args= np.array(func_args[ind1,:],dtype=int)
-                    processes.append(Process(target=self.BATCH_ANALYZER, args=process_args))
-                # kick them off 
-                for process in processes:
-                    process.start()
-                # now wait for them to finish
-                for process in processes:
-                    process.join()
-
-        if self.gui_params.NucInfoChkBox_check_status == True:
-
-            self.cell_df = pd.concat(self.cell_pd_list)
+            dfs = []
+            for file in pickle_files:
+                  dfs.append(pd.read_pickle(os.path.join(self.temp_dir, file)))
+            self.cell_df = pd.concat(dfs, ignore_index=True)
             self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
             
         self.PROCESS_ALL_SPOT_CHANNELS()
             # Calculate Spot Distances
     
-        if self.gui_params.SpotsDistance_check_status == True:
+        if self.params_dict['SpotsDistance_check_status'] == True:
             columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
             rows = np.unique(np.asarray(self.cell_df['row'], dtype=int))
             Parallel(n_jobs=jobs_number, prefer="threads")(delayed(self.Calculate_Spot_Distances)(row, col) for row in rows for col in columns)
      
-        if self.gui_params.Cell_Tracking_check_status == True:
-            
+        if self.params_dict['Cell_Tracking_check_status'] == True:
+            self.ImageAnalyzer = ImageAnalyzer(self.params_dict)
             xlsx_name = ['Nuclei_Information.csv']
             xlsx_full_name = os.path.join(os.path.join(self.output_folder,"whole_plate_resutls"), xlsx_name[0])
             self.cell_df = pd.read_csv(xlsx_full_name).drop(["Unnamed: 0"], axis=1)
@@ -329,7 +340,7 @@ class BatchAnalysis(object):
                             if self.df_checker.empty:
                                 continue
         
-                            ImageForNucMask = self.RAW_IMAGE_LOADER(str(self.gui_params.NucleiChannel_index + 1))
+                            ImageForNucMask = self.RAW_IMAGE_LOADER(str(self.params_dict['NucleiChannel'][-1]))
                             normalized_nuc_img = cv2.normalize(ImageForNucMask, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
                             nuc_imgs.append(normalized_nuc_img)
                 
@@ -362,13 +373,13 @@ class BatchAnalysis(object):
                             unique_ch = selected_spots['channel'].unique()
                             
                         #### run nuclei tracking algorithm based the selected method
-                        if self.gui_params.NucTrackingMethod_currentText == "Bayesian":
+                        if self.params_dict['NucTrackingMethod_currentText'] == "Bayesian":
                             
-                            tracks_pd = Tracking.RUN_BTRACK(label_stack, self.gui_params)
+                            tracks_pd = Tracking.RUN_BTRACK(label_stack, self.params_dict)
                         
-                        if self.gui_params.NucTrackingMethod_currentText == "DeepCell":
+                        if self.params_dict['NucTrackingMethod_currentText'] == "DeepCell":
                         
-                            tracks_pd = Tracking.deepcell_tracking(t_stack_nuc,label_stack,self.gui_params)
+                            tracks_pd = Tracking.deepcell_tracking(t_stack_nuc,label_stack,self.params_dict)
                         ###
                         tracks_pd_copy = tracks_pd.copy()
                         tracks_pd_copy=tracks_pd_copy.rename(columns={"t": "time_point", "x": "centroid-1", "y": "centroid-0", "ID": "cell_index"})
@@ -417,7 +428,7 @@ class BatchAnalysis(object):
 #                         writer.save(spot_dict_stack[str(int(chnl))],whole_field_full_name, dimension_order="TYX")
                         print("field number: " , fov)
                         #####################
-                        patch_size = (self.gui_params.patchsize_currentText,self.gui_params.patchsize_currentText)
+                        patch_size = (self.params_dict['patchsize_currentText'],self.params_dict['patchsize_currentText'])
                         IDs = tracks_pd['ID'].unique()
 
                         for id_ in IDs:
@@ -426,7 +437,7 @@ class BatchAnalysis(object):
                             single_track = single_track1[single_track1['dummy']==False]
                             single_track_copy = single_track.copy().reset_index(drop=True)
                             
-                            if len(single_track_copy)< self.gui_params.MintrackLengthSpinbox_current_value:
+                            if len(single_track_copy)< self.params_dict['MintrackLengthSpinbox_current_value']:
                                  continue
                             
                             for chnl in unique_ch:
@@ -469,7 +480,7 @@ class BatchAnalysis(object):
                                 bin_img = Tracking.zero_pad_patch(masks_stack[int(pd_row['t']), min_row:max_row, min_col:max_col], desired_size=patch_size)
                                 mask_patches.append(bin_img)
                                 lbl_img, n_feat = label(bin_img)
-                                label_center = int(self.gui_params.patchsize_currentText/2)
+                                label_center = int(self.params_dict['patchsize_currentText']/2)
                                 lbl_img[lbl_img!=lbl_img[label_center,label_center]]=0
                                 bin_img = lbl_img>0
 
@@ -498,7 +509,7 @@ class BatchAnalysis(object):
                                     final_angle = 0
                                 
                                 elif len(rotated_nuc) > 0:
-                                    if self.gui_params.Registrationmethod_currentText == "Phase Correlation":
+                                    if self.params_dict['Registrationmethod_currentText'] == "Phase Correlation":
                                         init_rotation = 15
                                         final_angle, rotated_img = Tracking.phase_correlation(rotated_nuc[-1], img_patch1, intial_rotation = 15, 
                                                                                           rescale_factor = 5, nuc_length = label_center-10)
@@ -515,7 +526,7 @@ class BatchAnalysis(object):
                                     col_name1='ch'+str(int(chnl))+'_spots_number'
                                     single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name1] = len(patch_ch_spots)
                                     col_name2='ch'+str(int(chnl))+'_spots_locations'
-                                    if len(patch_ch_spots[['x_location','y_location','z_location']]<self.gui_params.maxspotspercellSpinbox_current_value+1):
+                                    if len(patch_ch_spots[['x_location','y_location','z_location']]<self.params_dict['maxspotspercellSpinbox_current_value']+1):
                                         coordinates[str(int(chnl))] = patch_ch_spots[['x_location','y_location','z_location']].to_numpy()
                                         single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name2] = [patch_ch_spots[['x_location','y_location','z_location']].to_numpy()]
                                         col_name3='ch'+str(int(chnl))+'_integrated_intensity'
@@ -553,7 +564,8 @@ class BatchAnalysis(object):
                                     temp_transformed = []
                                     for i in range(len(np.where(only_spots_patch[str(int(chnl))]>0)[0])):
 
-                                        temp_spots.append(np.array([np.where(only_spots_patch[str(int(chnl))]>0)[0][i], np.where(only_spots_patch[str(int(chnl))]>0)[1][i]]))
+                                        temp_spots.append(np.array([np.where(only_spots_patch[str(int(chnl))]>0)[0][i], 
+                                                                    np.where(only_spots_patch[str(int(chnl))]>0)[1][i]]))
                                         temp_transformed.append(Tracking.rotate_point((label_center-0.5,label_center-0.5),
                                                                              np.array([np.where(only_spots_patch[str(int(chnl))]>0)[0][i], 
                                                                                        np.where(only_spots_patch[str(int(chnl))]>0)[1][i]]), 
@@ -593,8 +605,8 @@ class BatchAnalysis(object):
                                 if len(all_spots_for_gmm)>3:
                                     
                                     try:
-                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.gui_params.SpotSearchRadiusSpinbox_current_value,
-                                                                        min_burst_duration = self.gui_params.minburstdurationSpinbox_current_value)
+                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.params_dict['SpotSearchRadiusSpinbox_current_value'],
+                                                                        min_burst_duration = self.params_dict['minburstdurationSpinbox_current_value'])
                                     except:
 
                                         clusters=[]
@@ -617,7 +629,7 @@ class BatchAnalysis(object):
                                                         # single_track_copy.loc[trk_ind, col_name] = integrated_intensities[next((i for i, spot in enumerate(timepoint_spots) if np.array_equal(spot, spot_loc)), -1)]
                                     
                                     for lbl1 in np.unique(clusters)[np.unique(clusters)>0]:
-                                        sp_bound= int(round(7*self.gui_params.PSFsizeSpinBox_value/2))
+                                        sp_bound= int(round(7*self.params_dict['PSFsizeSpinBox_value']/2))
                                         all_spot_patches, spot_patches_center_coords = Tracking.get_spot_patch(single_track_copy, chnl, lbl1, 
                                                                                                            rotated_spot_patches[str(int(chnl))], 
                                                                                                            spot_boundary = sp_bound)
@@ -630,7 +642,7 @@ class BatchAnalysis(object):
                                                 fit_results = self.ImageAnalyzer.gmask_fit(spot_patch, 
                                                                                            xy_input=np.array([np.where(spot_patch==spot_patch.max())[0][0],
                                                                                                               np.where(spot_patch==spot_patch.max())[1][0]]), 
-                                                                                           fit=self.gui_params.IntegratedIntensity_fitStatus>0)
+                                                                                           fit=self.params_dict['IntegratedIntensity_fitStatus']>0)
                                                 single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[np.array([spot_coords[0,0]-sp_bound+fit_results[0],
                                                                                                                                                 spot_coords[0,1]-sp_bound+fit_results[1]])]]
                                                 single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"] = fit_results[2]
@@ -657,7 +669,7 @@ class BatchAnalysis(object):
                                         n_samples = len(single_track_copy)
                                         signal = (rna_signal-rna_signal.mean())/rna_signal.std()
                                         
-                                        if self.gui_params.FittingMethod_index==0:
+                                        if self.params_dict['FittingMethod_index']==0:
                                             model = hmm.GaussianHMM(n_components=2, covariance_type="diag", n_iter=1000)
                                             # Initialize the means in ascending order
                                             sorted_idx = np.argsort([np.mean(signal[:n_samples // 2]), np.mean(signal[n_samples // 2:])])
@@ -671,7 +683,7 @@ class BatchAnalysis(object):
                                             except:
                                                 hidden_states = np.zeros(len(single_track_copy), dtype=float)
                                                 
-                                        elif self.gui_params.FittingMethod_index==1:
+                                        elif self.params_dict['FittingMethod_index']==1:
                                             
                                             model = hmm.GaussianHMM(n_components=3, covariance_type="diag", n_iter=1000)
 
@@ -779,11 +791,20 @@ class BatchAnalysis(object):
         self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
         self.spot_cell_index = True
         self.PROCESS_ALL_SPOT_CHANNELS()
+        try:
+            shutil.rmtree(self.temp_dir, onerror=self.remove_readonly)
+        except Exception as e:
+            print(f"Error removing {self.temp_dir}: {e}")
         seconds2 = time.time()
         
         diff=seconds2-seconds1
         print('Total Processing Time (Minutes):',diff/60)
     
+    def remove_readonly(self, func, path, _):
+        "Clear the readonly bit and reattempt the removal"
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+
     def get_package_versions(self, packages):
         versions = {}
         for package in packages:
@@ -835,8 +856,8 @@ class BatchAnalysis(object):
         """
         Saves the analyzed spot information for specific channels and methods.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         spot_df : DataFrame
             DataFrame containing the analyzed spot information.
         coordinates_method : str
@@ -848,8 +869,8 @@ class BatchAnalysis(object):
         channel_name : str
             Name of the channel for which the spot information is being saved.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         
@@ -875,8 +896,8 @@ class BatchAnalysis(object):
         """
         Processes each channel and saves spot information if necessary.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         channel_spot_df_list : list
             A list of DataFrames, each containing spot information for a specific channel.
         columns : list
@@ -886,8 +907,8 @@ class BatchAnalysis(object):
         channel_name : str
             Name of the channel being processed.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         if len(channel_spot_df_list) > 0:
@@ -895,15 +916,24 @@ class BatchAnalysis(object):
                 channel_spot_df = channel_spot_df_list
             else:
                 channel_spot_df = pd.concat(channel_spot_df_list)
-            if self.gui_params.SpotsLocation_check_status:
-                self.SAVE_SPOT_INFO(channel_spot_df, self.gui_params.SpotLocationCbox_currentText, columns, rows, channel_name)
-    
+            if self.params_dict['SpotsLocation_check_status']:
+                self.SAVE_SPOT_INFO(channel_spot_df, self.params_dict['SpotLocationCbox_currentText'], columns, rows, channel_name)
+                
+    def gather_spot_df_list(self,channel_name):
+        substring = "_channel_" + str(channel_name)
+        pickle_files = [f for f in os.listdir(self.temp_dir) if substring in f and f.endswith('.pickle')]
+            
+        dfs = []
+        for file in pickle_files:
+              dfs.append(pd.read_pickle(os.path.join(self.temp_dir, file)))
+        return dfs
+        
     def PROCESS_ALL_SPOT_CHANNELS(self):
         """
         Processes all spot channels and compiles their analyzed information.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         columns = np.unique(np.asarray(self.cell_df['column'], dtype=int))
@@ -917,18 +947,18 @@ class BatchAnalysis(object):
 
             
         else:
-            self.process_channel(self.ch1_spot_df_list, columns, rows, 'Ch1')
-            self.process_channel(self.ch2_spot_df_list, columns, rows, 'Ch2')
-            self.process_channel(self.ch3_spot_df_list, columns, rows, 'Ch3')
-            self.process_channel(self.ch4_spot_df_list, columns, rows, 'Ch4')
-            self.process_channel(self.ch5_spot_df_list, columns, rows, 'Ch5')
+            self.process_channel(self.gather_spot_df_list("1"), columns, rows, 'Ch1')
+            self.process_channel(self.gather_spot_df_list("2"), columns, rows, 'Ch2')
+            self.process_channel(self.gather_spot_df_list("3"), columns, rows, 'Ch3')
+            self.process_channel(self.gather_spot_df_list("4"), columns, rows, 'Ch4')
+            self.process_channel(self.gather_spot_df_list("5"), columns, rows, 'Ch5')
 
     def update_cell_index_in_channel(self, channel_attr, col, row, fov, time_point, previous_index, new_index):
         """
         Updates cell indices in a specified channel's DataFrame.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         channel_attr : str
             The attribute name of the channel DataFrame to be updated.
         col : int
@@ -944,8 +974,8 @@ class BatchAnalysis(object):
         new_index : int
             The new cell index to replace the previous one.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         
@@ -967,8 +997,8 @@ class BatchAnalysis(object):
         """
         Updates cell indices across all spot channels.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         col : int
             Column index of the well.
         row : int
@@ -982,8 +1012,8 @@ class BatchAnalysis(object):
         new_index : int
             The new cell index to replace the previous one.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         
@@ -995,13 +1025,13 @@ class BatchAnalysis(object):
         """
         Normalizes a stack of images.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         images : ndarray
             A stack of images to be normalized.
 
-        Returns
-        -------
+        Returns:
+        --------
         ndarray
             The stack of normalized images.
         """
@@ -1022,8 +1052,8 @@ class BatchAnalysis(object):
         """
         Generates file names for saving cell level data.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         top_folder : str
             The top level directory where the files will be saved.
         folder_name : str
@@ -1043,8 +1073,8 @@ class BatchAnalysis(object):
         spot_ch : int, optional
             The channel index of the spot.
 
-        Returns
-        -------
+        Returns:
+        --------
         str
             The generated file path for saving the data.
         """
@@ -1063,8 +1093,8 @@ class BatchAnalysis(object):
         """
         Generates file names for saving spot level data.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         top_folder : str
             The top level directory where the files will be saved.
         folder_name : str
@@ -1086,8 +1116,8 @@ class BatchAnalysis(object):
         spot_ind : int
             The index of the spot.
 
-        Returns
-        -------
+        Returns:
+        --------
         str
             The generated file path for saving the data.
         """
@@ -1098,14 +1128,15 @@ class BatchAnalysis(object):
             os.mkdir(file_path)
         
         return os.path.join(file_path, file_name)
+        
     @log_errors(logging.getLogger(__name__))
     def BATCH_ANALYZER(self, col,row,fov,t): 
         
         """
         Analyzes a batch of images for nuclei and spots, updating the results lists.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         col : int
             Column index of the well.
         row : int
@@ -1115,11 +1146,11 @@ class BatchAnalysis(object):
         t : int
             Time point index.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
-        
+        self.ImageAnalyzer = ImageAnalyzer(self.params_dict)
         ai = 1
         
         self.df_checker = self.Meta_Data_df.loc[(self.Meta_Data_df['column'] == str(col)) & 
@@ -1163,7 +1194,6 @@ class BatchAnalysis(object):
                     props_df['area'] = pixpermicron*pixpermicron*props_df['area']
                     props_df['perimeter'] = pixpermicron*props_df['perimeter']
                     image_cells_df = pd.concat([df,props_df], axis=1)
-#                     self.cell_pd_list = pd.concat([self.cell_pd_list, image_cells_df], axis=0, ignore_index=True)
                     
                     labeled_boundary = np.multiply(find_boundaries(labeled_nuc, mode='inner', background=0),labeled_nuc)
                     # List to store the coordinates of each nucleus boundary
@@ -1184,18 +1214,18 @@ class BatchAnalysis(object):
                     image_cells_df['efc_ratio']=0
                     image_cells_df['efc_ratio'] = image_cells_df['label'].map(efc_ratio).fillna(image_cells_df['efc_ratio'])
                     
-                    if (self.gui_params.SecChannel_current_index > 0) & (self.gui_params.SecArea_current_index > 0):
+                    if (self.params_dict['SecChannel_current_index'] > 0) & (self.params_dict['SecArea_current_index'] > 0):
                         
-                        secondary_image_df = self.df_checker.loc[(self.df_checker['channel'] == str(self.gui_params.SecChannel_current_index))]
+                        secondary_image_df = self.df_checker.loc[(self.df_checker['channel'] == str(self.params_dict['SecChannel_current_index']))]
                         secondary_image = self.ImageAnalyzer.max_z_project(secondary_image_df)
 
                         sec_props = regionprops_table(labeled_nuc, secondary_image, properties=('label','area', 'mean_intensity'))
                         sec_props_df = pd.DataFrame(sec_props)
                         sec_props_df['sum_intensity'] = sec_props_df['mean_intensity']*sec_props_df['area']
                         
-                        col1_name = "ch" + str(self.gui_params.SecChannel_current_index) + "_mean_intensity"
+                        col1_name = "ch" + str(self.params_dict['SecChannel_current_index']) + "_mean_intensity"
                         image_cells_df[col1_name]=0
-                        col2_name = "ch" + str(self.gui_params.SecChannel_current_index) + "_sum_intensity"
+                        col2_name = "ch" + str(self.params_dict['SecChannel_current_index']) + "_sum_intensity"
                         image_cells_df[col2_name]=0
                         
                         mapping_dict = sec_props_df.set_index('label')['mean_intensity'].to_dict()
@@ -1203,10 +1233,13 @@ class BatchAnalysis(object):
 
                         mapping_dict = sec_props_df.set_index('label')['sum_intensity'].to_dict()
                         image_cells_df[col2_name] = image_cells_df['label'].map(mapping_dict).fillna(image_cells_df[col2_name])
-                        
-                    self.cell_pd_list.append(image_cells_df)
 
-                if self.gui_params.NucMaskCheckBox_status_check == True:
+                    cell_file_name = os.path.join(self.temp_dir , "temp_cell_df_column_"+str(col)+"_row_" + str(row) + "_time_point_" + str(t) + "_field_index_" +str(fov)+'.pickle')
+                    image_cells_df.to_pickle(cell_file_name)
+                    
+                    # self.cell_pd_list.append(image_cells_df)
+
+                if self.params_dict['NucMaskCheckBox_status_check'] == True:
                     nuc_mask_output_folder = os.path.join(self.output_folder, 'nuclei_masks')
                     if os.path.isdir(nuc_mask_output_folder) == False:
                         os.mkdir(nuc_mask_output_folder) 
@@ -1226,164 +1259,62 @@ class BatchAnalysis(object):
 
             ch1_xyz, ch1_xyz_3D, ch1_final_spots, ch2_xyz, ch2_xyz_3D, ch2_final_spots, ch3_xyz, ch3_xyz_3D, ch3_final_spots, ch4_xyz, ch4_xyz_3D, ch4_final_spots, ch5_xyz, ch5_xyz_3D, ch5_final_spots  = self.IMAGE_FOR_SPOT_DETECTION( ImageForNucMask, nuc_mask)
 
-            if self.gui_params.NucMaxZprojectCheckBox_status_check == True:
-
-                if self.gui_params.SpotMaxZProject_status_check == True:
-
-                        if self.gui_params.SpotCh1CheckBox_status_check == True:
-                            if ch1_xyz.size > 0:
-                                ch1_xyz_round = np.round(np.asarray(ch1_xyz)).astype('int')
-                                ch1_spot_nuc_labels = labeled_nuc[ch1_xyz_round[:,0], ch1_xyz_round[:,1]]
-
-                                ch1_num_spots = ch1_xyz.__len__()
-                                if labeled_nuc.max()>0:
-                                    ch1_radial = self.RADIAL_DIST_CALC(ch1_xyz_round,ch1_spot_nuc_labels,
-                                                                       radial_dist_df, dist_img)
-                                else:
-                                    ch1_radial=np.nan
-                                data = { "Experiment":[self.experiment_name]*ch1_num_spots,
-                                         "column": [col]*ch1_num_spots, "row": [row]*ch1_num_spots, 
-                                         "time_point": [t]*ch1_num_spots, "field_index": [fov]*ch1_num_spots,
-                                         "z_slice": ["max_project"]*ch1_num_spots, "channel": [1]*ch1_num_spots,
-                                         "action_index": [ai]*ch1_num_spots, "cell_index": ch1_spot_nuc_labels,
-                                         "x_location": ch1_xyz[:,0], "y_location": ch1_xyz[:,1],
-                                         "z_location": ch1_xyz[:,2], 
-                                         "radial_distance":ch1_radial
-                                    
-                                       }
-                                df_ch1 = pd.concat([pd.DataFrame(data), ch1_final_spots], axis=1)
-
-                                self.ch1_spot_df_list.append(df_ch1)
-    
-                                    
-                        if self.gui_params.SpotCh2CheckBox_status_check == True:
-                            # if ch2_xyz!=[]:
-                            if ch2_xyz.size > 0:
+            if self.params_dict['NucMaxZprojectCheckBox_status_check'] == True:
+                if self.params_dict['SpotMaxZProject_status_check'] == True:
+                    # Assuming channels are numbered from 1 to 5
+                    for channel in range(1, 6):
+                        channel_key = f'SpotCh{channel}CheckBox_status_check'
+                        
+                        if self.params_dict[channel_key]:
+                            xyz = locals()[f'ch{channel}_xyz']
+                            
+                            if xyz.size > 0:
+                                xyz_round = np.round(np.asarray(xyz)).astype('int')
+                                spot_nuc_labels = labeled_nuc[xyz_round[:, 0], xyz_round[:, 1]]
+                                num_spots = len(xyz)
                                 
-                                ch2_xyz_round = np.round(np.asarray(ch2_xyz)).astype('int')
-                                ch2_spot_nuc_labels = labeled_nuc[ch2_xyz_round[:,0], ch2_xyz_round[:,1]]
-                                ch2_num_spots = ch2_xyz.__len__()
-                                if labeled_nuc.max()>0:
-                                    ch2_radial = self.RADIAL_DIST_CALC(ch2_xyz_round,ch2_spot_nuc_labels,
-                                                                       radial_dist_df, dist_img)
+                                if labeled_nuc.max() > 0:
+                                    radial = self.RADIAL_DIST_CALC(xyz_round, spot_nuc_labels, radial_dist_df, dist_img)
                                 else:
-                                    ch2_radial=np.nan
-                                data = { "Experiment":[self.experiment_name]*ch2_num_spots,
-                                         "column": [col]*ch2_num_spots, "row": [row]*ch2_num_spots, 
-                                         "time_point": [t]*ch2_num_spots, "field_index": [fov]*ch2_num_spots,
-                                         "z_slice": ["max_project"]*ch2_num_spots, "channel": [2]*ch2_num_spots,
-                                         "action_index": [ai]*ch2_num_spots, "cell_index": ch2_spot_nuc_labels,
-                                         "x_location": ch2_xyz[:,0], "y_location": ch2_xyz[:,1],
-                                         "z_location": ch2_xyz[:,2],
-                                         "radial_distance":ch2_radial
-                                       }
-#                                 df_ch2 = pd.DataFrame(data)
-                                df_ch2 = pd.concat([pd.DataFrame(data), ch2_final_spots], axis=1)
-                                
-                
-                                self.ch2_spot_df_list.append(df_ch2)
-    
-
-                        if self.gui_params.SpotCh3CheckBox_status_check == True:
-                            if ch3_xyz.size > 0:
-
-                                ch3_xyz_round = np.round(np.asarray(ch3_xyz)).astype('int')
-                                ch3_spot_nuc_labels = labeled_nuc[ch3_xyz_round[:,0], ch3_xyz_round[:,1]]
-                                ch3_num_spots = ch3_xyz.__len__()
-                                if labeled_nuc.max()>0:
-                                    ch3_radial = self.RADIAL_DIST_CALC(ch3_xyz_round,ch3_spot_nuc_labels,
-                                                                       radial_dist_df, dist_img)
-                                else:
-                                    ch3_radial=np.nan
-                                data = { "Experiment":[self.experiment_name]*ch3_num_spots,
-                                         "column": [col]*ch3_num_spots, "row": [row]*ch3_num_spots, 
-                                         "time_point": [t]*ch3_num_spots, "field_index": [fov]*ch3_num_spots,
-                                         "z_slice": ["max_project"]*ch3_num_spots, "channel": [3]*ch3_num_spots,
-                                         "action_index": [ai]*ch3_num_spots, "cell_index": ch3_spot_nuc_labels,
-                                         "x_location": ch3_xyz[:,0], "y_location": ch3_xyz[:,1],
-                                         "z_location": ch3_xyz[:,2],
-                                         "radial_distance": ch3_radial
-                                       }
-
-#                                 df_ch3 = pd.DataFrame(data)
-                                df_ch3 = pd.concat([pd.DataFrame(data), ch3_final_spots], axis=1)
-    
-                                
-                                self.ch3_spot_df_list.append(df_ch3)
-    
-
-                        if self.gui_params.SpotCh4CheckBox_status_check == True:
-                            if ch4_xyz.size > 0:
-
-                                ch4_xyz_round = np.round(np.asarray(ch4_xyz)).astype('int')
-                                ch4_spot_nuc_labels = labeled_nuc[ch4_xyz_round[:,0], ch4_xyz_round[:,1]]
-                                ch4_num_spots = ch4_xyz.__len__()
-                                if labeled_nuc.max()>0:
-                                    ch4_radial = self.RADIAL_DIST_CALC(ch4_xyz_round,ch4_spot_nuc_labels,
-                                                                       radial_dist_df, dist_img)
-                                else:
-                                    ch4_radial=np.nan
-                                data = { "Experiment":[self.experiment_name]*ch4_num_spots,
-                                         "column": [col]*ch4_num_spots, "row": [row]*ch4_num_spots, 
-                                         "time_point": [t]*ch4_num_spots, "field_index": [fov]*ch4_num_spots,
-                                         "z_slice": ["max_project"]*ch4_num_spots, "channel": [4]*ch4_num_spots,
-                                         "action_index": [ai]*ch4_num_spots, "cell_index": ch4_spot_nuc_labels,
-                                         "x_location": ch4_xyz[:,0], "y_location": ch4_xyz[:,1],
-                                         "z_location": ch4_xyz[:,2],
-                                         "radial_distance":ch4_radial
-                                       }
-
-#                                 df_ch4 = pd.DataFrame(data)
-                                df_ch4 = pd.concat([pd.DataFrame(data), ch4_final_spots], axis=1)
-
-                               
-                                self.ch4_spot_df_list.append(df_ch4)
-
-                                    
-                        if self.gui_params.SpotCh5CheckBox_status_check == True:
-                            if ch5_xyz.size > 0:
-
-                                ch5_xyz_round = np.round(np.asarray(ch5_xyz)).astype('int')
-                                ch5_spot_nuc_labels = labeled_nuc[ch5_xyz_round[:,0], ch5_xyz_round[:,1]]
-                                ch5_num_spots = ch5_xyz.__len__()
-                                if labeled_nuc.max()>0:
-                                    ch5_radial = self.RADIAL_DIST_CALC(ch5_xyz_round,ch5_spot_nuc_labels,
-                                                                       radial_dist_df, dist_img)
-                                else:
-                                    ch5_radial=np.nan
+                                    radial = np.nan
+                    
+                                data = {
+                                    "Experiment": [self.experiment_name] * num_spots,
+                                    "column": [col] * num_spots,
+                                    "row": [row] * num_spots,
+                                    "time_point": [t] * num_spots,
+                                    "field_index": [fov] * num_spots,
+                                    "z_slice": ["max_project"] * num_spots,
+                                    "channel": [channel] * num_spots,
+                                    "action_index": [ai] * num_spots,
+                                    "cell_index": spot_nuc_labels,
+                                    "x_location": xyz[:, 0],
+                                    "y_location": xyz[:, 1],
+                                    "z_location": xyz[:, 2],
+                                    "radial_distance": radial
+                                }
+                    
+                                df_channel = pd.concat([pd.DataFrame(data), locals()[f'ch{channel}_final_spots']], axis=1)    
+                                spot_file_name = os.path.join(self.temp_dir ,
+                                                              "temp_spot_df_column_"+str(col)+"_row_" + str(row) + "_time_point_" + str(t) + "_field_index_" +str(fov)+"_channel_" +str(channel)+'.pickle')
+                                df_channel.to_pickle(spot_file_name)
 
 
-                                data = { "Experiment":[self.experiment_name]*ch5_num_spots,
-                                         "column": [col]*ch5_num_spots, "row": [row]*ch5_num_spots, 
-                                         "time_point": [t]*ch5_num_spots, "field_index": [fov]*ch5_num_spots,
-                                         "z_slice": ["max_project"]*ch5_num_spots, "channel": [5]*ch5_num_spots,
-                                         "action_index": [ai]*ch5_num_spots, "cell_index": ch5_spot_nuc_labels,
-                                         "x_location": ch5_xyz[:,0], "y_location": ch5_xyz[:,1],
-                                         "z_location": ch5_xyz[:,2],
-                                         "radial_distance": ch5_radial
-                                       }
-
-#                                 df_ch5 = pd.DataFrame(data)
-                                df_ch5 = pd.concat([pd.DataFrame(data), ch5_final_spots], axis=1)
-
-                               
-                                self.ch5_spot_df_list.append(df_ch5)
-                                
 
     def Calculate_Spot_Distances(self, row, col):
         
         """
         Calculates the distances between spots for given cells.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         row : int
             Row index of the well.
         col : int
             Column index of the well.
 
-        Returns
-        -------
+        Returns:
+        --------
         None
         """
         
@@ -1447,8 +1378,8 @@ class BatchAnalysis(object):
         """
         A helper function for calculating distances between spots.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         spot_pd_dict : dict
             Dictionary of spot DataFrames keyed by channel name.
         key1 : str
@@ -1462,8 +1393,8 @@ class BatchAnalysis(object):
         col : int
             Column index of the well.
 
-        Returns
-        -------
+        Returns:
+        --------
         DataFrame
             A DataFrame containing the calculated distances.
         """
@@ -1532,21 +1463,21 @@ class BatchAnalysis(object):
         """
         Loads the image used for creating nuclei masks.
 
-        Returns
-        -------
+        Returns:
+        --------
         ndarray
             The loaded image for creating nuclei masks.
         """
         if self.df_checker.empty == False:
 
-            if self.gui_params.NucMaxZprojectCheckBox_status_check == True:
-                maskchannel = str(self.gui_params.NucleiChannel_index + 1)
+            if self.params_dict['NucMaxZprojectCheckBox_status_check'] == True:
+                maskchannel = str(self.params_dict['NucleiChannel'][-1])
                 imgformask = self.df_checker.loc[(self.df_checker['channel'] == maskchannel)]
                 loadedimg_formask = self.ImageAnalyzer.max_z_project(imgformask)
                 
             else:
                 z_imglist=[]
-                maskchannel = str(self.gui_params.NucleiChannel_index+1)
+                maskchannel = str(self.params_dict['NucleiChannel'][-1])
                 imgformask = self.df_checker.loc[(self.df_checker['channel'] == maskchannel)]
 
                 for index, row in imgformask.iterrows():
@@ -1567,19 +1498,19 @@ class BatchAnalysis(object):
         """
         Loads raw images for a specified channel.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         maskchannel : str
             The channel for which the raw images are to be loaded.
 
-        Returns
-        -------
+        Returns:
+        --------
         ndarray
             The loaded raw image for the specified channel.
         """
         if self.df_checker.empty == False:
 
-            if self.gui_params.NucMaxZprojectCheckBox_status_check == True:
+            if self.params_dict['NucMaxZprojectCheckBox_status_check'] == True:
 
                 imgformask = self.df_checker.loc[(self.df_checker['channel'] == maskchannel)]
                 loadedimg_formask = self.ImageAnalyzer.max_z_project(imgformask)
@@ -1606,13 +1537,13 @@ class BatchAnalysis(object):
         """
         Segments nuclei from a z-stack of images.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         ImageForNucMask : ndarray
             The z-stack image for nuclei segmentation.
 
-        Returns
-        -------
+        Returns:
+        --------
         tuple
             A tuple containing the boundary and mask images for segmented nuclei.
         """
@@ -1636,13 +1567,13 @@ class BatchAnalysis(object):
         """
         Labels nuclei in a z-stack of images.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         ImageForLabel : ndarray
             The z-stack image for nuclei labeling.
 
-        Returns
-        -------
+        Returns:
+        --------
         ndarray
             The labeled nuclei image stack.
         """
@@ -1665,13 +1596,13 @@ class BatchAnalysis(object):
         """
         Prepares images for spot detection and retrieves coordinates.
 
-        Parameters
-        ----------
-        nuc_mask : ndarray, optional
+        Parameters:
+        -----------
+        nuc_mask : ndarray
             The nuclei mask to assist in spot detection.
 
-        Returns
-        -------
+        Returns:
+        --------
         tuple
             A tuple containing the XYZ coordinates and final spots for different channels.
         """
@@ -1679,27 +1610,27 @@ class BatchAnalysis(object):
         ch1_xyz_3D, ch2_xyz_3D, ch3_xyz_3D, ch4_xyz_3D, ch5_xyz_3D = [],[],[],[],[]
         ch1_final_spots, ch2_final_spots, ch3_final_spots, ch4_final_spots, ch5_final_spots = pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
         
-        if self.gui_params.SpotCh1CheckBox_status_check == True:
+        if self.params_dict['SpotCh1CheckBox_status_check'] == True:
             
             imgforspot = self.df_checker.loc[(self.df_checker['channel'] == '1')]
             ch1_xyz, ch1_xyz_3D, ch1_final_spots = self.XYZ_SPOT_COORDINATES( imgforspot, nuc_mask, 'Ch1')
                 
-        if self.gui_params.SpotCh2CheckBox_status_check == True:
+        if self.params_dict['SpotCh2CheckBox_status_check'] == True:
             
             imgforspot = self.df_checker.loc[(self.df_checker['channel'] == '2')]
             ch2_xyz, ch2_xyz_3D, ch2_final_spots = self.XYZ_SPOT_COORDINATES( imgforspot, nuc_mask, 'Ch2')
                 
-        if self.gui_params.SpotCh3CheckBox_status_check == True:
+        if self.params_dict['SpotCh3CheckBox_status_check'] == True:
             
             imgforspot = self.df_checker.loc[(self.df_checker['channel'] == '3')]
             ch3_xyz, ch3_xyz_3D, ch3_final_spots = self.XYZ_SPOT_COORDINATES( imgforspot, nuc_mask, 'Ch3')
                     
-        if self.gui_params.SpotCh4CheckBox_status_check == True:
+        if self.params_dict['SpotCh4CheckBox_status_check'] == True:
              
             imgforspot = self.df_checker.loc[(self.df_checker['channel'] == '4')]
             ch4_xyz, ch4_xyz_3D, ch4_final_spots = self.XYZ_SPOT_COORDINATES( imgforspot, nuc_mask, 'Ch4')
         
-        if self.gui_params.SpotCh5CheckBox_status_check == True:
+        if self.params_dict['SpotCh5CheckBox_status_check'] == True:
              
             imgforspot = self.df_checker.loc[(self.df_checker['channel'] == '5')]
             ch5_xyz, ch5_xyz_3D, ch5_final_spots = self.XYZ_SPOT_COORDINATES( imgforspot, nuc_mask, 'Ch5')
@@ -1711,8 +1642,8 @@ class BatchAnalysis(object):
         """
         Calculates XYZ coordinates of spots in given images, processing each z-slice and generating a max projection.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         images_pd_df : DataFrame
             DataFrame containing image data, including image paths and z-slice information.
         ImageForNucMask : ndarray
@@ -1720,8 +1651,8 @@ class BatchAnalysis(object):
         spot_channel : str
             Channel identifier used for spot detection.
 
-        Returns
-        -------
+        Returns:
+        --------
         tuple
             A tuple containing three elements:
             1. xyz_coordinates (ndarray): Array of XYZ coordinates of detected spots in the max projection.
@@ -1749,8 +1680,7 @@ class BatchAnalysis(object):
             threshold_methods = ["Auto", "Manual"]
             
             
-            self.gui_params.update_values()
-            params_to_pass= self.gui_params.spot_params_dict[spot_channel]
+            params_to_pass= self.params_dict['spot_params_dict'][spot_channel]
 
             coordinates, final_spots = self.ImageAnalyzer.SpotDetector(
                                                                         input_image_raw=im, 
@@ -1759,14 +1689,14 @@ class BatchAnalysis(object):
                                                                         threshold_method= threshold_methods[params_to_pass[1]],
                                                                         threshold_value= params_to_pass[2],
                                                                         kernel_size= params_to_pass[3],
-                                                                        spot_location_coords= self.gui_params.SpotLocationCbox_currentText,
-                                                                        remove_bright_junk= self.gui_params.RemoveBrightJunk_status_check,
+                                                                        spot_location_coords= self.params_dict['SpotLocationCbox_currentText'],
+                                                                        remove_bright_junk= self.params_dict['RemoveBrightJunk_status_check'],
                                                                         resize_factor= params_to_pass[4],
                                                                         min_area= params_to_pass[5],
                                                                         max_area= params_to_pass[6],
                                                                         min_integrated_intensity= params_to_pass[7],
-                                                                        psf_size= self.gui_params.PSFsizeSpinBox_value,
-                                                                        gaussian_fit= self.gui_params.IntegratedIntensity_fitStatus>0,
+                                                                        psf_size= self.params_dict['PSFsizeSpinBox_value'],
+                                                                        gaussian_fit= self.params_dict['IntegratedIntensity_fitStatus']>0,
                 
                                                                     )
 
@@ -1789,8 +1719,7 @@ class BatchAnalysis(object):
             detection_methods = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"] 
             threshold_methods = ["Auto", "Manual"]
             
-            self.gui_params.update_values()
-            params_to_pass= self.gui_params.spot_params_dict[spot_channel]
+            params_to_pass= self.params_dict['spot_params_dict'][spot_channel]
 
             coordinates_max_project, final_spots = self.ImageAnalyzer.SpotDetector(
                                                                         input_image_raw=im, 
@@ -1799,14 +1728,14 @@ class BatchAnalysis(object):
                                                                         threshold_method= threshold_methods[params_to_pass[1]],
                                                                         threshold_value= params_to_pass[2],
                                                                         kernel_size= params_to_pass[3],
-                                                                        spot_location_coords= self.gui_params.SpotLocationCbox_currentText,
-                                                                        remove_bright_junk= self.gui_params.RemoveBrightJunk_status_check,
+                                                                        spot_location_coords= self.params_dict['SpotLocationCbox_currentText'],
+                                                                        remove_bright_junk= self.params_dict['RemoveBrightJunk_status_check'],
                                                                         resize_factor= params_to_pass[4],
                                                                         min_area= params_to_pass[5],
                                                                         max_area= params_to_pass[6],
                                                                         min_integrated_intensity= params_to_pass[7],
-                                                                        psf_size= self.gui_params.PSFsizeSpinBox_value,
-                                                                        gaussian_fit= self.gui_params.IntegratedIntensity_fitStatus>0
+                                                                        psf_size= self.params_dict['PSFsizeSpinBox_value'],
+                                                                        gaussian_fit= self.params_dict['IntegratedIntensity_fitStatus']>0
                                                                     )
         
             if coordinates_max_project.__len__()>0:
@@ -1833,8 +1762,8 @@ class BatchAnalysis(object):
         """
         Calculates the radial distance of each spot from the center of its respective nucleus.
 
-        Parameters
-        ----------
+        Parameters:
+        -----------
         xyz_round : ndarray
             Rounded XYZ coordinates of detected spots.
         spot_nuc_labels : ndarray
@@ -1844,8 +1773,8 @@ class BatchAnalysis(object):
         dist_img : ndarray
             Distance transform image of nuclei.
 
-        Returns
-        -------
+        Returns:
+        --------
         ndarray
             Array containing the radial distance of each spot from the center of its nucleus.
         """
@@ -1863,4 +1792,85 @@ class BatchAnalysis(object):
             radial_dist.append(sp_radial_dist)
     
         return np.array(radial_dist).astype(float)
+
+    def SAVE_CONFIGURATION(self, csv_filename, params_dict):
+        det_method = ["Laplacian of Gaussian", "Gaussian", "Intensity Threshold", "Enhanced LOG"]
+        thresh_method = ["Auto", "Manual"]
     
+        # Function to retrieve spot parameters
+        def get_spot_params(channel):
+            params = params_dict['spot_params_dict'][channel]
+            return [
+                det_method[int(params[0])],
+                thresh_method[int(params[1])],
+                params[2],  # Threshold value
+                params[3],  # Kernel size
+                params[4],  # Spots/ch
+                params[5],  # Spots area min
+                params[6],  # Spots area max
+                params[7]   # Spots integrated intensity
+            ]
+    
+        # Initialize config_data with specific mappings from params_dict
+        config_data = {
+            "nuclei_channel": params_dict.get("NucleiChannel", ""),
+            "nuclei_detection_method": params_dict.get("NucDetectMethod_currentText", ""),
+            "nuclei_z_project": params_dict.get("NucMaxZprojectCheckBox_status_check", False),
+            "remove_boundary_nuclei": params_dict.get("NucRemoveBoundaryCheckBox_isChecked", False),
+            "nuclei_detection": params_dict.get("NucDetectionSlider_value", 0),
+            "nuclei_separation": params_dict.get("NucSeparationSlider_value", 0),
+            "nuclei_area": params_dict.get("NucleiAreaSlider_value", 0),
+            "spot_coordinates": params_dict.get("SpotLocationCbox_currentText", ""),
+            "spot_z_project": params_dict.get("SpotMaxZProject_status_check", False),
+            "Nuclei_Info_CheckBox_status": params_dict.get("NucInfoChkBox_check_status", False),
+            "Spots_Location_status": params_dict.get("SpotsLocation_check_status", False),
+            "Spots_Tracking_status": params_dict.get("Spot_Tracking_check_status", False),
+            "Nuclei_MaskCheckBox_status": params_dict.get("NucMaskCheckBox_status_check", False),
+            "RemoveBrightJunk_status_check": params_dict.get("RemoveBrightJunk_status_check", False),
+            "NumCPUsSpinBox_value": params_dict.get("NumCPUsSpinBox_value", 0),
+            "Cell_Tracking_check_status": params_dict.get("Cell_Tracking_check_status", False),
+            "NucTrackingMethod": params_dict.get("NucTrackingMethod_currentText", ""),
+            "NucSearchRadius": params_dict.get("NucSearchRadiusSpinbox_current_value", 0),
+            "SpotSearchRadius_value": params_dict.get("SpotSearchRadiusSpinbox_current_value", 0),
+            "Sec_SpotSearchRadius_value": params_dict.get("Sec_SpotSearchRadiusSpinbox_current_value", 0),
+            "Secondary_Area_index": params_dict.get("SecArea_current_index", 0),
+            "MintrackLength_value": params_dict.get("MintrackLengthSpinbox_current_value", 0),
+            "maxspotspercell_value": params_dict.get("maxspotspercellSpinbox_current_value", 0),
+            "minburstduration_value": params_dict.get("minburstdurationSpinbox_current_value", 0),
+            "FittingMethod_index": params_dict.get("FittingMethod_index", 0),
+            "patchsize": params_dict.get("patchsize_currentText", 0),
+            "IntegratedIntensity_fitStatus": params_dict.get("IntegratedIntensity_fitStatus", 0),
+            "Registrationmethod": params_dict.get("Registrationmethod_currentText", ""),
+            "PSFsize_value": params_dict.get("PSFsizeSpinBox_value", 0),
+            "Seceondary_Channel_index": params_dict.get("SecChannel_current_index", 0),  # Assuming this is one of the missing parameters
+            "IntegratedIntensity_Index": params_dict.get("IntegratedIntensityCbox_currentIndex", 0),  # Assuming this is one of the missing parameters
+            "Nuclei_MaxZproject_CheckBox_status": params_dict.get("NucMaxZprojectCheckBox_status_check", False),  # Assuming this is one of the missing parameters
+        }
+    
+        # Include spot status for each channel (chX_spot)
+        for ch_num in range(1, 6):
+            ch_key = f"SpotCh{ch_num}CheckBox_status_check"
+            config_data[f"ch{ch_num}_spot"] = params_dict.get(ch_key, False)
+    
+        # Adding spot parameters for each channel
+        for ch in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
+            ch_params = get_spot_params(ch)
+            config_data.update({
+                f"{ch.lower()}_spot_detection_method": ch_params[0],
+                f"{ch.lower()}_spot_threshold_method": ch_params[1],
+                f"{ch.lower()}_spot_threshold_value": ch_params[2],
+                f"{ch.lower()}_kernel_size": ch_params[3],
+                f"{ch.lower()}_spots/ch": ch_params[4],
+                f"{ch.lower()}_spots_area_min": ch_params[5],
+                f"{ch.lower()}_spots_area_max": ch_params[6],
+                f"{ch.lower()}_spots_integrated_intensity": ch_params[7]
+            })
+    
+        config_df = pd.DataFrame(list(config_data.items()), columns=['Parameter', 'Value'])
+        config_df.set_index('Parameter', inplace=True)
+        config_df.to_csv(csv_filename, index=True)
+
+
+
+if __name__ == '__main__':
+    freeze_support()
