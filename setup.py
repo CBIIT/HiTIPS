@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setup(
     name="hitips",
-    version="0.1.22",
+    version="1.0.2",
     author="keikhosravi",
     author_email="adib.keikhosravi@nih.gov",
     description="HiTIPS: High-Throughput Image Processing Software for FISH data analysis",
@@ -16,7 +16,6 @@ setup(
     package_data={ 'hitips': ['cell_config.json', 'Roboto-Light.ttf', 'Roboto-Bold.ttf']},
     install_requires=[
         'numpy',
-        'opencv-python-headless',
         'scikit-image==0.18.3',
         'scipy',
         'Pillow',
@@ -40,6 +39,8 @@ setup(
         'spatial_efd',
         'pydantic==1.10.9',
         'aicspylibczi',
+        'opencv-python-headless',
+
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
