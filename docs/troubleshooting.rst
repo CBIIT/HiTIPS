@@ -35,7 +35,7 @@ General Usage Tips
 
 
 Resolve Installation Issue for deepcell-toolbox
-===============================================
+-----------------------------------------------
 
 The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater for the installation of the ``deepcell-toolbox`` package. Follow these steps to resolve the issue:
 
