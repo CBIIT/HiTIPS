@@ -41,7 +41,7 @@
 <span id="hitips-analysis-module"></span><h2>hitips.Analysis module<a class="headerlink" href="#module-hitips.Analysis" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.Analysis.</span></span><span class="sig-name descname"><span class="pre">ImageAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.Analysis.</span></span><span class="sig-name descname"><span class="pre">ImageAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class for analyzing and processing biological images, focusing on segmentation and tracking.</p>
 <dl class="py attribute">
@@ -134,7 +134,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the ImageAnalyzer with configuration parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -657,7 +657,7 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <span id="hitips-batchanalyzer-module"></span><h2>hitips.BatchAnalyzer module<a class="headerlink" href="#module-hitips.BatchAnalyzer" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.BatchAnalyzer.</span></span><span class="sig-name descname"><span class="pre">BatchAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.BatchAnalyzer.</span></span><span class="sig-name descname"><span class="pre">BatchAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class used to conduct batch analysis of biological image data, focusing on the analysis of cells and spots.</p>
 <dl class="py attribute">
@@ -791,44 +791,9 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dd><p>Calculates radial distances for spots.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.manager">
-<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;multiprocessing.managers.SyncManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.manager" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.cell_pd_list">
-<span class="sig-name descname"><span class="pre">cell_pd_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.cell_pd_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ch1_spot_df_list">
-<span class="sig-name descname"><span class="pre">ch1_spot_df_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ch1_spot_df_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ch2_spot_df_list">
-<span class="sig-name descname"><span class="pre">ch2_spot_df_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ch2_spot_df_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ch3_spot_df_list">
-<span class="sig-name descname"><span class="pre">ch3_spot_df_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ch3_spot_df_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ch4_spot_df_list">
-<span class="sig-name descname"><span class="pre">ch4_spot_df_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ch4_spot_df_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.ch5_spot_df_list">
-<span class="sig-name descname"><span class="pre">ch5_spot_df_list</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;ListProxy</span> <span class="pre">object,</span> <span class="pre">typeid</span> <span class="pre">'list'&gt;</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.ch5_spot_df_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Gui_Params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_analyzer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the BatchAnalysis object with necessary parameters and structures for analysis.</p>
 <p>Parameters:</p>
 <dl class="simple">
@@ -844,9 +809,9 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.output_folder">
-<span class="sig-name descname"><span class="pre">output_folder</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.output_folder" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_params_dict">
+<span class="sig-name descname"><span class="pre">update_params_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_params_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -863,6 +828,12 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.remove_readonly">
+<span class="sig-name descname"><span class="pre">remove_readonly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.remove_readonly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the readonly bit and reattempt the removal</p>
 </dd></dl>
 
 <dl class="py method">
@@ -895,354 +866,437 @@ List of row indices in the imaging plate.</p></li>
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO">
 <span class="sig-name descname"><span class="pre">SAVE_SPOT_INFO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coordinates_method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_SPOT_INFO" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the analyzed spot information for specific channels and methods.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spot_df</strong> (<em>DataFrame</em>) -- DataFrame containing the analyzed spot information.</p></li>
-<li><p><strong>coordinates_method</strong> (<em>str</em>) -- The method used for determining the coordinates of spots.</p></li>
-<li><p><strong>columns</strong> (<em>list</em>) -- List of column indices in the imaging plate.</p></li>
-<li><p><strong>rows</strong> (<em>list</em>) -- List of row indices in the imaging plate.</p></li>
-<li><p><strong>channel_name</strong> (<em>str</em>) -- Name of the channel for which the spot information is being saved.</p></li>
-</ul>
+<section id="parameters">
+<h3>Parameters:<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>spot_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing the analyzed spot information.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>coordinates_method<span class="classifier">str</span></dt><dd><p>The method used for determining the coordinates of spots.</p>
+</dd>
+<dt>columns<span class="classifier">list</span></dt><dd><p>List of column indices in the imaging plate.</p>
+</dd>
+<dt>rows<span class="classifier">list</span></dt><dd><p>List of row indices in the imaging plate.</p>
+</dd>
+<dt>channel_name<span class="classifier">str</span></dt><dd><p>Name of the channel for which the spot information is being saved.</p>
 </dd>
 </dl>
+</section>
+<section id="returns">
+<h3>Returns:<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.process_channel">
 <span class="sig-name descname"><span class="pre">process_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_spot_df_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.process_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes each channel and saves spot information if necessary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>channel_spot_df_list</strong> (<em>list</em>) -- A list of DataFrames, each containing spot information for a specific channel.</p></li>
-<li><p><strong>columns</strong> (<em>list</em>) -- List of column indices in the imaging plate.</p></li>
-<li><p><strong>rows</strong> (<em>list</em>) -- List of row indices in the imaging plate.</p></li>
-<li><p><strong>channel_name</strong> (<em>str</em>) -- Name of the channel being processed.</p></li>
-</ul>
+<section id="id1">
+<h3>Parameters:<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>channel_spot_df_list<span class="classifier">list</span></dt><dd><p>A list of DataFrames, each containing spot information for a specific channel.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>columns<span class="classifier">list</span></dt><dd><p>List of column indices in the imaging plate.</p>
+</dd>
+<dt>rows<span class="classifier">list</span></dt><dd><p>List of row indices in the imaging plate.</p>
+</dd>
+<dt>channel_name<span class="classifier">str</span></dt><dd><p>Name of the channel being processed.</p>
 </dd>
 </dl>
+</section>
+<section id="id2">
+<h3>Returns:<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.gather_spot_df_list">
+<span class="sig-name descname"><span class="pre">gather_spot_df_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.gather_spot_df_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS">
 <span class="sig-name descname"><span class="pre">PROCESS_ALL_SPOT_CHANNELS</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.PROCESS_ALL_SPOT_CHANNELS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Processes all spot channels and compiles their analyzed information.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
+<section id="id3">
+<h3>Returns:<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel">
 <span class="sig-name descname"><span class="pre">update_cell_index_in_channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates cell indices in a specified channel's DataFrame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>channel_attr</strong> (<em>str</em>) -- The attribute name of the channel DataFrame to be updated.</p></li>
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>fov</strong> (<em>int</em>) -- Field of view index.</p></li>
-<li><p><strong>time_point</strong> (<em>int</em>) -- Time point index.</p></li>
-<li><p><strong>previous_index</strong> (<em>int</em>) -- The previous cell index.</p></li>
-<li><p><strong>new_index</strong> (<em>int</em>) -- The new cell index to replace the previous one.</p></li>
-</ul>
+<section id="id4">
+<h3>Parameters:<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>channel_attr<span class="classifier">str</span></dt><dd><p>The attribute name of the channel DataFrame to be updated.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
+</dd>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>fov<span class="classifier">int</span></dt><dd><p>Field of view index.</p>
+</dd>
+<dt>time_point<span class="classifier">int</span></dt><dd><p>Time point index.</p>
+</dd>
+<dt>previous_index<span class="classifier">int</span></dt><dd><p>The previous cell index.</p>
+</dd>
+<dt>new_index<span class="classifier">int</span></dt><dd><p>The new cell index to replace the previous one.</p>
 </dd>
 </dl>
+</section>
+<section id="id5">
+<h3>Returns:<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels">
 <span class="sig-name descname"><span class="pre">update_cell_index_in_all_spot_channels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_cell_index_in_all_spot_channels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates cell indices across all spot channels.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>fov</strong> (<em>int</em>) -- Field of view index.</p></li>
-<li><p><strong>time_point</strong> (<em>int</em>) -- Time point index.</p></li>
-<li><p><strong>previous_index</strong> (<em>int</em>) -- The previous cell index.</p></li>
-<li><p><strong>new_index</strong> (<em>int</em>) -- The new cell index to replace the previous one.</p></li>
-</ul>
+<section id="id6">
+<h3>Parameters:<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>fov<span class="classifier">int</span></dt><dd><p>Field of view index.</p>
+</dd>
+<dt>time_point<span class="classifier">int</span></dt><dd><p>Time point index.</p>
+</dd>
+<dt>previous_index<span class="classifier">int</span></dt><dd><p>The previous cell index.</p>
+</dd>
+<dt>new_index<span class="classifier">int</span></dt><dd><p>The new cell index to replace the previous one.</p>
 </dd>
 </dl>
+</section>
+<section id="id7">
+<h3>Returns:<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.normalize_stack">
 <span class="sig-name descname"><span class="pre">normalize_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.normalize_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalizes a stack of images.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>images</strong> (<em>ndarray</em>) -- A stack of images to be normalized.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The stack of normalized images.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<section id="id8">
+<h3>Parameters:<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>images<span class="classifier">ndarray</span></dt><dd><p>A stack of images to be normalized.</p>
 </dd>
 </dl>
+</section>
+<section id="id9">
+<h3>Returns:<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ndarray</dt><dd><p>The stack of normalized images.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name">
 <span class="sig-name descname"><span class="pre">cell_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.cell_level_file_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates file names for saving cell level data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>top_folder</strong> (<em>str</em>) -- The top level directory where the files will be saved.</p></li>
-<li><p><strong>folder_name</strong> (<em>str</em>) -- The name of the folder where the files will be saved.</p></li>
-<li><p><strong>name_prefix</strong> (<em>str</em>) -- The prefix for the file name.</p></li>
-<li><p><strong>name_extention</strong> (<em>str</em>) -- The file extension.</p></li>
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>fov</strong> (<em>int</em>) -- Field of view index.</p></li>
-<li><p><strong>cell_ind</strong> (<em>int</em>) -- The index of the cell.</p></li>
-<li><p><strong>spot_ch</strong> (<em>int</em><em>, </em><em>optional</em>) -- The channel index of the spot.</p></li>
-</ul>
+<section id="id10">
+<h3>Parameters:<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>top_folder<span class="classifier">str</span></dt><dd><p>The top level directory where the files will be saved.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The generated file path for saving the data.</p>
+<dt>folder_name<span class="classifier">str</span></dt><dd><p>The name of the folder where the files will be saved.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dt>name_prefix<span class="classifier">str</span></dt><dd><p>The prefix for the file name.</p>
+</dd>
+<dt>name_extention<span class="classifier">str</span></dt><dd><p>The file extension.</p>
+</dd>
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
+</dd>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>fov<span class="classifier">int</span></dt><dd><p>Field of view index.</p>
+</dd>
+<dt>cell_ind<span class="classifier">int</span></dt><dd><p>The index of the cell.</p>
+</dd>
+<dt>spot_ch<span class="classifier">int, optional</span></dt><dd><p>The channel index of the spot.</p>
 </dd>
 </dl>
+</section>
+<section id="id11">
+<h3>Returns:<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>The generated file path for saving the data.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name">
 <span class="sig-name descname"><span class="pre">spot_level_file_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_extention</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_ind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.spot_level_file_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates file names for saving spot level data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>top_folder</strong> (<em>str</em>) -- The top level directory where the files will be saved.</p></li>
-<li><p><strong>folder_name</strong> (<em>str</em>) -- The name of the folder where the files will be saved.</p></li>
-<li><p><strong>name_prefix</strong> (<em>str</em>) -- The prefix for the file name.</p></li>
-<li><p><strong>name_extention</strong> (<em>str</em>) -- The file extension.</p></li>
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>fov</strong> (<em>int</em>) -- Field of view index.</p></li>
-<li><p><strong>cell_ind</strong> (<em>int</em>) -- The index of the cell.</p></li>
-<li><p><strong>spot_ch</strong> (<em>int</em>) -- The channel index of the spot.</p></li>
-<li><p><strong>spot_ind</strong> (<em>int</em>) -- The index of the spot.</p></li>
-</ul>
+<section id="id12">
+<h3>Parameters:<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>top_folder<span class="classifier">str</span></dt><dd><p>The top level directory where the files will be saved.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The generated file path for saving the data.</p>
+<dt>folder_name<span class="classifier">str</span></dt><dd><p>The name of the folder where the files will be saved.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dt>name_prefix<span class="classifier">str</span></dt><dd><p>The prefix for the file name.</p>
+</dd>
+<dt>name_extention<span class="classifier">str</span></dt><dd><p>The file extension.</p>
+</dd>
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
+</dd>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>fov<span class="classifier">int</span></dt><dd><p>Field of view index.</p>
+</dd>
+<dt>cell_ind<span class="classifier">int</span></dt><dd><p>The index of the cell.</p>
+</dd>
+<dt>spot_ch<span class="classifier">int</span></dt><dd><p>The channel index of the spot.</p>
+</dd>
+<dt>spot_ind<span class="classifier">int</span></dt><dd><p>The index of the spot.</p>
 </dd>
 </dl>
+</section>
+<section id="id13">
+<h3>Returns:<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>The generated file path for saving the data.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER">
 <span class="sig-name descname"><span class="pre">BATCH_ANALYZER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.BATCH_ANALYZER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyzes a batch of images for nuclei and spots, updating the results lists.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>fov</strong> (<em>int</em>) -- Field of view index.</p></li>
-<li><p><strong>t</strong> (<em>int</em>) -- Time point index.</p></li>
-</ul>
+<section id="id14">
+<h3>Parameters:<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>fov<span class="classifier">int</span></dt><dd><p>Field of view index.</p>
+</dd>
+<dt>t<span class="classifier">int</span></dt><dd><p>Time point index.</p>
 </dd>
 </dl>
+</section>
+<section id="id15">
+<h3>Returns:<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances">
 <span class="sig-name descname"><span class="pre">Calculate_Spot_Distances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Calculate_Spot_Distances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the distances between spots for given cells.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-</ul>
+<section id="id16">
+<h3>Parameters:<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
 </dl>
+</section>
+<section id="id17">
+<h3>Returns:<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
+<p>None</p>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator">
 <span class="sig-name descname"><span class="pre">DISTANCE_calculator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spot_pd_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.DISTANCE_calculator" title="Permalink to this definition">¶</a></dt>
 <dd><p>A helper function for calculating distances between spots.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spot_pd_dict</strong> (<em>dict</em>) -- Dictionary of spot DataFrames keyed by channel name.</p></li>
-<li><p><strong>key1</strong> (<em>str</em>) -- The first channel key for comparison.</p></li>
-<li><p><strong>key2</strong> (<em>str</em>) -- The second channel key for comparison.</p></li>
-<li><p><strong>select_cell</strong> (<em>DataFrame</em>) -- DataFrame of selected cells for distance calculation.</p></li>
-<li><p><strong>row</strong> (<em>int</em>) -- Row index of the well.</p></li>
-<li><p><strong>col</strong> (<em>int</em>) -- Column index of the well.</p></li>
-</ul>
+<section id="id18">
+<h3>Parameters:<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>spot_pd_dict<span class="classifier">dict</span></dt><dd><p>Dictionary of spot DataFrames keyed by channel name.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the calculated distances.</p>
+<dt>key1<span class="classifier">str</span></dt><dd><p>The first channel key for comparison.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>DataFrame</p>
+<dt>key2<span class="classifier">str</span></dt><dd><p>The second channel key for comparison.</p>
+</dd>
+<dt>select_cell<span class="classifier">DataFrame</span></dt><dd><p>DataFrame of selected cells for distance calculation.</p>
+</dd>
+<dt>row<span class="classifier">int</span></dt><dd><p>Row index of the well.</p>
+</dd>
+<dt>col<span class="classifier">int</span></dt><dd><p>Column index of the well.</p>
 </dd>
 </dl>
+</section>
+<section id="id19">
+<h3>Returns:<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>DataFrame</dt><dd><p>A DataFrame containing the calculated distances.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK">
 <span class="sig-name descname"><span class="pre">IMG_FOR_NUC_MASK</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMG_FOR_NUC_MASK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the image used for creating nuclei masks.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The loaded image for creating nuclei masks.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>ndarray</p>
+<section id="id20">
+<h3>Returns:<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ndarray</dt><dd><p>The loaded image for creating nuclei masks.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER">
 <span class="sig-name descname"><span class="pre">RAW_IMAGE_LOADER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskchannel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RAW_IMAGE_LOADER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads raw images for a specified channel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>maskchannel</strong> (<em>str</em>) -- The channel for which the raw images are to be loaded.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The loaded raw image for the specified channel.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<section id="id21">
+<h3>Parameters:<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>maskchannel<span class="classifier">str</span></dt><dd><p>The channel for which the raw images are to be loaded.</p>
 </dd>
 </dl>
+</section>
+<section id="id22">
+<h3>Returns:<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ndarray</dt><dd><p>The loaded raw image for the specified channel.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER">
 <span class="sig-name descname"><span class="pre">Z_STACK_NUC_SEGMENTER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_SEGMENTER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segments nuclei from a z-stack of images.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ImageForNucMask</strong> (<em>ndarray</em>) -- The z-stack image for nuclei segmentation.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing the boundary and mask images for segmented nuclei.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<section id="id23">
+<h3>Parameters:<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ImageForNucMask<span class="classifier">ndarray</span></dt><dd><p>The z-stack image for nuclei segmentation.</p>
 </dd>
 </dl>
+</section>
+<section id="id24">
+<h3>Returns:<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the boundary and mask images for segmented nuclei.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER">
 <span class="sig-name descname"><span class="pre">Z_STACK_NUC_LABLER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForLabel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.Z_STACK_NUC_LABLER" title="Permalink to this definition">¶</a></dt>
 <dd><p>Labels nuclei in a z-stack of images.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ImageForLabel</strong> (<em>ndarray</em>) -- The z-stack image for nuclei labeling.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The labeled nuclei image stack.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<section id="id25">
+<h3>Parameters:<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ImageForLabel<span class="classifier">ndarray</span></dt><dd><p>The z-stack image for nuclei labeling.</p>
 </dd>
 </dl>
+</section>
+<section id="id26">
+<h3>Returns:<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ndarray</dt><dd><p>The labeled nuclei image stack.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION">
 <span class="sig-name descname"><span class="pre">IMAGE_FOR_SPOT_DETECTION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ImageForNucMask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuc_mask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.IMAGE_FOR_SPOT_DETECTION" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares images for spot detection and retrieves coordinates.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>nuc_mask</strong> (<em>ndarray</em><em>, </em><em>optional</em>) -- The nuclei mask to assist in spot detection.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing the XYZ coordinates and final spots for different channels.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
+<section id="id27">
+<h3>Parameters:<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>nuc_mask<span class="classifier">ndarray</span></dt><dd><p>The nuclei mask to assist in spot detection.</p>
 </dd>
 </dl>
+</section>
+<section id="id28">
+<h3>Returns:<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the XYZ coordinates and final spots for different channels.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES">
 <span class="sig-name descname"><span class="pre">XYZ_SPOT_COORDINATES</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images_pd_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nuc_mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.XYZ_SPOT_COORDINATES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates XYZ coordinates of spots in given images, processing each z-slice and generating a max projection.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>images_pd_df</strong> (<em>DataFrame</em>) -- DataFrame containing image data, including image paths and z-slice information.</p></li>
-<li><p><strong>ImageForNucMask</strong> (<em>ndarray</em>) -- Nuclei image used as a mask for spot detection.</p></li>
-<li><p><strong>spot_channel</strong> (<em>str</em>) -- Channel identifier used for spot detection.</p></li>
-</ul>
+<section id="id29">
+<h3>Parameters:<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>images_pd_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing image data, including image paths and z-slice information.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing three elements:
+<dt>ImageForNucMask<span class="classifier">ndarray</span></dt><dd><p>Nuclei image used as a mask for spot detection.</p>
+</dd>
+<dt>spot_channel<span class="classifier">str</span></dt><dd><p>Channel identifier used for spot detection.</p>
+</dd>
+</dl>
+</section>
+<section id="id30">
+<h3>Returns:<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing three elements:
 1. xyz_coordinates (ndarray): Array of XYZ coordinates of detected spots in the max projection.
 2. coordinates_stack (ndarray): Stack of XYZ coordinates of spots in each z-slice.
 3. final_spots (DataFrame): DataFrame containing the final processed spot data.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC">
 <span class="sig-name descname"><span class="pre">RADIAL_DIST_CALC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz_round</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spot_nuc_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial_dist_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.RADIAL_DIST_CALC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the radial distance of each spot from the center of its respective nucleus.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xyz_round</strong> (<em>ndarray</em>) -- Rounded XYZ coordinates of detected spots.</p></li>
-<li><p><strong>spot_nuc_labels</strong> (<em>ndarray</em>) -- Labels indicating to which nucleus each spot belongs.</p></li>
-<li><p><strong>radial_dist_df</strong> (<em>DataFrame</em>) -- DataFrame containing radial distance information for nuclei.</p></li>
-<li><p><strong>dist_img</strong> (<em>ndarray</em>) -- Distance transform image of nuclei.</p></li>
-</ul>
+<section id="id31">
+<h3>Parameters:<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>xyz_round<span class="classifier">ndarray</span></dt><dd><p>Rounded XYZ coordinates of detected spots.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Array containing the radial distance of each spot from the center of its nucleus.</p>
+<dt>spot_nuc_labels<span class="classifier">ndarray</span></dt><dd><p>Labels indicating to which nucleus each spot belongs.</p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray</p>
+<dt>radial_dist_df<span class="classifier">DataFrame</span></dt><dd><p>DataFrame containing radial distance information for nuclei.</p>
+</dd>
+<dt>dist_img<span class="classifier">ndarray</span></dt><dd><p>Distance transform image of nuclei.</p>
 </dd>
 </dl>
+</section>
+<section id="id32">
+<h3>Returns:<a class="headerlink" href="#id32" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>ndarray</dt><dd><p>Array containing the radial distance of each spot from the center of its nucleus.</p>
+</dd>
+</dl>
+</section>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.SAVE_CONFIGURATION">
+<span class="sig-name descname"><span class="pre">SAVE_CONFIGURATION</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csv_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.SAVE_CONFIGURATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1269,11 +1323,11 @@ List of row indices in the imaging plate.</p></li>
 - run_clustering: Performs clustering on points with options for handling outliers.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.Cell_Spot_Tracker.Tracking.RUN_BTRACK">
-<span class="sig-name descname"><span class="pre">RUN_BTRACK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Cell_Spot_Tracker.Tracking.RUN_BTRACK" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">RUN_BTRACK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parms_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Cell_Spot_Tracker.Tracking.RUN_BTRACK" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs Bayesian tracking on a stack of labeled images.</p>
 <p>Parameters:
 - label_stack (numpy.ndarray): Stack of labeled images to be tracked.
-- gui_params (object): Parameters from the GUI controlling tracking behavior.</p>
+- parms_dict (object): Parameters from the GUI controlling tracking behavior.</p>
 <p>Returns:
 - tracks_pd (pandas.DataFrame): DataFrame containing the tracking information.</p>
 <p>This method initializes a Bayesian tracker, configures it using the provided parameters, and performs tracking on the input label stack.
@@ -1282,12 +1336,12 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.Cell_Spot_Tracker.Tracking.deepcell_tracking">
-<span class="sig-name descname"><span class="pre">deepcell_tracking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masks_stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Cell_Spot_Tracker.Tracking.deepcell_tracking" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">deepcell_tracking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">masks_stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Cell_Spot_Tracker.Tracking.deepcell_tracking" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs cell tracking using the DeepCell tracking algorithm.</p>
 <p>Parameters:
 - t_stack_nuc (numpy.ndarray): Time-lapse stack of nuclear images.
 - masks_stack (numpy.ndarray): Corresponding stack of masks for the nuclei.
-- gui_params (object): GUI parameters for tracking.</p>
+- parms_dict (object): GUI parameters for tracking.</p>
 <p>Returns:
 - tracks_pd (pandas.DataFrame): DataFrame containing tracked cell information over time.</p>
 <p>This method uses DeepCell for tracking cells in a time-lapse image stack. It returns a DataFrame with detailed tracking information.</p>
@@ -1530,6 +1584,11 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="hitips.GUI_parameters.Gui_Params.gather_analysis_params">
+<span class="sig-name descname"><span class="pre">gather_analysis_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GUI_parameters.Gui_Params.gather_analysis_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="hitips.GUI_parameters.Gui_Params.update_values">
 <span class="sig-name descname"><span class="pre">update_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GUI_parameters.Gui_Params.update_values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1635,6 +1694,11 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.HiTIPS.ControlPanel.controlUi">
 <span class="sig-name descname"><span class="pre">controlUi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MainWindow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.HiTIPS.ControlPanel.controlUi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.HiTIPS.ControlPanel.on_run_analysis">
+<span class="sig-name descname"><span class="pre">on_run_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.HiTIPS.ControlPanel.on_run_analysis" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1851,6 +1915,7 @@ organizing this information into a structured DataFrame format.</p>
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>

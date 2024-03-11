@@ -33,36 +33,42 @@ General Usage Tips
 - If you are running HiTIPS on live cell data and need to track cells and spots, maks sure you also check "Nuclei Mask", "Nuclei Info", and "Spots Location" checkboxes under "Results" tab.
 
 
-Resolve Installation Issues for deepcell-toolbox On Windows
-===========================================================
 
-The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater due to the need to compile C extensions in the Python package. Follow these steps to resolve the issue:
+Resolve Installation Issue for deepcell-toolbox
+===============================================
+
+The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater for the installation of the ``deepcell-toolbox`` package. Follow these steps to resolve the issue:
 
 1. Install Microsoft C++ Build Tools
 ------------------------------------
 
-Visit the `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ website and download the installer. Ensure to select C++ build tools during installation, including the Windows 10 SDK and the latest MSVC v142 x64/x86 build tools.
+   Download the Microsoft C++ Build Tools from the provided link:
+
+   - `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_
+
+   Ensure to include the C++ build tools during the installation, along with the Windows 10 SDK and the latest MSVC v142 x64/x86 build tools.
 
 2. Run the Installer
 --------------------
 
-Execute the downloaded installer and follow the prompts. Make sure the necessary components for C++ development are selected, especially the MSVC build tools and the Windows SDK.
+   Execute the installer and follow the on-screen instructions to install the necessary build tools. The correct installation of these tools is essential for compiling C extensions in Python packages.
 
 3. Restart Your Computer
 ------------------------
 
-After installing the C++ Build Tools, restart your computer to ensure the new configurations are applied and the necessary paths are set.
+   After installing the C++ Build Tools, restart your computer to ensure that the changes are applied and the necessary paths are set in the environment.
 
 4. Re-attempt Installation
 --------------------------
 
-Once your system is equipped with the necessary C++ tools, retry installing the `deepcell-toolbox` package. The package should now compile successfully.
+   With the build tools installed, try to reinstall the ``deepcell-toolbox`` package. The installation should now be able to compile the required C extensions successfully.
 
 5. Check for Errors
 -------------------
 
-Monitor the installation process for any errors. If encountered, review the error messages for specifics that might indicate missing dependencies or additional required configurations.
+   If the installation fails again, review the error messages for any indications of the problem. The error output can provide valuable insights into what went wrong and how to fix it.
 
+6. Environment Setup
+--------------------
 
-Ensure these steps are followed accurately to resolve the installation issues related to the `deepcell-toolbox` package.
-
+   Make sure your Python environment is correctly set up, and you are using a compatible version of Python for the ``deepcell-toolbox`` installation. The package may not be compatible with older Python versions.

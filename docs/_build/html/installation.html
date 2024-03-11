@@ -101,16 +101,26 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 <section id="installing-hitips-using-requirements-files">
 <h2>Installing HiTIPS Using Requirements Files<a class="headerlink" href="#installing-hitips-using-requirements-files" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic">
-<li><p><strong>Create a Conda Environment from `hitips_env.yml`</strong>:</p>
+<li><p><strong>Clone the HiTIPS Repository</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">CBIIT</span><span class="o">/</span><span class="n">HiTIPS</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Navigate to the cloned HiTIPS directory before proceeding with the next steps.</p>
+<ol class="arabic" start="2">
+<li><p><strong>Create a Conda Environment from the Provided YML File</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">hitips_env</span><span class="o">.</span><span class="n">yml</span>
 <span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
 </pre></div>
 </div>
+<p>You can find the <cite>hitips_env.yml</cite> file <a class="reference external" href="https://github.com/CBIIT/HiTIPS/blob/main/hitips_env.yml">here</a>.</p>
 </li>
-<li><p><strong>Install HiTIPS using Pip from `requirements.txt`</strong>:</p>
+<li><p><strong>Install HiTIPS using Pip from the Requirements File</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
+<p>The <cite>requirements.txt</cite> file can be accessed <a class="reference external" href="https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt">here</a>.</p>
 </li>
 <li><p><strong>Launch HiTIPS</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hitips</span>
@@ -175,6 +185,7 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 <li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>
