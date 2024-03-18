@@ -66,8 +66,8 @@ Installing HiTIPS Using Conda and Pip
 
 
 
-Installing HiTIPS Using Requirements Files
-------------------------------------------
+Installing HiTIPS Using Requirements File
+-----------------------------------------
 
 1. **Clone the HiTIPS Repository**::
 
@@ -75,12 +75,10 @@ Installing HiTIPS Using Requirements Files
 
 Navigate to the cloned HiTIPS directory before proceeding with the next steps.
 
-2. **Create a Conda Environment from the Provided YML File**::
+2. **Create and Activate a Conda Environment**::
 
-    conda env create -f hitips_env.yml
+    conda create --name hitips_env python=3.8
     conda activate hitips_env
-
-   You can find the `hitips_env.yml` file `here <https://github.com/CBIIT/HiTIPS/blob/main/hitips_env.yml>`__.
 
 3. **Install HiTIPS using Pip from the Requirements File**::
 
@@ -90,7 +88,7 @@ Navigate to the cloned HiTIPS directory before proceeding with the next steps.
 
 4. **Launch HiTIPS**::
 
-    hitips
+    python -m hitips.HiTIPS
 
 Installing HiTIPS Using Docker
 ------------------------------
