@@ -175,6 +175,36 @@ class BatchAnalysis(object):
     def update_params_dict(self, params_dict):
         self.params_dict=params_dict
         
+    def check_and_append_args(self, col, row, fov, t, func_args):
+        # Initialize a flag to indicate whether to append arguments
+        append_args = False
+
+        # Check for the nucleus information file if the corresponding checkbox is checked
+        if self.params_dict['NucInfoChkBox_check_status']:
+            cell_file_name = f"temp_cell_df_column_{col}_row_{row}_time_point_{t}_field_index_{fov}.pickle"
+            cell_file_path = os.path.join(self.temp_dir, cell_file_name)
+            # If the cell file is missing, set the flag to append arguments
+            if not os.path.isfile(cell_file_path):
+                append_args = True
+
+        # Check for spot files if their corresponding checkboxes are checked
+        for channel in range(1, 6):
+            channel_key = f'SpotCh{channel}CheckBox_status_check'
+            if self.params_dict[channel_key]:
+                spot_file_name = f"temp_spot_df_column_{col}_row_{row}_time_point_{t}_field_index_{fov}_channel_{channel}.pickle"
+                spot_file_path = os.path.join(self.temp_dir, spot_file_name)
+                # If any spot file is missing, set the flag to append arguments
+                if not os.path.isfile(spot_file_path):
+                    append_args = True
+                    # If one file is missing, no need to check further
+                    break
+
+        # Append the func_args if any file is missing and the corresponding checkbox is checked
+        if append_args:
+            func_args = np.append(func_args, np.array([col, row, fov, t]).reshape(1, 4), axis=0)
+
+        return func_args
+    
     @log_errors(logging.getLogger(__name__))            
     def ON_APPLYBUTTON(self, Meta_Data_df):
         """
@@ -251,7 +281,7 @@ class BatchAnalysis(object):
                                                               (self.Meta_Data_df['time_point'] == str(t))]
                         if df_parallel.empty == False:
 
-                            func_args=np.append(func_args,np.array([col,row,fov,t]).reshape(1,4),axis=0)
+                            func_args = self.check_and_append_args( col, row, fov, t, func_args)
         if (os.name == 'nt'):
             # Windows does not fork, so it's safe to use the multiprocessing directly.
             self._process_jobs_posix(func_args, jobs_number)
@@ -327,6 +357,11 @@ class BatchAnalysis(object):
         
                     for fov in fovs:
                         
+                        track_file_name = os.path.join(self.temp_dir , "tracks_df_column_"+str(col)+"_row_" + str(row) + "_field_index_" +str(fov)+'.pickle')
+                        if os.path.exists(track_file_name):
+                            continue
+                        
+                        
                         spot_images,spot_dict_stack = {}, {}
                         for chnl in spot_channels:
                             spot_images[str(int(chnl))] = []
@@ -382,6 +417,7 @@ class BatchAnalysis(object):
                             tracks_pd = Tracking.deepcell_tracking(t_stack_nuc,label_stack,self.params_dict)
                         ###
                         tracks_pd_copy = tracks_pd.copy()
+                        
                         tracks_pd_copy=tracks_pd_copy.rename(columns={"t": "time_point", "x": "centroid-1", "y": "centroid-0", "ID": "cell_index"})
                         tracks_pd_copy["time_point"] = tracks_pd_copy["time_point"] + 1
                         tracks_pd_copy = tracks_pd_copy.astype({'centroid-0':'int', 'centroid-1':'int'})
@@ -484,7 +520,7 @@ class BatchAnalysis(object):
                                 lbl_img[lbl_img!=lbl_img[label_center,label_center]]=0
                                 bin_img = lbl_img>0
 
-                                bin_img = ndimage.binary_dilation(bin_img, structure=np.ones((12,12))>0).astype(bin_img.dtype)
+                                bin_img = ndimage.binary_dilation(bin_img, structure=np.ones((5,5))>0).astype(bin_img.dtype)
 
 
                                 img_patch[bin_img==0]=0
@@ -787,6 +823,9 @@ class BatchAnalysis(object):
                             
                             single_track_copy.to_csv(self.cell_level_file_name(cell_tracking_folder, 'single_track_tables', 'track_table', '.csv', col, row, fov, id_))  
                             print("saved track: "+ 'col' + str(col) + r'_row' + str(row) + r'_field' + str(fov) + r'_cell' + str(id_))
+                            
+                        track_file_name = os.path.join(self.temp_dir , "tracks_df_column_"+str(col)+"_row_" + str(row) + "_field_index_" +str(fov)+'.pickle')
+                        tracks_pd_copy.to_pickle(track_file_name)
                             
         self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
         self.spot_cell_index = True
