@@ -213,6 +213,7 @@ class imagedisplayer(object):
 
             self.input_image = self.IMAGE_TO_BE_MASKED()
             self.gui_params.update_values()
+            self.ImageAnalyzer.update_params_dict(self.gui_params.params_dict)
             bound, filled_res = self.ImageAnalyzer.neuceli_segmenter(self.input_image,
                                                                      self.METADATA_DATAFRAME["PixPerMic"].iloc[0])
 

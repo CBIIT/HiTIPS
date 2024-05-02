@@ -217,14 +217,14 @@ class Gui_Params(object):
         if current_channel in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
 
             gui_elements = [
-                self.AnalysisGui.spotanalysismethod,  # QComboBox
-                self.AnalysisGui.thresholdmethod,     # QComboBox
-                self.AnalysisGui.ThresholdSlider,     # QSlider or QSpinBox
-                self.AnalysisGui.SensitivitySpinBox,  # QSpinBox
-                self.AnalysisGui.ResizeFactor,    # QSpinBox
-                self.AnalysisGui.SpotareaminSpinBox,  # QSpinBox
-                self.AnalysisGui.SpotareamaxSpinBox,  # QSpinBox
-                self.AnalysisGui.SpotIntegratedIntensitySpinBox  # QSpinBox
+                self.AnalysisGui.spotanalysismethod,  
+                self.AnalysisGui.thresholdmethod,     
+                self.AnalysisGui.ThresholdSlider,     
+                self.AnalysisGui.SensitivitySpinBox,  
+                self.AnalysisGui.ResizeFactor,    
+                self.AnalysisGui.SpotareaminSpinBox,  
+                self.AnalysisGui.SpotareamaxSpinBox,  
+                self.AnalysisGui.SpotIntegratedIntensitySpinBox 
             ]
 
             for i, gui_element in enumerate(gui_elements):

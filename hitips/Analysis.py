@@ -77,6 +77,10 @@ class ImageAnalyzer(object):
         """
         self.params_dict = params_dict
     
+    def update_params_dict(self, params_dict):
+        self.params_dict = params_dict
+        
+        
     def neuceli_segmenter(self, input_img, pixpermic=None):
         """
         Segments nuclei in an image using various methods based on GUI settings.

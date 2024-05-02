@@ -10,6 +10,8 @@ if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
 if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
 
+
+
 class analyzer(QWidget):
 
     def __init__(self, centralwidget, gridLayout_centralwidget, displaygui=None, ImDisplay=None, image_analyzer=None, gui_params=None):
