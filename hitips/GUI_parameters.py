@@ -63,11 +63,12 @@ class Gui_Params(object):
         self.PSFsizeSpinBox_value = self.AnalysisGui.PSFsizeSpinBox.value()
         
         self.params_dict = self.gather_analysis_params()
+        # self.UPDATE_SPOT_ANALYSIS_PARAMS()
         
     def gather_analysis_params(self):
-        
+        self.UPDATE_SPOT_ANALYSIS_PARAMS()
         params_dict = {
-            "spot_params_dict": self.INITIALIZE_SPOT_ANALYSIS_PARAMS(),
+            "spot_params_dict": self.spot_params_dict,
             "NucInfoChkBox_check_status": self.AnalysisGui.NucInfoChkBox.isChecked(),
             "SpotsLocation_check_status": self.AnalysisGui.SpotsLocation.isChecked(),
             "Spot_Tracking_check_status": self.AnalysisGui.Spot_Tracking.isChecked(),
@@ -209,6 +210,7 @@ class Gui_Params(object):
             }
         elif current_channel in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
             self.spot_params_dict[current_channel] = get_channel_params()
+        
             
     def UPDATE_SPOT_ANALYSIS_GUI_PARAMS(self):
 

@@ -40,7 +40,6 @@ class gridgenerator(QWidget):
         self.tableWidget.setRowCount(WELL_PLATE_WIDTH)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         
-        # Rest of your code, initializing headers and other widgets...
         for i in range(WELL_PLATE_WIDTH):
             item = QtWidgets.QTableWidgetItem()
             self.tableWidget.setVerticalHeaderItem(i, item)
@@ -101,8 +100,7 @@ class gridgenerator(QWidget):
         self.Zlist.setObjectName("Zlist")
         self.Zlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df,self.ImDisplay, self.displaygui))
         
-        
-        
+
         self.Zlabel = QtWidgets.QLabel(self.groupBox1)
         self.gridLayout_grdigroupbox1.addWidget(self.Zlabel, 1, 2, 1, 1)
         font = QtGui.QFont()
