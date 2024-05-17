@@ -110,8 +110,74 @@ class ControlPanel(QWidget):
     def on_run_analysis(self):
         self.gui_params.update_values()
         self.batchanalysis.update_params_dict(self.gui_params.params_dict)
-        self.batchanalysis.ON_APPLYBUTTON(self.Meta_Data_df)
+        self.batchanalysis.ON_APPLYBUTTON(self.select_data_subset())
         
+#     def select_data_subset(self):
+                
+#         sub_metadata = pd.DataFrame(columns = self.Meta_Data_df.columns)
+        
+#         if list(self.PlateGrid.checked_wells):
+            
+        
+            
+#         for well in list(self.PlateGrid.checked_wells):
+#             for fov in list(self.PlateGrid.checked_fovs):
+#                 for zslice in list(self.PlateGrid.checked_zs):
+#                     for timepoint in list(self.PlateGrid.checked_times):
+                        
+#                         temp_metadata = self.Meta_Data_df.loc[(self.Meta_Data_df["row"] == str(int(well[0]) + 1)) & (self.Meta_Data_df["column"] == str(int(well[1]) + 1))&
+#                                                              (self.Meta_Data_df["field_index"] == str(int(fov) + 1)) & (self.Meta_Data_df["z_slice"] == str(int(zslice) + 1)) &
+#                                                              (self.Meta_Data_df["time_point"] == str(int(timepoint) + 1))]
+                        
+#                         sub_metadata = pd.concat([sub_metadata, temp_metadata])
+
+#         return sub_metadata
+    
+    def select_data_subset(self):
+        
+        sub_metadata = pd.DataFrame(columns=self.Meta_Data_df.columns)
+
+        if self.PlateGrid.checked_wells:
+            well_list = list(self.PlateGrid.checked_wells)
+        else:
+            well_list = pd.Series([ (str(int(row) - 1), str(int(col) - 1)) for row, col in zip(self.Meta_Data_df['row'], self.Meta_Data_df['column'])]).unique()
+        print("well_list:   ", well_list)
+        if self.PlateGrid.checked_fovs:
+            fov_list = list(self.PlateGrid.checked_fovs)
+        else:
+            fov_list = self.Meta_Data_df['field_index'].unique()
+            fov_list = [str(int(fov) - 1) for fov in fov_list]
+        print("fov_list:   ", fov_list)
+        if self.PlateGrid.checked_zs:
+            zslice_list = list(self.PlateGrid.checked_zs)
+        else:
+            zslice_list = self.Meta_Data_df['z_slice'].unique()
+            zslice_list = [str(int(z) - 1) for z in zslice_list]
+        print("zslice_list:   ", zslice_list)
+        
+        if self.PlateGrid.checked_times:
+            timepoint_list = list(self.PlateGrid.checked_times)
+        else:
+            timepoint_list = self.Meta_Data_df['time_point'].unique()
+            timepoint_list = [str(int(t) - 1) for t in timepoint_list]
+        print("timepoint_list:   ", timepoint_list)
+        
+        for well in well_list:
+            for fov in fov_list:
+                for zslice in zslice_list:
+                    for timepoint in timepoint_list:
+
+                        temp_metadata = self.Meta_Data_df.loc[
+                                (self.Meta_Data_df["row"] == str(int(well[0]) + 1)) &
+                                (self.Meta_Data_df["column"] == str(int(well[1]) + 1)) &
+                                (self.Meta_Data_df["field_index"] == str(int(fov) + 1)) &
+                                (self.Meta_Data_df["z_slice"] == str(int(zslice) + 1)) &
+                                (self.Meta_Data_df["time_point"] == str(int(timepoint) + 1))]
+                        print("temp_metadata:    ", temp_metadata)  
+                        sub_metadata = pd.concat([sub_metadata, temp_metadata]).reset_index(drop=True)
+        print("sub_metadata:  ", sub_metadata)
+        return sub_metadata
+    
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "HiTIPS"))

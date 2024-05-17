@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QWidget, QGroupBox, QHeaderView
+from PyQt5.QtWidgets import QWidget, QGroupBox, QHeaderView, QCheckBox, QListWidget
 import numpy as np
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtCore import Qt
@@ -17,7 +17,11 @@ class gridgenerator(QWidget):
         self.ImDisplay = ImDisplay
         self.ControlPanel = ControlPanel
         self.gridLayout_centralwidget = gridLayout_centralwidget
-        
+        self.checked_wells = set()
+        self.checked_fovs = set()
+        self.checked_zs = set()
+        self.checked_times = set()
+        # self.selected_metadata = pd.DataFrame()
         # GroupBox for the table
         self.groupBox = QGroupBox(centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -26,7 +30,7 @@ class gridgenerator(QWidget):
         self.gridLayout_grdigroupbox = QtWidgets.QGridLayout(self.groupBox)
         self.gridLayout_grdigroupbox.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_grdigroupbox.setSpacing(0)
-        
+
         # TableWidget setup
         self.tableWidget = QtWidgets.QTableWidget(self.groupBox)
         self.gridLayout_grdigroupbox.addWidget(self.tableWidget, 0, 0)
@@ -39,7 +43,7 @@ class gridgenerator(QWidget):
         self.tableWidget.setColumnCount(WELL_PLATE_LENGTH)
         self.tableWidget.setRowCount(WELL_PLATE_WIDTH)
         self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        
+
         for i in range(WELL_PLATE_WIDTH):
             item = QtWidgets.QTableWidgetItem()
             self.tableWidget.setVerticalHeaderItem(i, item)
@@ -48,98 +52,184 @@ class gridgenerator(QWidget):
             item = QtWidgets.QTableWidgetItem()
             self.tableWidget.setHorizontalHeaderItem(i, item)
 
-        # self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         self.tableWidget.setSizePolicy(sizePolicy)
         self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tableWidget.updateGeometry()
         self.tableWidget.itemClicked.connect(lambda: self.on_click_table(self.ControlPanel.Meta_Data_df, self.displaygui, self.inout_resource_gui, self.ImDisplay))
-        
-        ### fov list
-        
+
+
+        ### Add Checkbox for Well Selection
+        self.well_checkbox = QCheckBox("Well Selection", self.groupBox)
+        self.gridLayout_grdigroupbox.addWidget(self.well_checkbox, 1, 0)
+        self.well_checkbox.stateChanged.connect(self.disable_well_signals)
+
+        ### FOV list
+
         self.groupBox1 = QGroupBox(centralwidget)
         self.gridLayout_centralwidget.addWidget(self.groupBox1, 5, 8, 6, 3)
         self.gridLayout_grdigroupbox1 = QtWidgets.QGridLayout(self.groupBox1)
-        self.gridLayout_grdigroupbox1.setObjectName("gridLayout_grdigroupbox1")
-        
-        # Setting the stretch factors for the columns
-        # self.gridLayout_grdigroupbox1.setColumnStretch(0, 1)  # Adjust as needed
-        # self.gridLayout_grdigroupbox1.setColumnStretch(1, 1)  # FOV
-        # self.gridLayout_grdigroupbox1.setColumnStretch(2, 1)  # Z
-        # self.gridLayout_grdigroupbox1.setColumnStretch(3, 1)  # Time
-        
+
         self.FOVlist = QtWidgets.QListWidget(self.groupBox1)
-        self.gridLayout_grdigroupbox1.addWidget(self.FOVlist, 2, 1, 5, 1)
+        self.gridLayout_grdigroupbox1.addWidget(self.FOVlist, 0, 0)
         font = QtGui.QFont()
         font.setPointSize(8)
         self.FOVlist.setFont(font)
         self.FOVlist.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.FOVlist.setBatchSize(80)
-        self.FOVlist.setObjectName("FOVlist")
-        self.FOVlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df,self.ImDisplay, self.displaygui))
-        
-        self.FOVlabel = QtWidgets.QLabel(self.groupBox1)
-#         self.FOVlabel.setGeometry(QtCore.QRect(390, 250, 31, 16))
-#         self.gridLayout_centralwidget.addWidget(self.FOVlabel, 5, 8, 1, 1)
-        self.gridLayout_grdigroupbox1.addWidget(self.FOVlabel, 1, 1, 1, 1)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.FOVlabel.setFont(font)
-        self.FOVlabel.setObjectName("FOVabel")
+        self.FOVlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
 
-        ### Zlist 
+        ### Add Checkbox for Field Selection
+        self.field_checkbox = QCheckBox("Field Selection", self.groupBox1)
+        self.gridLayout_grdigroupbox1.addWidget(self.field_checkbox, 1, 0)
+        self.field_checkbox.stateChanged.connect(self.disable_field_signals)
+
+        ### Z list 
         self.Zlist = QtWidgets.QListWidget(self.groupBox1)
-        self.gridLayout_grdigroupbox1.addWidget(self.Zlist, 2, 2, 5, 1)
-        font = QtGui.QFont()
-        font.setPointSize(8)
+        self.gridLayout_grdigroupbox1.addWidget(self.Zlist, 0, 1)
         self.Zlist.setFont(font)
         self.Zlist.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.Zlist.setBatchSize(80)
-        self.Zlist.setObjectName("Zlist")
-        self.Zlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df,self.ImDisplay, self.displaygui))
-        
+        self.Zlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
 
-        self.Zlabel = QtWidgets.QLabel(self.groupBox1)
-        self.gridLayout_grdigroupbox1.addWidget(self.Zlabel, 1, 2, 1, 1)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.Zlabel.setFont(font)
-        self.Zlabel.setObjectName("Zlabel")
-        
+        ### Add Checkbox for Z Selection
+        self.z_checkbox = QCheckBox("Z Selection", self.groupBox1)
+        self.gridLayout_grdigroupbox1.addWidget(self.z_checkbox, 1, 1)
+        self.z_checkbox.stateChanged.connect(self.disable_z_signals)
+
         ### Time list 
         self.Timelist = QtWidgets.QListWidget(self.groupBox1)
-        self.gridLayout_grdigroupbox1.addWidget(self.Timelist, 2, 3, 5, 1)
-        font = QtGui.QFont()
-        font.setPointSize(8)
+        self.gridLayout_grdigroupbox1.addWidget(self.Timelist, 0, 2)
         self.Timelist.setFont(font)
         self.Timelist.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.Timelist.setBatchSize(80)
-        self.Timelist.setObjectName("Timelist")
-        self.Timelist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df,self.ImDisplay, self.displaygui))
-        
-        
-        self.Timelabel = QtWidgets.QLabel(self.groupBox1)
-        self.gridLayout_grdigroupbox1.addWidget(self.Timelabel, 1, 3, 1, 1)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.Timelabel.setFont(font)
-        self.Timelabel.setObjectName("Timelabel")
+        self.Timelist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
+
+        ### Add Checkbox for Time Selection
+        self.time_checkbox = QCheckBox("Time Selection", self.groupBox1)
+        self.gridLayout_grdigroupbox1.addWidget(self.time_checkbox, 1, 2)
+        self.time_checkbox.stateChanged.connect(self.disable_time_signals)
 
         _translate = QtCore.QCoreApplication.translate
         for i in range(len(WELL_PLATE_ROWS)):
             item = self.tableWidget.verticalHeaderItem(i)
             item.setText(_translate("MainWindow", WELL_PLATE_ROWS[i]))
-            
+
         for i in range(WELL_PLATE_LENGTH):
             item = self.tableWidget.horizontalHeaderItem(i)
             item.setText(_translate("MainWindow", str(i+1)))
 
-        self.FOVlabel.setText(_translate("MainWindow", "FOV"))
-        self.Zlabel.setText(_translate("MainWindow", "Z"))
-        self.Timelabel.setText(_translate("MainWindow", "Time"))
-    
+    def disable_well_signals(self, state):
+        if state == Qt.Checked:
+            self.tableWidget.itemClicked.disconnect()
+            self.tableWidget.itemClicked.connect(lambda: self.on_click_table_save_wells(self.ControlPanel.Meta_Data_df))
+        else:
+            self.tableWidget.itemClicked.disconnect()
+            self.tableWidget.itemClicked.connect(lambda: self.on_click_table(self.ControlPanel.Meta_Data_df, self.displaygui, self.inout_resource_gui, self.ImDisplay))
+
+    def disable_field_signals(self, state):
+        if state == Qt.Checked:
+            self.FOVlist.itemClicked.disconnect()
+            self.FOVlist.itemClicked.connect(self.on_click_FOV_list)
+        else:
+            self.FOVlist.itemClicked.disconnect()
+            self.FOVlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
+
+    def disable_z_signals(self, state):
+        if state == Qt.Checked:
+            self.Zlist.itemClicked.disconnect()
+            self.Zlist.itemClicked.connect(self.on_click_Z_list)
+        else:
+            self.Zlist.itemClicked.disconnect()
+            self.Zlist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
+
+    def disable_time_signals(self, state):
+        if state == Qt.Checked:
+            self.Timelist.itemClicked.disconnect()
+            self.Timelist.itemClicked.connect(self.on_click_Time_list)
+        else:
+            self.Timelist.itemClicked.disconnect()
+            self.Timelist.itemClicked.connect(lambda: self.on_click_list(self.ControlPanel.Meta_Data_df, self.ImDisplay, self.displaygui))
+
+    def setup_connections(self):
+        # Assuming checkboxes are instantiated and accessible
+        self.field_checkbox.stateChanged.connect(self.disable_field_signals)
+        self.z_checkbox.stateChanged.connect(self.disable_z_signals)
+        self.time_checkbox.stateChanged.connect(self.disable_time_signals)
+        # Initially setting up the connections based on checkbox states
+        self.disable_field_signals(self.field_checkbox.isChecked())
+        self.disable_z_signals(self.z_checkbox.isChecked())
+        self.disable_time_signals(self.time_checkbox.isChecked())
+        
+    def on_click_table_save_wells(self, out_df):
+        for currentQTableWidgetItem in self.tableWidget.selectedItems():
+            img_row = currentQTableWidgetItem.row()
+            img_col = currentQTableWidgetItem.column()
+
+            # Check if there's a corresponding record in the dataframe
+            df_checker = out_df.loc[(out_df['column'] == str(img_col + 1)) & (out_df['row'] == str(img_row + 1))]
+
+            if not df_checker.empty:
+                # Retrieve current item
+                item = self.tableWidget.item(img_row, img_col)
+                if not item:  # If there's no item, create one
+                    item = QtWidgets.QTableWidgetItem()
+                    self.tableWidget.setItem(img_row, img_col, item)               
+                
+                # Define a larger font for the tick mark
+                font = item.font()
+                font.setPointSize(10)  # Set the size as needed
+                font.setBold(True)
+                item.setFont(font)
+                
+                # Check current text and toggle
+                current_text = item.text()
+                if current_text == "✓":
+                    item.setText("")  # If tick mark is present, remove it
+                    self.checked_wells.discard((img_row, img_col))  # Remove from the set
+                else:
+                    item.setText("✓")  # If no tick mark, add it
+                    self.checked_wells.add((img_row, img_col))  # Add to the set
+
+                # print(f"Checked wells updated: {self.checked_wells}")
+                
+    def on_click_FOV_list(self, item):
+        idx = self.FOVlist.row(item)
+        current_text = item.text().strip()
+        if "✓" in current_text:
+            new_text = current_text.replace(" ✓", "")  # Remove checkmark
+            self.checked_fovs.discard(idx)
+        else:
+            new_text = current_text + " ✓"  # Add checkmark
+            self.checked_fovs.add(idx)
+        item.setText(new_text)
+        # print(f"Checked FOVs updated: {self.checked_fovs}")
+
+    def on_click_Z_list(self, item):
+        idx = self.Zlist.row(item)
+        current_text = item.text().strip()
+        if "✓" in current_text:
+            new_text = current_text.replace(" ✓", "")  # Remove checkmark
+            self.checked_zs.discard(idx)
+        else:
+            new_text = current_text + " ✓"  # Add checkmark
+            self.checked_zs.add(idx)
+        item.setText(new_text)
+        # print(f"Checked Zs updated: {self.checked_zs}")
+
+    def on_click_Time_list(self, item):
+        idx = self.Timelist.row(item)
+        current_text = item.text().strip()
+        if "✓" in current_text:
+            new_text = current_text.replace(" ✓", "")  # Remove checkmark
+            self.checked_times.discard(idx)
+        else:
+            new_text = current_text + " ✓"  # Add checkmark
+            self.checked_times.add(idx)
+        item.setText(new_text)
+        # print(f"Checked Times updated: {self.checked_times}")
+        
     def GRID_INITIALIZER(self, out_df, displaygui, inout_resource_gui, ImDisplay):
         
         ### initailize well plate grid
@@ -161,6 +251,9 @@ class gridgenerator(QWidget):
                         current_col = c-1
                         k=k+1
         
+        # Set the initial color of the first selected well based on checkbox state
+        
+            
         self.tableWidget.setCurrentCell(current_row, current_col)
         self.on_click_table( out_df, displaygui, inout_resource_gui, ImDisplay)
         
@@ -175,6 +268,11 @@ class gridgenerator(QWidget):
         self.Timelist.clear()
         self.FOVlist.clear()
         self.Zlist.clear()
+        
+        # if self.well_checkbox.isChecked():
+        #     self.tableWidget.item(currentQTableWidgetItem.row(), currentQTableWidgetItem.column()).setBackground(QtGui.QColor(255, 255, 0))
+        # else:
+        #     self.tableWidget.item(currentQTableWidgetItem.row(), currentQTableWidgetItem.column()).setBackground(QtGui.QColor(0, 0, 255))
         #### initalizae FOV and Z list
         
         df_checker = out_df.loc[(out_df['column'] == str(img_col)) & (out_df['row'] == str(img_row))]
@@ -249,9 +347,9 @@ class gridgenerator(QWidget):
             
         ImDisplay.grid_data[0] = img_col
         ImDisplay.grid_data[1] = img_row
-        ImDisplay.grid_data[2] = np.array(self.Timelist.currentItem().text()).astype(int)
-        ImDisplay.grid_data[3] = np.array(self.FOVlist.currentItem().text()).astype(int)
-        ImDisplay.grid_data[4] = np.array(self.Zlist.currentItem().text()).astype(int)
+        ImDisplay.grid_data[2] = np.array(''.join(filter(str.isdigit, self.Timelist.currentItem().text()))).astype(int)
+        ImDisplay.grid_data[3] = np.array(''.join(filter(str.isdigit, self.FOVlist.currentItem().text()))).astype(int)
+        ImDisplay.grid_data[4] = np.array(''.join(filter(str.isdigit, self.Zlist.currentItem().text()))).astype(int)
         ImDisplay.GET_IMAGE_NAME(displaygui)
         
         if self.first_time==True:
