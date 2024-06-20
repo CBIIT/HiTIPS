@@ -51,6 +51,10 @@ For detailed installation instructions, visit our [installation guide](https://h
 
 **This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
+**If you are using Windows, make sure to install `Visual Studio <https://visualstudio.microsoft.com/>`_ and `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ before installing HiTIPS.**
+
+**If you are using Mac OS (Only Intel chip works for now), make sure to install `Xcode <https://developer.apple.com/xcode/>`_ before installing HiTIPS.**
+
 1. **Create a Conda Environment**::
 
     conda create --name hitips_env python=3.8
