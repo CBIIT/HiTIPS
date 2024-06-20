@@ -13,7 +13,7 @@
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Adding Analysis Method" href="Pluggins.html" />
+    <link rel="next" title="Adding Analysis Module" href="new_modules.html" />
     <link rel="prev" title="Results" href="results.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -59,12 +59,21 @@ first uninstall opencv-python:</p>
 <li><p>If you are running HiTIPS on live cell data and need to track cells and spots, maks sure you also check &quot;Nuclei Mask&quot;, &quot;Nuclei Info&quot;, and &quot;Spots Location&quot; checkboxes under &quot;Results&quot; tab.</p></li>
 </ul>
 </section>
-</section>
 <section id="resolve-installation-issue-for-deepcell-toolbox">
-<h1>Resolve Installation Issue for deepcell-toolbox<a class="headerlink" href="#resolve-installation-issue-for-deepcell-toolbox" title="Permalink to this heading">¶</a></h1>
+<h2>Resolve Installation Issue for deepcell-toolbox<a class="headerlink" href="#resolve-installation-issue-for-deepcell-toolbox" title="Permalink to this heading">¶</a></h2>
 <p>The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater for the installation of the <code class="docutils literal notranslate"><span class="pre">deepcell-toolbox</span></code> package. Follow these steps to resolve the issue:</p>
+</section>
+<section id="install-visual-studio">
+<h2>1. Install Visual Studio<a class="headerlink" href="#install-visual-studio" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><p>Download and install Visual Studio:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://visualstudio.microsoft.com/">Visual Studio</a></p></li>
+</ul>
+</div></blockquote>
+</section>
 <section id="install-microsoft-c-build-tools">
-<h2>1. Install Microsoft C++ Build Tools<a class="headerlink" href="#install-microsoft-c-build-tools" title="Permalink to this heading">¶</a></h2>
+<h2>2. Install Microsoft C++ Build Tools<a class="headerlink" href="#install-microsoft-c-build-tools" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>Download the Microsoft C++ Build Tools from the provided link:</p>
 <ul class="simple">
@@ -74,33 +83,45 @@ first uninstall opencv-python:</p>
 </div></blockquote>
 </section>
 <section id="run-the-installer">
-<h2>2. Run the Installer<a class="headerlink" href="#run-the-installer" title="Permalink to this heading">¶</a></h2>
+<h2>3. Run the Installer<a class="headerlink" href="#run-the-installer" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>Execute the installer and follow the on-screen instructions to install the necessary build tools. The correct installation of these tools is essential for compiling C extensions in Python packages.</p>
 </div></blockquote>
 </section>
 <section id="restart-your-computer">
-<h2>3. Restart Your Computer<a class="headerlink" href="#restart-your-computer" title="Permalink to this heading">¶</a></h2>
+<h2>4. Restart Your Computer<a class="headerlink" href="#restart-your-computer" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>After installing the C++ Build Tools, restart your computer to ensure that the changes are applied and the necessary paths are set in the environment.</p>
 </div></blockquote>
 </section>
 <section id="re-attempt-installation">
-<h2>4. Re-attempt Installation<a class="headerlink" href="#re-attempt-installation" title="Permalink to this heading">¶</a></h2>
+<h2>5. Re-attempt Installation<a class="headerlink" href="#re-attempt-installation" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>With the build tools installed, try to reinstall the <code class="docutils literal notranslate"><span class="pre">deepcell-toolbox</span></code> package. The installation should now be able to compile the required C extensions successfully.</p>
+<p>Make sure your Python environment is correctly set up, and you are using a compatible version of Python for the <code class="docutils literal notranslate"><span class="pre">deepcell-toolbox</span></code> installation. The package may not be compatible with older Python versions.</p>
 </div></blockquote>
 </section>
-<section id="check-for-errors">
-<h2>5. Check for Errors<a class="headerlink" href="#check-for-errors" title="Permalink to this heading">¶</a></h2>
+<section id="resolve-installation-issue-for-fastremap">
+<h2>Resolve Installation Issue for fastremap<a class="headerlink" href="#resolve-installation-issue-for-fastremap" title="Permalink to this heading">¶</a></h2>
+<p>The error encountered indicates a missing numpy module during the installation of the <code class="docutils literal notranslate"><span class="pre">fastremap</span></code> package. Follow these steps to resolve the issue:</p>
+</section>
+<section id="install-numpy">
+<h2>1. Install numpy<a class="headerlink" href="#install-numpy" title="Permalink to this heading">¶</a></h2>
 <blockquote>
-<div><p>If the installation fails again, review the error messages for any indications of the problem. The error output can provide valuable insights into what went wrong and how to fix it.</p>
+<div><p>Before attempting to install <code class="docutils literal notranslate"><span class="pre">fastremap</span></code>, ensure that numpy is installed in your environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>numpy
+</pre></div>
+</div>
 </div></blockquote>
 </section>
-<section id="environment-setup">
-<h2>6. Environment Setup<a class="headerlink" href="#environment-setup" title="Permalink to this heading">¶</a></h2>
+<section id="id1">
+<h2>2. Re-attempt Installation<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <blockquote>
-<div><p>Make sure your Python environment is correctly set up, and you are using a compatible version of Python for the <code class="docutils literal notranslate"><span class="pre">deepcell-toolbox</span></code> installation. The package may not be compatible with older Python versions.</p>
+<div><p>With numpy installed, try to reinstall the <code class="docutils literal notranslate"><span class="pre">fastremap</span></code> package as part of the HiTIPS dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>fastremap
+pip<span class="w"> </span>install<span class="w"> </span>hitips
+</pre></div>
+</div>
 </div></blockquote>
 </section>
 </section>
@@ -127,24 +148,24 @@ first uninstall opencv-python:</p>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">hitips</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#reporting-issues">Reporting Issues</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation-troubleshooting">Installation troubleshooting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#general-usage-tips">General Usage Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-visual-studio">1. Install Visual Studio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-microsoft-c-build-tools">2. Install Microsoft C++ Build Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-installer">3. Run the Installer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#restart-your-computer">4. Restart Your Computer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#re-attempt-installation">5. Re-attempt Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#resolve-installation-issue-for-fastremap">Resolve Installation Issue for fastremap</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-numpy">1. Install numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">2. Re-attempt Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#install-microsoft-c-build-tools">1. Install Microsoft C++ Build Tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-the-installer">2. Run the Installer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#restart-your-computer">3. Restart Your Computer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#re-attempt-installation">4. Re-attempt Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#check-for-errors">5. Check for Errors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#environment-setup">6. Environment Setup</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_modules.html">Adding Analysis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>
 
@@ -153,7 +174,7 @@ first uninstall opencv-python:</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="results.html" title="previous chapter">Results</a></li>
-      <li>Next: <a href="Pluggins.html" title="next chapter">Adding Analysis Method</a></li>
+      <li>Next: <a href="new_modules.html" title="next chapter">Adding Analysis Module</a></li>
   </ul></li>
 </ul>
 </div>

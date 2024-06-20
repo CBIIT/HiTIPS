@@ -35,11 +35,18 @@ General Usage Tips
 
 
 Resolve Installation Issue for deepcell-toolbox
-===============================================
+-----------------------------------------------
 
 The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or greater for the installation of the ``deepcell-toolbox`` package. Follow these steps to resolve the issue:
 
-1. Install Microsoft C++ Build Tools
+1. Install Visual Studio
+------------------------
+
+   Download and install Visual Studio:
+
+   - `Visual Studio <https://visualstudio.microsoft.com/>`_
+
+2. Install Microsoft C++ Build Tools
 ------------------------------------
 
    Download the Microsoft C++ Build Tools from the provided link:
@@ -48,27 +55,47 @@ The error encountered indicates a requirement for Microsoft Visual C++ 14.0 or g
 
    Ensure to include the C++ build tools during the installation, along with the Windows 10 SDK and the latest MSVC v142 x64/x86 build tools.
 
-2. Run the Installer
+3. Run the Installer
 --------------------
 
    Execute the installer and follow the on-screen instructions to install the necessary build tools. The correct installation of these tools is essential for compiling C extensions in Python packages.
 
-3. Restart Your Computer
+4. Restart Your Computer
 ------------------------
 
    After installing the C++ Build Tools, restart your computer to ensure that the changes are applied and the necessary paths are set in the environment.
 
-4. Re-attempt Installation
+5. Re-attempt Installation
 --------------------------
 
    With the build tools installed, try to reinstall the ``deepcell-toolbox`` package. The installation should now be able to compile the required C extensions successfully.
 
-5. Check for Errors
--------------------
-
-   If the installation fails again, review the error messages for any indications of the problem. The error output can provide valuable insights into what went wrong and how to fix it.
-
-6. Environment Setup
---------------------
 
    Make sure your Python environment is correctly set up, and you are using a compatible version of Python for the ``deepcell-toolbox`` installation. The package may not be compatible with older Python versions.
+
+
+Resolve Installation Issue for fastremap
+----------------------------------------
+
+The error encountered indicates a missing numpy module during the installation of the ``fastremap`` package. Follow these steps to resolve the issue:
+
+1. Install numpy
+----------------
+
+   Before attempting to install ``fastremap``, ensure that numpy is installed in your environment:
+
+   .. code-block:: bash
+
+      pip install numpy
+
+2. Re-attempt Installation
+--------------------------
+
+   With numpy installed, try to reinstall the ``fastremap`` package as part of the HiTIPS dependencies:
+
+   .. code-block:: bash
+
+      pip install fastremap
+      pip install hitips
+
+

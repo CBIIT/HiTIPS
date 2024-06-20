@@ -144,6 +144,11 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.update_params_dict">
+<span class="sig-name descname"><span class="pre">update_params_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.update_params_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="hitips.Analysis.ImageAnalyzer.neuceli_segmenter">
 <span class="sig-name descname"><span class="pre">neuceli_segmenter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixpermic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.Analysis.ImageAnalyzer.neuceli_segmenter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Segments nuclei in an image using various methods based on GUI settings.</p>
@@ -812,6 +817,11 @@ The output is a binary image with boundaries marked in white (255) on a black (0
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.update_params_dict">
 <span class="sig-name descname"><span class="pre">update_params_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.update_params_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.BatchAnalyzer.BatchAnalysis.check_and_append_args">
+<span class="sig-name descname"><span class="pre">check_and_append_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fov</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.BatchAnalyzer.BatchAnalysis.check_and_append_args" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1653,6 +1663,51 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.disable_well_signals">
+<span class="sig-name descname"><span class="pre">disable_well_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.disable_well_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.disable_field_signals">
+<span class="sig-name descname"><span class="pre">disable_field_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.disable_field_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.disable_z_signals">
+<span class="sig-name descname"><span class="pre">disable_z_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.disable_z_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.disable_time_signals">
+<span class="sig-name descname"><span class="pre">disable_time_signals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.disable_time_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.setup_connections">
+<span class="sig-name descname"><span class="pre">setup_connections</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.setup_connections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.on_click_table_save_wells">
+<span class="sig-name descname"><span class="pre">on_click_table_save_wells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_df</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.on_click_table_save_wells" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.on_click_FOV_list">
+<span class="sig-name descname"><span class="pre">on_click_FOV_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.on_click_FOV_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.on_click_Z_list">
+<span class="sig-name descname"><span class="pre">on_click_Z_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.on_click_Z_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.on_click_Time_list">
+<span class="sig-name descname"><span class="pre">on_click_Time_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.on_click_Time_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="hitips.GridLayout.gridgenerator.GRID_INITIALIZER">
 <span class="sig-name descname"><span class="pre">GRID_INITIALIZER</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inout_resource_gui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ImDisplay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.GridLayout.gridgenerator.GRID_INITIALIZER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1699,6 +1754,11 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.HiTIPS.ControlPanel.on_run_analysis">
 <span class="sig-name descname"><span class="pre">on_run_analysis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.HiTIPS.ControlPanel.on_run_analysis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hitips.HiTIPS.ControlPanel.select_data_subset">
+<span class="sig-name descname"><span class="pre">select_data_subset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hitips.HiTIPS.ControlPanel.select_data_subset" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1796,7 +1856,7 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 <span id="hitips-metadata-reader-module"></span><h2>hitips.MetaData_Reader module<a class="headerlink" href="#module-hitips.MetaData_Reader" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hitips.MetaData_Reader.ImageReader">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.MetaData_Reader.</span></span><span class="sig-name descname"><span class="pre">ImageReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ControlPanel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inout_resource_gui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.MetaData_Reader.ImageReader" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hitips.MetaData_Reader.</span></span><span class="sig-name descname"><span class="pre">ImageReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ControlPanel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inout_resource_gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.MetaData_Reader.ImageReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class provides functionality for reading and loading various types of biological image data.</p>
 <p>Attributes:
@@ -1813,7 +1873,7 @@ It returns a DataFrame containing the tracked objects and their properties.</p>
 - LOAD_BIOFORMAT_DATA: Loads image data from various bioformats supported files.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="hitips.MetaData_Reader.ImageReader.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ControlPanel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inout_resource_gui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.MetaData_Reader.ImageReader.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ControlPanel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inout_resource_gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displaygui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">analysisgui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hitips.MetaData_Reader.ImageReader.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the ImageReader object with references to GUI components.</p>
 <p>Parameters:
 - ControlPanel: Reference to the ControlPanel object.
@@ -1912,11 +1972,10 @@ organizing this information into a structured DataFrame format.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_modules.html">Adding Analysis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>
 

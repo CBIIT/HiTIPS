@@ -16,7 +16,7 @@ Welcome to HiTIPS's documentation!
    instructions
    results
    troubleshooting
-   Pluggins
+   new_modules
    citation
 
 

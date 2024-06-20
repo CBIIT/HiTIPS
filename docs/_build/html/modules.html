@@ -42,6 +42,7 @@
 <li class="toctree-l3"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.gui_params"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.gui_params</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.__init__"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.update_params_dict"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.update_params_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.neuceli_segmenter"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.neuceli_segmenter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.deepcell_segmenter"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.deepcell_segmenter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.Analysis.ImageAnalyzer.cellpose_segmenter"><code class="docutils literal notranslate"><span class="pre">ImageAnalyzer.cellpose_segmenter()</span></code></a></li>
@@ -77,6 +78,7 @@
 <li class="toctree-l3"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.__init__"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.update_params_dict"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.update_params_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.check_and_append_args"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.check_and_append_args()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.ON_APPLYBUTTON"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.ON_APPLYBUTTON()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.remove_readonly"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.remove_readonly()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.BatchAnalyzer.BatchAnalysis.get_package_versions"><code class="docutils literal notranslate"><span class="pre">BatchAnalysis.get_package_versions()</span></code></a></li>
@@ -166,6 +168,15 @@
 <li class="toctree-l3"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator"><code class="docutils literal notranslate"><span class="pre">gridgenerator</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.first_time"><code class="docutils literal notranslate"><span class="pre">gridgenerator.first_time</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.__init__"><code class="docutils literal notranslate"><span class="pre">gridgenerator.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.disable_well_signals"><code class="docutils literal notranslate"><span class="pre">gridgenerator.disable_well_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.disable_field_signals"><code class="docutils literal notranslate"><span class="pre">gridgenerator.disable_field_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.disable_z_signals"><code class="docutils literal notranslate"><span class="pre">gridgenerator.disable_z_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.disable_time_signals"><code class="docutils literal notranslate"><span class="pre">gridgenerator.disable_time_signals()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.setup_connections"><code class="docutils literal notranslate"><span class="pre">gridgenerator.setup_connections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_table_save_wells"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_table_save_wells()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_FOV_list"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_FOV_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_Z_list"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_Z_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_Time_list"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_Time_list()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.GRID_INITIALIZER"><code class="docutils literal notranslate"><span class="pre">gridgenerator.GRID_INITIALIZER()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_table"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_table()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.GridLayout.gridgenerator.on_click_list"><code class="docutils literal notranslate"><span class="pre">gridgenerator.on_click_list()</span></code></a></li>
@@ -180,6 +191,7 @@
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.Meta_Data_df"><code class="docutils literal notranslate"><span class="pre">ControlPanel.Meta_Data_df</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.controlUi"><code class="docutils literal notranslate"><span class="pre">ControlPanel.controlUi()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.on_run_analysis"><code class="docutils literal notranslate"><span class="pre">ControlPanel.on_run_analysis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.select_data_subset"><code class="docutils literal notranslate"><span class="pre">ControlPanel.select_data_subset()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.retranslateUi"><code class="docutils literal notranslate"><span class="pre">ControlPanel.retranslateUi()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="hitips.html#hitips.HiTIPS.ControlPanel.ON_RESET_BUTTON"><code class="docutils literal notranslate"><span class="pre">ControlPanel.ON_RESET_BUTTON()</span></code></a></li>
 </ul>
@@ -257,11 +269,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_modules.html">Adding Analysis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>
 

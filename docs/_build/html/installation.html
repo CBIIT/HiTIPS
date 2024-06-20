@@ -34,6 +34,9 @@
             
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+<p><strong>HiTIPS has been installed and tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, HiTIPS is currently not operational on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.</strong></p>
+<p><strong>If you are using Windows, make sure to install `Visual Studio &lt;https://visualstudio.microsoft.com/&gt;`_ and `Microsoft C++ Build Tools &lt;https://visualstudio.microsoft.com/visual-cpp-build-tools/&gt;`_ before installing HiTIPS.</strong></p>
+<p><strong>If you are using Mac OS (Only Intel chip works for now), make sure to install `Xcode &lt;https://developer.apple.com/xcode/&gt;`_ before installing HiTIPS.</strong></p>
 <section id="hardware-and-software-requirements">
 <h2>Hardware and Software Requirements<a class="headerlink" href="#hardware-and-software-requirements" title="Permalink to this heading">¶</a></h2>
 <section id="hardware-requirements">
@@ -49,7 +52,7 @@
 <h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Operating System</strong>: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora), Windows (10 and after)</p></li>
-<li><p><strong>Python</strong>: Version 3.8 or newer.</p></li>
+<li><p><strong>Python</strong>: Version 3.9 or newer.</p></li>
 <li><p><strong>Package Manager</strong>: Latest version of <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> or <a class="reference external" href="https://www.anaconda.com/products/distribution">Anaconda</a>.</p></li>
 </ul>
 </section>
@@ -79,9 +82,10 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 </section>
 <section id="installing-hitips-using-conda-and-pip">
 <h2>Installing HiTIPS Using Conda and Pip<a class="headerlink" href="#installing-hitips-using-conda-and-pip" title="Permalink to this heading">¶</a></h2>
+<p><strong>This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.</strong></p>
 <ol class="arabic">
 <li><p><strong>Create a Conda Environment</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.9</span>
 <span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
 </pre></div>
 </div>
@@ -98,8 +102,9 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 </li>
 </ol>
 </section>
-<section id="installing-hitips-using-requirements-files">
-<h2>Installing HiTIPS Using Requirements Files<a class="headerlink" href="#installing-hitips-using-requirements-files" title="Permalink to this heading">¶</a></h2>
+<section id="installing-hitips-using-requirements-file">
+<h2>Installing HiTIPS Using Requirements File<a class="headerlink" href="#installing-hitips-using-requirements-file" title="Permalink to this heading">¶</a></h2>
+<p><strong>This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.</strong></p>
 <ol class="arabic">
 <li><p><strong>Clone the HiTIPS Repository</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">CBIIT</span><span class="o">/</span><span class="n">HiTIPS</span><span class="o">.</span><span class="n">git</span>
@@ -109,12 +114,11 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 </ol>
 <p>Navigate to the cloned HiTIPS directory before proceeding with the next steps.</p>
 <ol class="arabic" start="2">
-<li><p><strong>Create a Conda Environment from the Provided YML File</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">hitips_env</span><span class="o">.</span><span class="n">yml</span>
+<li><p><strong>Create and Activate a Conda Environment</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">hitips_env</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.9</span>
 <span class="n">conda</span> <span class="n">activate</span> <span class="n">hitips_env</span>
 </pre></div>
 </div>
-<p>You can find the <cite>hitips_env.yml</cite> file <a class="reference external" href="https://github.com/CBIIT/HiTIPS/blob/main/hitips_env.yml">here</a>.</p>
 </li>
 <li><p><strong>Install HiTIPS using Pip from the Requirements File</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
@@ -123,7 +127,7 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 <p>The <cite>requirements.txt</cite> file can be accessed <a class="reference external" href="https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt">here</a>.</p>
 </li>
 <li><p><strong>Launch HiTIPS</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hitips</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">hitips</span><span class="o">.</span><span class="n">HiTIPS</span>
 </pre></div>
 </div>
 </li>
@@ -131,6 +135,7 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 </section>
 <section id="installing-hitips-using-docker">
 <h2>Installing HiTIPS Using Docker<a class="headerlink" href="#installing-hitips-using-docker" title="Permalink to this heading">¶</a></h2>
+<p><strong>This method has been tested on Linux (Ubuntu), Windows (10 and above). However, this method is currently not working on Mac OS.</strong></p>
 <ol class="arabic">
 <li><p><strong>Install Docker</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Follow</span> <span class="n">the</span> <span class="n">official</span> <span class="n">Docker</span> <span class="n">installation</span> <span class="n">instructions</span> <span class="k">for</span> <span class="n">your</span> <span class="n">platform</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">docs</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">get</span><span class="o">-</span><span class="n">docker</span><span class="o">/</span>
@@ -138,14 +143,14 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 </div>
 </li>
 <li><p><strong>Pull the HiTIPS Docker Image</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">pull</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips_pip</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 </li>
 <li><p><strong>Run HiTIPS in a Docker Container</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Start</span> <span class="n">a</span> <span class="n">HiTIPS</span> <span class="n">container</span> <span class="k">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">command</span><span class="p">:</span>
 
-<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips</span><span class="p">:</span><span class="n">latest</span>
+<span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">it</span> <span class="o">--</span><span class="n">rm</span> <span class="n">adibkeikhosravi991</span><span class="o">/</span><span class="n">hitips_pip</span><span class="p">:</span><span class="n">latest</span>
 </pre></div>
 </div>
 </li>
@@ -177,16 +182,15 @@ conda-forge channel. Learn more about conda-forge at <a class="reference externa
 <li class="toctree-l2"><a class="reference internal" href="#hardware-and-software-requirements">Hardware and Software Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-conda-and-pip">Installing HiTIPS Using Conda and Pip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-requirements-files">Installing HiTIPS Using Requirements Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-requirements-file">Installing HiTIPS Using Requirements File</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-hitips-using-docker">Installing HiTIPS Using Docker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="instructions.html">Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Usage Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html#resolve-installation-issue-for-deepcell-toolbox">Resolve Installation Issue for deepcell-toolbox</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Pluggins.html">Adding Analysis Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_modules.html">Adding Analysis Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
 </ul>
 

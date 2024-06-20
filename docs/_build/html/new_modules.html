@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html lang="python">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Adding Analysis Module &#8212; HiTIPS 0.1.22 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=61cd365c" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=57796aeb"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Citing HiTIPS" href="citation.html" />
+    <link rel="prev" title="Troubleshooting" href="troubleshooting.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="adding-analysis-module">
+<h1>Adding Analysis Module<a class="headerlink" href="#adding-analysis-module" title="Permalink to this heading">¶</a></h1>
+<p>This guide explains how to add new nuclei or spot detection modules to the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for biological image analysis.</p>
+<section id="creating-a-pull-request">
+<h2>Creating a Pull Request<a class="headerlink" href="#creating-a-pull-request" title="Permalink to this heading">¶</a></h2>
+<p>Before adding your new module, ensure your changes are ready to be shared with the HiTIPS repository:</p>
+<ol class="arabic">
+<li><p>Fork the repository on GitHub.</p></li>
+<li><p>Clone your fork locally and create a new branch for your feature.</p></li>
+<li><p>Make your changes locally, committing them to your branch.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new nuclei detection module&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Push your changes to your fork on GitHub.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature_branch_name
+</pre></div>
+</div>
+</li>
+<li><p>Go to your fork on GitHub and click the ‘New pull request’ button.</p></li>
+<li><p>Ensure the base repository is set to CBIIT/HiTIPS and the base branch is the one you want your changes pulled into.</p></li>
+<li><p>Review your changes, then create the pull request.</p></li>
+</ol>
+</section>
+<section id="merging-the-pull-request">
+<h2>Merging the Pull Request<a class="headerlink" href="#merging-the-pull-request" title="Permalink to this heading">¶</a></h2>
+<p>Once your pull request has been reviewed and approved:</p>
+<ol class="arabic">
+<li><p>Merge the pull request via the GitHub interface.</p></li>
+<li><p>Fetch the updated main branch to your local repository.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</pre></div>
+</div>
+</li>
+<li><p>Delete your local feature branch if desired.</p></li>
+</ol>
+</section>
+<section id="define-the-new-nuclei-detection-module">
+<h2>Define the New Nuclei Detection Module<a class="headerlink" href="#define-the-new-nuclei-detection-module" title="Permalink to this heading">¶</a></h2>
+<p>Define a new module within the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for nuclei detection. For example, <code class="docutils literal notranslate"><span class="pre">custom_nuclei_segmenter</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_nuclei_segmenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom module to segment nuclei in an image.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        input_img (numpy.ndarray): Input image for nuclei segmentation.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: boundary (numpy.ndarray), mask (numpy.ndarray).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Your implementation</span>
+    <span class="k">return</span> <span class="n">boundary</span><span class="p">,</span> <span class="n">mask</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-the-new-nuclei-module">
+<h2>Integrate the New Nuclei Module<a class="headerlink" href="#integrate-the-new-nuclei-module" title="Permalink to this heading">¶</a></h2>
+<p>Update the <code class="docutils literal notranslate"><span class="pre">neuceli_segmenter</span></code> module to include your new detection module. Add an <cite>if</cite> condition that checks for your module's name and calls your custom function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">neuceli_segmenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="n">pixpermic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Existing code</span>
+    <span class="c1"># ...</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gui_params</span><span class="o">.</span><span class="n">NucDetectMethod_currentText</span> <span class="o">==</span> <span class="s2">&quot;YourModuleName&quot;</span><span class="p">:</span>
+        <span class="n">boundary</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_nuclei_segmenter</span><span class="p">(</span><span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">boundary</span><span class="p">,</span> <span class="n">mask</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-the-new-nuclei-detection-module-into-the-gui">
+<h2>Integrate the New Nuclei Detection Module into the GUI<a class="headerlink" href="#integrate-the-new-nuclei-detection-module-into-the-gui" title="Permalink to this heading">¶</a></h2>
+<p>To make the new nuclei detection module available in the GUI, you need to update the <code class="docutils literal notranslate"><span class="pre">NucDetectMethod</span></code> QComboBox within the <code class="docutils literal notranslate"><span class="pre">analyzer</span></code> class. Follow these steps:</p>
+<ol class="arabic">
+<li><p>Add the new module to the Nuclei Detection Module ComboBox</p>
+<p>Locate the <code class="docutils literal notranslate"><span class="pre">NucDetectMethod</span></code> QComboBox initialization in the <code class="docutils literal notranslate"><span class="pre">analyzer</span></code> class. Add a new item to the ComboBox that corresponds to your new nuclei detection module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">NucDetectMethod</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;YourMethodName&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">&quot;YourMethodName&quot;</span></code> with the name of your new nuclei detection module. This name will be displayed in the GUI and should be descriptive and user-friendly.</p>
+</li>
+<li><p>Update the GUI logic to handle the new module</p>
+<p>In the module where you handle the selection changes of the <code class="docutils literal notranslate"><span class="pre">NucDetectMethod</span></code> QComboBox (usually connected to a signal like <code class="docutils literal notranslate"><span class="pre">currentIndexChanged</span></code>), add a conditional block to set the parameters or call the function associated with your new module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">INITIALIZE_SEGMENTATION_PARAMETERS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">NucDetectMethod</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;YourMethodName&quot;</span><span class="p">:</span>
+        <span class="c1"># Set the parameters or call your custom segmentation module</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Ensure you replace <code class="docutils literal notranslate"><span class="pre">&quot;YourMethodName&quot;</span></code> with the exact string you used in the ComboBox item. This block can be used to initialize specific parameters or trigger your custom module for nuclei detection.</p>
+</li>
+<li><p>Ensure that your module is selectable and triggers the correct functionality in the GUI. Test the GUI to ensure that when your module is selected, the appropriate segmentation parameters are set or adjusted, and the module executes correctly when invoked.</p></li>
+</ol>
+<p>By following these steps, you integrate your new nuclei detection module into the HiTIPS application, allowing users to select and use it directly from the graphical interface.</p>
+</section>
+<section id="define-the-new-spot-detection-module">
+<h2>Define the New Spot Detection Module<a class="headerlink" href="#define-the-new-spot-detection-module" title="Permalink to this heading">¶</a></h2>
+<p>Define a new module within the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class for spot detection. For example, <code class="docutils literal notranslate"><span class="pre">custom_spot_detector</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">custom_spot_detector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom module to detect spots in an image.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        input_img (numpy.ndarray): Input image for spot detection.</span>
+<span class="sd">        **kwargs: Additional keyword arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.ndarray: final_spots, binary image with detected spots.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Your implementation</span>
+    <span class="k">return</span> <span class="n">final_spots</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-the-new-spot-detection-module">
+<h2>Integrate the New Spot Detection Module<a class="headerlink" href="#integrate-the-new-spot-detection-module" title="Permalink to this heading">¶</a></h2>
+<p>Update the <code class="docutils literal notranslate"><span class="pre">SpotDetector</span></code> module to include your new spot detection module. Add code at the beginning to handle your module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">SpotDetector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">spot_detection_method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;spot_detection_method&#39;</span><span class="p">,</span> <span class="s2">&quot;DefaultMethod&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">spot_detection_method</span> <span class="o">==</span> <span class="s2">&quot;YourSpotDetectionMethod&quot;</span><span class="p">:</span>
+        <span class="n">final_spots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_spot_detector</span><span class="p">(</span><span class="n">input_img</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">spots_df</span><span class="p">,</span> <span class="n">bin_img_g</span><span class="p">,</span> <span class="n">labeled_spots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spots_information</span><span class="p">(</span><span class="n">final_spots</span><span class="p">,</span> <span class="n">input_image_raw</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Rest of the existing code</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-the-new-spot-detection-module-into-the-gui">
+<h2>Integrate the New Spot Detection Module into the GUI<a class="headerlink" href="#integrate-the-new-spot-detection-module-into-the-gui" title="Permalink to this heading">¶</a></h2>
+<p>To incorporate the new spot detection module into the HiTIPS application's GUI, you need to update the interface elements related to spot detection. This involves adding the new module to a QComboBox and adjusting the GUI's logic to utilize the new module when selected.</p>
+<ol class="arabic">
+<li><p>Update the Spot Detection Module ComboBox</p>
+<p>Find the QComboBox that lists the spot detection modules. This could be a part of the spot detection settings in the GUI. Add an entry for your new spot detection module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">SpotDetectMethod</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;YourSpotDetectionMethod&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">&quot;YourSpotDetectionMethod&quot;</span></code> with the name you’ve chosen for your new spot detection module. The name should be clear and descriptive, as it will be visible in the GUI for users to select.</p>
+</li>
+<li><p>Modify the GUI Logic to Include the New Module</p>
+<p>In the part of your GUI code where the selection of the spot detection module is handled (typically connected to a signal like <code class="docutils literal notranslate"><span class="pre">currentIndexChanged</span></code> of the QComboBox), add a condition to check for your new module and set the appropriate parameters or call the related function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">UPDATE_SPOT_DETECTION_PARAMETERS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SpotDetectMethod</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;YourSpotDetectionMethod&quot;</span><span class="p">:</span>
+        <span class="c1"># Initialize parameters or invoke your custom spot detection</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+<p>Ensure that <code class="docutils literal notranslate"><span class="pre">&quot;YourSpotDetectionMethod&quot;</span></code> matches the string used in the ComboBox. This section of code will be responsible for configuring any specific settings or initiating your custom module when the user selects it from the GUI.</p>
+</li>
+<li><p>Test the Integration</p>
+<p>After integrating the new module into the GUI, thoroughly test the functionality to ensure that selecting the new module updates the GUI as expected and that the spot detection process works correctly with the chosen settings. This may involve checking parameter adjustments, ensuring the module is triggered properly, and verifying the output is as expected.</p>
+</li>
+</ol>
+<p>By incorporating these steps into the HiTIPS application, users will be able to select and utilize the new spot detection module directly from the graphical interface, enhancing the tool's flexibility and functionality.</p>
+</section>
+<section id="test-your-modules">
+<h2>Test Your Modules<a class="headerlink" href="#test-your-modules" title="Permalink to this heading">¶</a></h2>
+<p>Test the new modules with various images to ensure accuracy and robustness.</p>
+</section>
+<section id="update-the-documentation">
+<h2>Update the Documentation<a class="headerlink" href="#update-the-documentation" title="Permalink to this heading">¶</a></h2>
+<p>Document your modules in the project's documentation, detailing their overview, usage, and any specific requirements.</p>
+</section>
+<section id="commit-your-changes">
+<h2>Commit Your Changes<a class="headerlink" href="#commit-your-changes" title="Permalink to this heading">¶</a></h2>
+<p>Commit the changes to the project repository, ensuring all new code is properly documented and tested.</p>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">¶</a></h2>
+<p>Adding new detection modules to the <code class="docutils literal notranslate"><span class="pre">ImageAnalyzer</span></code> class expands its capabilities for biological image analysis. Adhere to best practices in coding, documentation, and testing for successful integration.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">HiTIPS</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="modules.html">hitips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example Datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instructions.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results.html">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Adding Analysis Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-pull-request">Creating a Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merging-the-pull-request">Merging the Pull Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-the-new-nuclei-detection-module">Define the New Nuclei Detection Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integrate-the-new-nuclei-module">Integrate the New Nuclei Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integrate-the-new-nuclei-detection-module-into-the-gui">Integrate the New Nuclei Detection Module into the GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-the-new-spot-detection-module">Define the New Spot Detection Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integrate-the-new-spot-detection-module">Integrate the New Spot Detection Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integrate-the-new-spot-detection-module-into-the-gui">Integrate the New Spot Detection Module into the GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-your-modules">Test Your Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-the-documentation">Update the Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#commit-your-changes">Commit Your Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citing HiTIPS</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="troubleshooting.html" title="previous chapter">Troubleshooting</a></li>
+      <li>Next: <a href="citation.html" title="next chapter">Citing HiTIPS</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Adib Keikhosravi.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.1.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/new_modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
