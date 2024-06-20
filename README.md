@@ -91,13 +91,13 @@ For detailed installation instructions, visit our [installation guide](https://h
 
 2. **Pull the HiTIPS Docker Image**::
 
-    docker pull adibkeikhosravi991/hitips:latest
+    docker pull adibkeikhosravi991/hitips_pip:latest
 
 3. **Run HiTIPS in a Docker Container**::
 
     Start a HiTIPS container with the following command:
 
-    docker run -it --rm adibkeikhosravi991/hitips:latest
+    docker run -it --rm adibkeikhosravi991/hitips_pip:latest
 
 ## 🚀 Usage
 
