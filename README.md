@@ -43,9 +43,13 @@ For comprehensive information about HiTIPS, including how to get started, instal
 
 ## 📥 Installation
 
+**HiTIPS has been installed and tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, HiTIPS is currently not operational on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
+
 For detailed installation instructions, visit our [installation guide](https://hitips.readthedocs.io/en/latest/installation.html).
 
 ### Installing HiTIPS Using Conda and Pip
+
+**This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
 1. **Create a Conda Environment**::
 
@@ -62,6 +66,8 @@ For detailed installation instructions, visit our [installation guide](https://h
 
 ### Installing HiTIPS Using Requirements Files
 
+**This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
+
 1. **Create a Conda Environment from `hitips_env.yml`**::
 
     conda env create -f hitips_env.yml
@@ -76,6 +82,8 @@ For detailed installation instructions, visit our [installation guide](https://h
     hitips
 
 ### Installing HiTIPS Using Docker
+
+**This method has been tested on Linux (Ubuntu), Windows (10 and above). However, this method is currently not working on Mac OS.**
 
 1. **Install Docker**::
 
