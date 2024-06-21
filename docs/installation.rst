@@ -110,7 +110,7 @@ Installing HiTIPS Using Docker
      - Go to XQuartz Preferences > Security and check "Allow connections from network clients".
      - Restart XQuartz.
      - Open a terminal and run the following command to allow Docker to connect to XQuartz::
-         
+
          xhost + 127.0.0.1
 
    - **Windows (VcXsrv)**:
@@ -119,13 +119,13 @@ Installing HiTIPS Using Docker
        - Start no client
        - Extra settings: check "Disable access control"
      - Open a command prompt and run::
-         
+
          set DISPLAY=host.docker.internal:0.0
 
    - **Linux**:
      - Ensure you have an X11 server installed and running. Most Linux distributions come with an X11 server pre-installed.
      - Open a terminal and run the following command to allow Docker to connect to your X server::
-         
+
          xhost +local:docker
 
 4. **Pull the HiTIPS Docker Image**::
@@ -137,15 +137,15 @@ Installing HiTIPS Using Docker
    Now, you can run your Docker container with the correct display settings:
 
    - **macOS**::
-       
+
        docker run -it --rm -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
    - **Windows**::
-       
+
        docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
      Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
 
    - **Linux**::
-       
+
        docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
