@@ -115,9 +115,9 @@ Installing HiTIPS Using Docker
 
    - **Windows (VcXsrv)**:
      - After installing VcXsrv, start it with the following options:
-       - Multiple windows
-       - Start no client
-       - Extra settings: check "Disable access control"
+     - Multiple windows
+     - Start no client
+     - Extra settings: check "Disable access control"
      - Open a command prompt and run::
 
          set DISPLAY=host.docker.internal:0.0
