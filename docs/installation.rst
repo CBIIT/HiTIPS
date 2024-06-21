@@ -8,7 +8,7 @@ Installation
 **If you are using Mac OS (Only Intel chip works for now), make sure to install `Xcode <https://developer.apple.com/xcode/>`_ before installing HiTIPS.**
 
 Hardware and Software Requirements
------------------------------------
+----------------------------------
 
 Hardware Requirements
 ^^^^^^^^^^^^^^^^^^^^^
@@ -17,7 +17,7 @@ Hardware Requirements
 - **RAM**: Minimum 16GB (32GB recommended for large datasets).
 - **Storage**: SSD with 500GB or more of available space.
 - **GPU**: Optional but recommended, especially if using CUDA-enhanced functionalities.
-                                                                                                                                                                                                                                                                                                
+
 Software Requirements
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -28,29 +28,22 @@ Software Requirements
 Installation
 ------------
 
-To install HiTIPS, we highly recommend using conda. To install conda, 
-you must first pick the right installer for you.
-The following are the most popular installers currently available:
+To install HiTIPS, we highly recommend using conda. To install conda, you must first pick the right installer for you. The following are the most popular installers currently available:
 
 .. glossary::
 
     `Miniconda <https://docs.anaconda.com/free/miniconda/>`__
-        Miniconda is a minimal installer for Anaconda. Use this installer
-        if you want to manage most packages yourself.
+        Miniconda is a minimal installer for Anaconda. Use this installer if you want to manage most packages yourself.
 
     `Anaconda Distribution <https://www.anaconda.com/download>`__
-        Anaconda Distribution is a full-featured installer that includes a suite
-        of packages for data science, plus Anaconda Navigator, a GUI for managing
-        conda environments.
+        Anaconda Distribution is a full-featured installer that includes a suite of packages for data science, plus Anaconda Navigator, a GUI for managing conda environments.
 
     `Miniforge <https://github.com/conda-forge/miniforge>`__
-        Miniforge is maintained by the conda-forge community, preconfigured for the
-        conda-forge channel. Learn more about conda-forge at `their website <https://conda-forge.org>`__.
+        Miniforge is maintained by the conda-forge community, preconfigured for the conda-forge channel. Learn more about conda-forge at `their website <https://conda-forge.org>`__.
 
 .. admonition:: Tip
 
-    If you are just starting out, we recommend installing conda via the
-    `Miniconda installer <https://docs.anaconda.com/free/miniconda/>`__.
+    If you are just starting out, we recommend installing conda via the `Miniconda installer <https://docs.anaconda.com/free/miniconda/>`__.
 
 Installing HiTIPS Using Conda and Pip
 -------------------------------------
@@ -79,7 +72,7 @@ Installing HiTIPS Using Requirements File
 
     git clone https://github.com/CBIIT/HiTIPS.git
 
-Navigate to the cloned HiTIPS directory before proceeding with the next steps.
+    Navigate to the cloned HiTIPS directory before proceeding with the next steps.
 
 2. **Create and Activate a Conda Environment**::
 
@@ -90,7 +83,7 @@ Navigate to the cloned HiTIPS directory before proceeding with the next steps.
 
     pip install -r requirements.txt
 
-   The `requirements.txt` file can be accessed `here <https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt>`__.
+    The `requirements.txt` file can be accessed `here <https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt>`__.
 
 4. **Launch HiTIPS**::
 
@@ -116,8 +109,8 @@ Installing HiTIPS Using Docker
      - After installing XQuartz, start it.
      - Go to XQuartz Preferences > Security and check "Allow connections from network clients".
      - Restart XQuartz.
-     - Open a terminal and run the following command to allow Docker to connect to XQuartz:
-       ::
+     - Open a terminal and run the following command to allow Docker to connect to XQuartz::
+         
          xhost + 127.0.0.1
 
    - **Windows (VcXsrv)**:
@@ -125,36 +118,34 @@ Installing HiTIPS Using Docker
        - Multiple windows
        - Start no client
        - Extra settings: check "Disable access control"
-     - Open a command prompt and run:
-       ::
+     - Open a command prompt and run::
+         
          set DISPLAY=host.docker.internal:0.0
 
    - **Linux**:
      - Ensure you have an X11 server installed and running. Most Linux distributions come with an X11 server pre-installed.
-     - Open a terminal and run the following command to allow Docker to connect to your X server:
-       ::
+     - Open a terminal and run the following command to allow Docker to connect to your X server::
+         
          xhost +local:docker
 
-2. **Pull the HiTIPS Docker Image**::
+4. **Pull the HiTIPS Docker Image**::
 
     docker pull adibkeikhosravi991/hitips:latest
 
-3. **Run the Docker Container**
+5. **Run the Docker Container**
 
    Now, you can run your Docker container with the correct display settings:
 
-   - **macOS**:
-     ::
+   - **macOS**::
+       
        docker run -it --rm -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
-   - **Windows**:
-     ::
+   - **Windows**::
+       
        docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
-   Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
+     Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
 
-   - **Linux**:
-     ::
+   - **Linux**::
+       
        docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
-
-
