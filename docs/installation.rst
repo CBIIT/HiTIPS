@@ -129,6 +129,12 @@ Installing HiTIPS Using Docker
        ::
          set DISPLAY=host.docker.internal:0.0
 
+   - **Linux**:
+     - Ensure you have an X11 server installed and running. Most Linux distributions come with an X11 server pre-installed.
+     - Open a terminal and run the following command to allow Docker to connect to your X server:
+       ::
+         xhost +local:docker
+
 2. **Pull the HiTIPS Docker Image**::
 
     docker pull adibkeikhosravi991/hitips:latest
@@ -149,6 +155,6 @@ Installing HiTIPS Using Docker
 
    - **Linux**:
      ::
-       docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
+       docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
 
