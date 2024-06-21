@@ -25,8 +25,6 @@ Software Requirements
 - **Python**: Version 3.9 or newer.
 - **Package Manager**: Latest version of `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`__ or `Anaconda <https://www.anaconda.com/products/distribution>`__.
 
-
-
 Installation
 ------------
 
@@ -72,8 +70,6 @@ Installing HiTIPS Using Conda and Pip
 
     hitips
 
-
-
 Installing HiTIPS Using Requirements File
 -----------------------------------------
 
@@ -103,18 +99,56 @@ Navigate to the cloned HiTIPS directory before proceeding with the next steps.
 Installing HiTIPS Using Docker
 ------------------------------
 
-**This method has been tested on Linux (Ubuntu), Windows (10 and above). However, this method is currently not working on Mac OS.**
+**This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
 1. **Install Docker**::
 
     Follow the official Docker installation instructions for your platform: https://docs.docker.com/get-docker/
 
+2. **Install an X11 Server**
+
+   - **macOS**: Install XQuartz from `XQuartz.org <https://www.xquartz.org/>`_.
+   - **Windows**: Install VcXsrv from `SourceForge <https://sourceforge.net/projects/vcxsrv/>`_.
+
+3. **Configure the X11 Server**
+
+   - **macOS (XQuartz)**:
+     - After installing XQuartz, start it.
+     - Go to XQuartz Preferences > Security and check "Allow connections from network clients".
+     - Restart XQuartz.
+     - Open a terminal and run the following command to allow Docker to connect to XQuartz:
+       ::
+         xhost + 127.0.0.1
+
+   - **Windows (VcXsrv)**:
+     - After installing VcXsrv, start it with the following options:
+       - Multiple windows
+       - Start no client
+       - Extra settings: check "Disable access control"
+     - Open a command prompt and run:
+       ::
+         set DISPLAY=host.docker.internal:0.0
+
 2. **Pull the HiTIPS Docker Image**::
 
-    docker pull adibkeikhosravi991/hitips_pip:latest
+    docker pull adibkeikhosravi991/hitips:latest
 
-3. **Run HiTIPS in a Docker Container**::
+3. **Run the Docker Container**
 
-    Start a HiTIPS container with the following command:
+   Now, you can run your Docker container with the correct display settings:
 
-    docker run -it --rm adibkeikhosravi991/hitips_pip:latest
+   - **macOS**:
+     ::
+       docker run -it --rm -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
+
+   - **Windows**:
+     ::
+       docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
+
+   Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
+
+   - **Linux**:
+     ::
+       docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
+
+
