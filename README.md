@@ -185,13 +185,13 @@ Before adding your new method, ensure your changes are ready to be shared with t
 2. Clone your fork locally and create a new branch for your feature.
 3. Make your changes locally, committing them to your branch.
    
-       ```bash
+   ```bash
        git add .
        git commit -m "Add new nuclei detection method"
 
 5. Push your changes to your fork on GitHub.
 
-       ```bash
+   ```bash
        git push origin feature_branch_name
 
 6. Go to your fork on GitHub and click the ‘New pull request’ button.
@@ -206,7 +206,7 @@ Once your pull request has been reviewed and approved:
 1. Merge the pull request via the GitHub interface.
 2. Fetch the updated main branch to your local repository.
    
-       ```bash
+   ```bash
        git checkout main
        git pull origin main
 
