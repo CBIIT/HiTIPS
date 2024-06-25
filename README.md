@@ -42,7 +42,7 @@ For comprehensive information about HiTIPS, including how to get started, instal
 ### Software Requirements:
 
 - **Operating System**: 64-bit Linux distribution (e.g., Ubuntu, CentOS, Fedora).
-- **Python**: Version 3.7 or newer.
+- **Python**: Version 3.9 or newer.
 - **Package Manager**: Latest version of [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution).
 
 ## 📥 Installation
@@ -186,13 +186,13 @@ Before adding your new method, ensure your changes are ready to be shared with t
 3. Make your changes locally, committing them to your branch.
    
    ```bash
-       git add .
-       git commit -m "Add new nuclei detection method"
+   git add .
+   git commit -m "Add new nuclei detection method"
 
 5. Push your changes to your fork on GitHub.
 
    ```bash
-       git push origin feature_branch_name
+   git push origin feature_branch_name
 
 6. Go to your fork on GitHub and click the ‘New pull request’ button.
 7. Ensure the base repository is set to CBIIT/HiTIPS and the base branch is the one you want your changes pulled into.
@@ -207,8 +207,8 @@ Once your pull request has been reviewed and approved:
 2. Fetch the updated main branch to your local repository.
    
    ```bash
-       git checkout main
-       git pull origin main
+   git checkout main
+   git pull origin main
 
 4. Delete your local feature branch if desired.
 
