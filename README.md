@@ -7,7 +7,11 @@
 ![Project Logo](hitips.png)
 
 
-**HiTIPS** (High-Throughput Image Processing Software) is a comprehensive tool crafted for the analysis of high-throughput imaging datasets. Specifically designed for FISH (Fluorescence In Situ Hybridization) data, HiTIPS incorporates cutting-edge image processing and machine learning algorithms, delivering automated solutions for cell and nucleus segmentation, FISH signal identification, and quantification of signal attributes.
+**HiTIPS** (High-Throughput Image Processing Software)  is an open source software platform for the automated analysis of high-throughput imaging (HTI) datasets. HiTIPS was designed to be used by cell biologist with minimal or no coding expertise. To this end, HiTIPS provide a graphical user interface (GUI) to interactively optimize the parameters of the image analysis on a few test images, and an unattended batch analysis mode to automate the analysis of large HTI datasets.
+
+Currently, HiTIPS capabilities are geared towards the analysis of HTI assays for the study of gene expression both in fixed and in live cells. In particular, HiTIPS image analysis modules currently include several cutting-edge algorithms and machine learning models for nucleus segmentation, spot detection, nucleus tracking, nucleus registration, and spot tracking. These modules have been recently used to detect and measure properties of spot-like objects in cell nuclei in images of DNA Fluorescence In Situ Hybridization (FISH), Immunofluorescence (IF), or live fluorescent mRNA tagging HTI assays.
+
+In addition, given its open source and modular structure, HiTIPS provides imaging bioinformatics specialists with the opportunity to further develop and integrate additional HTI analysis modules, and to extend HiTIPS current capabilities for the analysis of a wider range of HTI assays typologies that are not currently supported.
 
 For comprehensive information about HiTIPS, including how to get started, installation procedures, examples for testing, and detailed usage instructions, please refer to our official documentation and resources:
 
