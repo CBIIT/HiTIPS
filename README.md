@@ -56,17 +56,14 @@ For comprehensive information about HiTIPS, including how to get started, instal
 
 For detailed installation instructions, visit our [installation guide](https://hitips.readthedocs.io/en/latest/installation.html).
 
-### Installing HiTIPS Using Conda and Pip
+Installing HiTIPS Using Conda and Pip
+-------------------------------------
 
 **This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
-**If you are using Windows, make sure to install `Visual Studio <https://visualstudio.microsoft.com/>`_ and `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ before installing HiTIPS.**
-
-**If you are using Mac OS (Only Intel chip works for now), make sure to install `Xcode <https://developer.apple.com/xcode/>`_ before installing HiTIPS.**
-
 1. **Create a Conda Environment**::
 
-    conda create --name hitips_env python=3.8
+    conda create --name hitips_env python=3.9
     conda activate hitips_env
 
 2. **Install HiTIPS using Pip**::
@@ -77,22 +74,31 @@ For detailed installation instructions, visit our [installation guide](https://h
 
     hitips
 
-### Installing HiTIPS Using Requirements Files
+Installing HiTIPS Using Requirements File
+-----------------------------------------
 
 **This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
-1. **Create a Conda Environment from `hitips_env.yml`**::
+1. **Clone the HiTIPS Repository**::
 
-    conda env create -f hitips_env.yml
+    git clone https://github.com/CBIIT/HiTIPS.git
+
+    Navigate to the cloned HiTIPS directory before proceeding with the next steps.
+
+2. **Create and Activate a Conda Environment**::
+
+    conda create --name hitips_env python=3.9
     conda activate hitips_env
 
-2. **Install HiTIPS using Pip from `requirements.txt`**::
+3. **Install HiTIPS using Pip from the Requirements File**::
 
     pip install -r requirements.txt
 
-3. **Launch HiTIPS**::
+    The `requirements.txt` file can be accessed `here <https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt>`__.
 
-    hitips
+4. **Launch HiTIPS**::
+
+    python -m hitips.HiTIPS
 
 Installing HiTIPS Using Docker
 ------------------------------
