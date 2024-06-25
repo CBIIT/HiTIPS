@@ -67,11 +67,11 @@ Installing HiTIPS Using Conda and Pip
     conda activate hitips_env
 
 2. **Install HiTIPS using Pip**::
-
+    ```bash
     pip install hitips
 
 3. **Launch HiTIPS**::
-
+    ```bash
     hitips
 
 Installing HiTIPS Using Requirements File
@@ -80,24 +80,23 @@ Installing HiTIPS Using Requirements File
 **This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
 1. **Clone the HiTIPS Repository**::
-
+    ```bash
     git clone https://github.com/CBIIT/HiTIPS.git
-
-    Navigate to the cloned HiTIPS directory before proceeding with the next steps.
+    cd HiTIPS
 
 2. **Create and Activate a Conda Environment**::
-
+    ```bash
     conda create --name hitips_env python=3.9
     conda activate hitips_env
 
 3. **Install HiTIPS using Pip from the Requirements File**::
-
+   ```bash
     pip install -r requirements.txt
 
-    The `requirements.txt` file can be accessed `here <https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt>`__.
+  The `requirements.txt` file can be accessed `here <https://github.com/CBIIT/HiTIPS/blob/main/requirements.txt>`__.
 
 4. **Launch HiTIPS**::
-
+    ```bash
     python -m hitips.HiTIPS
 
 Installing HiTIPS Using Docker
@@ -121,7 +120,7 @@ Installing HiTIPS Using Docker
      - Go to XQuartz Preferences > Security and check "Allow connections from network clients".
      - Restart XQuartz.
      - Open a terminal and run the following command to allow Docker to connect to XQuartz::
-
+         ```bash
          xhost + 127.0.0.1
 
    - **Windows (VcXsrv)**:
@@ -130,17 +129,17 @@ Installing HiTIPS Using Docker
      - Start no client
      - Extra settings: check "Disable access control"
      - Open a command prompt and run::
-
+         ```bash
          set DISPLAY=host.docker.internal:0.0
 
    - **Linux**:
      - Ensure you have an X11 server installed and running. Most Linux distributions come with an X11 server pre-installed.
      - Open a terminal and run the following command to allow Docker to connect to your X server::
-
+         ```bash
          xhost +local:docker
 
 4. **Pull the HiTIPS Docker Image**::
-
+    ```bash
     docker pull adibkeikhosravi991/hitips:latest
 
 5. **Run the Docker Container**
@@ -148,17 +147,17 @@ Installing HiTIPS Using Docker
    Now, you can run your Docker container with the correct display settings:
 
    - **macOS**::
-
+       ```bash
        docker run -it --rm -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
    - **Windows**::
-
+       ```bash
        docker run -it --rm -e DISPLAY=host.docker.internal:0.0 -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 
-     Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
+    Note: Ensure that `host.docker.internal` is resolvable within the Docker container. If it is not, you might need to use the IP address directly.
 
    - **Linux**::
-
+       ```bash
        docker run -it --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix adibkeikhosravi991/hitips:latest
 ## 🚀 Usage
 
