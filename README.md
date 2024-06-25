@@ -94,8 +94,6 @@ For detailed installation instructions, visit our [installation guide](https://h
 
     hitips
 
-### Installing HiTIPS Using Docker
-
 Installing HiTIPS Using Docker
 ------------------------------
 
