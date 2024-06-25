@@ -207,13 +207,11 @@ Once your pull request has been reviewed and approved:
 
 1. Merge the pull request via the GitHub interface.
 2. Fetch the updated main branch to your local repository.
-
-   .. code-block:: bash
-
+       ```bash
        git checkout main
        git pull origin main
 
-3. Delete your local feature branch if desired.
+4. Delete your local feature branch if desired.
 
 
 ## 📜 License
