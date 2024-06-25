@@ -62,7 +62,7 @@ Installing HiTIPS Using Conda and Pip
 **This method has been tested on Linux (Ubuntu), Windows (10 and above), and Mac using Intel processors. However, this method is currently not working on Macs with Apple Chips (M1, M2, M3) even when using Rosetta.**
 
 1. **Create a Conda Environment**::
-
+    ```bash
     conda create --name hitips_env python=3.9
     conda activate hitips_env
 
