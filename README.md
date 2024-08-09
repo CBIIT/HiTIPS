@@ -18,6 +18,13 @@ For comprehensive information about HiTIPS, including how to get started, instal
 - **Example Datasets**: [Datasets](https://hitips.readthedocs.io/en/latest/datasets.html)
 - **Usage Instructions**: [Instructions](https://hitips.readthedocs.io/en/latest/instructions.html)
 
+## 📜 Citation
+
+If you use HiTIPS in your research, please cite the following paper:
+
+Keikhosravi, Adib, Almansour, Faisal, Bohrer, Christopher H., Fursova, Nadezda A., Guin, Krishnendu, Sood, Varun, Misteli, Tom, Larson, Daniel R., & Pegoraro, Gianluca. (2024). High-throughput image processing software for the study of nuclear architecture and gene expression. *Scientific Reports, 14*(1), 18426. https://www.nature.com/articles/s41598-024-66600-1#Abs1
+
+
 ## 🌟 Key Features
 
 - 🔍 **Automated Segmentation**: Efficiently segments cells and nuclei.
@@ -217,6 +224,13 @@ Once your pull request has been reviewed and approved:
 ## 📜 License
 
 HiTIPS is distributed under the MIT License.
+
+## 📜 Citation
+
+If you use HiTIPS in your research, please cite the following paper:
+
+Keikhosravi, Adib, Almansour, Faisal, Bohrer, Christopher H., Fursova, Nadezda A., Guin, Krishnendu, Sood, Varun, Misteli, Tom, Larson, Daniel R., & Pegoraro, Gianluca. (2024). High-throughput image processing software for the study of nuclear architecture and gene expression. *Scientific Reports, 14*(1), 18426. https://www.nature.com/articles/s41598-024-66600-1#Abs1
+
 
 ## 📞 Contact
 For inquiries, feedback, or support, please don't hesitate to contact us at adib.keikhosravi@nih.gov.
