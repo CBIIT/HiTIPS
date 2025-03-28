@@ -211,13 +211,17 @@ class ImageReader(object):
             col_value = 1
             row_value = 1
             for fname in self.fnames:
-                field_ind += 1
                 if pathlib.Path(fname).suffix == '.nd2':
                     with nd2reader.ND2Reader(fname) as images:
                         dimensions = set(images.sizes.keys())
                         defaults = {'x': 0, 'y': 0, 'z': 1, 't': 1, 'v': 0, 'c': 1}
                         sizes = {k: images.sizes.get(k, defaults.get(k, 0)) for k in dimensions}
                         for fov_idx in range(sizes.get('v', 1)):
+                            if 'v' not in sizes.keys():
+                                field_index = field_ind 
+                                field_ind += 1
+                            else:
+                                field_index = fov_idx
                             for t_idx in range(sizes.get('t', 1)):
                                 for c_idx in range(sizes.get('c', 1)):
                                     for z_idx in range(sizes.get('z', 1)):
@@ -226,7 +230,7 @@ class ImageReader(object):
                                             "column": str(col_value), 
                                             "row": str(row_value), 
                                             "time_point": str(t_idx + 1), 
-                                            "field_index": str(fov_idx + 1), 
+                                            "field_index": str(field_index + 1), 
                                             "z_slice": str(z_idx + 1), 
                                             "channel": str(c_idx + 1),
                                             "x_coordinates": str(0),
