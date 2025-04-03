@@ -12,6 +12,9 @@ def headless_config_loader(file_path):
     def get_bool(key):
         return bool(util.strtobool(conf_dict[key]))
 
+    def get_param(key, default):
+        return conf_dict.get(key, default)
+
     params_dict = {
         "NucleiChannel": conf_dict['nuclei_channel'],
         "NucDetectMethod_currentText": conf_dict['nuclei_detection_method'],
@@ -40,8 +43,8 @@ def headless_config_loader(file_path):
         "NucSearchRadiusSpinbox_current_value": int(conf_dict['NucSearchRadius']),
         "SpotSearchRadiusSpinbox_current_value": int(conf_dict['SpotSearchRadius_value']),
         "Sec_SpotSearchRadiusSpinbox_current_value": int(conf_dict['Sec_SpotSearchRadius_value']),
-        "Seceondary_Channel_index": int(conf_dict['Seceondary_Channel_index']),
-        "Secondary_Area_index": int(conf_dict['Secondary_Area_index']),
+        "Seceondary_Channel_index": int(get_param('Seceondary_Channel_index', 0)),
+        "Secondary_Area_index": int(get_param('Secondary_Area_index', 0)),
         "MintrackLengthSpinbox_current_value": int(conf_dict['MintrackLength_value']),
         "maxspotspercellSpinbox_current_value": int(conf_dict['maxspotspercell_value']),
         "minburstdurationSpinbox_current_value": int(conf_dict['minburstduration_value']),
@@ -51,27 +54,29 @@ def headless_config_loader(file_path):
         "Registrationmethod_currentText": conf_dict['Registrationmethod'],
         "IntegratedIntensityCbox_currentIndex": int(conf_dict['IntegratedIntensity_Index']),
         "PSFsizeSpinBox_value": float(conf_dict['PSFsize_value']),
-        "SecChannel_current_index": int(conf_dict["SecChannel_current_index"]),
-        "SecArea_current_index": int(conf_dict["SecArea_current_index"]),
         "SpotsDistance_check_status": get_bool('SpotsDistance_check_status'),
         "SpotIntegratedIntensitySpinBox_value": int(conf_dict["SpotIntegratedIntensitySpinBox_value"]),
         "Resize_Factor": int(conf_dict["Resize_Factor"])
-        
     }
 
-    spot_params_dict = {
-        ch: np.array([
-            det_method.index(conf_dict[f'{ch.lower()}_spot_detection_method']),
-            thresh_method.index(conf_dict[f'{ch.lower()}_spot_threshold_method']),
-            int(float(conf_dict[f'{ch.lower()}_spot_threshold_value'])),
-            int(float(conf_dict[f'{ch.lower()}_kernel_size'])),
-            int(float(conf_dict[f'{ch.lower()}_spots/ch'])),
-            int(float(conf_dict[f'{ch.lower()}_spots_area_min'])),
-            int(float(conf_dict[f'{ch.lower()}_spots_area_max'])),
-            int(float(conf_dict[f'{ch.lower()}_spots_integrated_intensity']))
-        ], dtype=int)
-        for ch in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']
-    }
+    spot_params_dict = {}
+    for ch in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
+        ch_lower = ch.lower()
+        try:
+            spot_params_dict[ch] = np.array([
+                det_method.index(get_param(f'{ch_lower}_spot_detection_method', "Laplacian of Gaussian")),
+                thresh_method.index(get_param(f'{ch_lower}_spot_threshold_method', "Auto")),
+                int(float(get_param(f'{ch_lower}_spot_threshold_value', "0"))),
+                int(float(get_param(f'{ch_lower}_kernel_size', "3"))),
+                int(float(get_param(f'{ch_lower}_spots/ch', "1"))),
+                int(float(get_param(f'{ch_lower}_spots_area_min', "2"))),
+                int(float(get_param(f'{ch_lower}_spots_area_max', "20"))),
+                int(float(get_param(f'{ch_lower}_spots_integrated_intensity', "0")))
+            ], dtype=int)
+        except (ValueError, KeyError) as e:
+            print(f"Warning: Error loading parameters for {ch}: {e}")
+            # Use default values
+            spot_params_dict[ch] = np.array([0, 0, 0, 3, 1, 2, 20, 0], dtype=int)
 
     params_dict["spot_params_dict"] = spot_params_dict
     return params_dict

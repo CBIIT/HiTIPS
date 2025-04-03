@@ -8,7 +8,7 @@ import shutil
 import stat
 from skimage.measure import regionprops, regionprops_table
 from skimage.io import imread
-from scipy import ndimage
+from scipy import ndimage, optimize
 from PIL import Image, ImageDraw, ImageFont
 import pandas as pd
 from PIL import Image, ImageQt
@@ -22,7 +22,7 @@ from skimage.transform import rotate, warp_polar, rescale
 from skimage.color import label2rgb, gray2rgb
 from aicsimageio import AICSImage
 from aicsimageio.writers import OmeTiffWriter
-from deepcell.applications import CellTracking
+# from deepcell.applications import CellTracking
 from skimage.feature import peak_local_max
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import adapted_rand_error, contingency_table, mean_squared_error, peak_signal_noise_ratio, variation_of_information
@@ -40,6 +40,8 @@ import pkg_resources
 from .logging_decorator import log_errors
 import logging
 from .Analysis import ImageAnalyzer
+from .bayesian_spot_tracking import RNABurstDetector
+from skimage import restoration
 
 WELL_PLATE_ROWS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P"]
 
@@ -487,16 +489,25 @@ class BatchAnalysis(object):
                                 single_track_copy[col_name3]=[[]]*len(single_track)
                                 col_name3='ch'+str(int(chnl))+'_integrated_intensity'
                                 single_track_copy[col_name3]=[[]]*len(single_track)
+                                
+                                col_name3='ch'+str(int(chnl))+'_denoised_integrated_intensity'
+                                single_track_copy[col_name3]=[[]]*len(single_track)
+                                col_name3='ch'+str(int(chnl))+'_ratio_intensity'
+                                single_track_copy[col_name3]=[[]]*len(single_track)
                             
                             nuc_patches, rotated_nuc,mask_patches, rot_masks = [],[],[], []
                             spot_coor_dict, spot_patches, rotated_spot_patches = {},{},{}
                             transformed_spots ={}
+                            denoised_spot_patches = {}
+                            ratio_image_spot_patches = {}
 
                             spot_channels = selected_spots['channel'].unique().astype(int)
                             for chnl in spot_channels:
                                 spot_patches[str(int(chnl))] = []
                                 rotated_spot_patches[str(int(chnl))] = []
-                            
+                                denoised_spot_patches[str(int(chnl))] = []  # Add this line
+                                ratio_image_spot_patches[str(int(chnl))] = []
+                                
                             for ind, pd_row in single_track_copy.iterrows():
                                 time_spots = selected_spots[selected_spots['time_point']==pd_row['t']]
                                 patch_spots = time_spots[(time_spots['x_location'] > int(pd_row['bbox-0'])) & 
@@ -612,7 +623,8 @@ class BatchAnalysis(object):
                                         spot_coor_dict[str(pd_row['t'])]= np.array(temp_spots)
                                         col_name4='ch'+str(int(chnl))+'_transformed_spots_locations'
                                         single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name4]=[transformed_spots[str(pd_row['t'])]]
-            
+                                        
+                                        
                                     # only_spots_patch[str(int(chnl))] = Tracking.zero_pad_patch(only_spots_patch[str(int(chnl))])
                                     # spot_patch = cv2.normalize(spot_patch, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
                                     
@@ -620,69 +632,203 @@ class BatchAnalysis(object):
                                     rot_spot_patch = rotate(rotate(spot_patch, 15, preserve_range=True, order=0), 
                                                             final_angle, preserve_range=True, order=0).astype(spot_dict_stack[str(int(chnl))].dtype)
                                     
-                                    
+                                    # Function to process a single frame
+
                                     rotated_spot_patches[str(int(chnl))].append(rot_spot_patch)
-                                    
-                                     
+                                    denoised_integrated_intensity, ratio_intensity, nl_means_image, ratio_image =self.process_frame(rot_spot_patch, mask=bin_img, spots=transformed_spots.get(str(pd_row['t']), []))
+                                    denoised_spot_patches[str(int(chnl))].append(nl_means_image)
+                                    ratio_image_spot_patches[str(int(chnl))].append(ratio_image)
+                                    if len(temp_spots)>0:
+                                        col_name_='ch'+str(int(chnl))+'_denoised_integrated_intensity'
+                                        single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name_]=[denoised_integrated_intensity]
+                                        col_name_='ch'+str(int(chnl))+'_ratio_intensity'
+                                        single_track_copy.loc[single_track_copy['t']==pd_row['t'], col_name_]=[ratio_intensity]
 
                             large_rotcell_stack = np.stack(rotated_nuc, axis=2)
                             large_cell_stack = np.stack(nuc_patches, axis=2)
                             large_rot_spot_img_stack={}
+                            large_denoised_spot_img_stack={}
+                            large_ratio_spot_img_stack = {}
                             for chnl in spot_channels:
                                 large_rot_spot_img_stack[str(int(chnl))] = np.stack(rotated_spot_patches[str(int(chnl))], axis=2).astype(spot_dict_stack[str(int(chnl))].dtype)
+                                large_denoised_spot_img_stack[str(int(chnl))] = np.stack(denoised_spot_patches[str(int(chnl))], axis=2)
+                                large_ratio_spot_img_stack[str(int(chnl))] = np.stack(ratio_image_spot_patches[str(int(chnl))], axis=2)
+
 
                             for chnl in spot_channels:
 
                                 anotated_large_rot_spot_img_stack = large_rot_spot_img_stack[str(int(chnl))].copy()
                                 unanotated_large_rot_spot_img_stack = large_rot_spot_img_stack[str(int(chnl))].copy()
                                 raw_large_rot_spot_img_stack = large_rot_spot_img_stack[str(int(chnl))].copy()
-                                spot_df_list = single_track_copy.loc[single_track_copy["ch"+str(chnl)+"_spots_number"]>0]["ch"+str(chnl)+"_transformed_spots_locations"].tolist()
+                                bleach_corrected_stack = self.exponential_fitting_correction_global( raw_large_rot_spot_img_stack)
+                                imwrite(self.cell_level_file_name(cell_tracking_folder, 'unannotated_spot_image_patches', 'raw_spot_img', '.tif', col, row, fov, id_,chnl),
+                                            np.rollaxis(bleach_corrected_stack, 2, 0))
+                                # Fix the array creation and reshaping
+                                spot_df_list = single_track_copy.loc[single_track_copy[f"ch{chnl}_spots_number"]>0]["ch"+str(chnl)+"_transformed_spots_locations"].tolist()
                                 all_spots_for_gmm = np.round(np.array([item for sublist in spot_df_list for item in sublist])).astype(int)
-                                if len(all_spots_for_gmm)>3:
-                                    
-                                    try:
-                                        clusters  = Tracking.run_clustering(all_spots_for_gmm, outlier_threshold = 3, max_dist = self.params_dict['SpotSearchRadiusSpinbox_current_value'],
-                                                                        min_burst_duration = self.params_dict['minburstdurationSpinbox_current_value'])
-                                    except:
 
-                                        clusters=[]
+                                all_spots_times=[]
+                                for iii, rrr in single_track_copy.iterrows():
+                                    for ttt in range(rrr[f"ch{chnl}_spots_number"]):
+                                        all_spots_times.append(rrr["t"])
+                                all_spots_time_points=np.array(all_spots_times).astype(int)
+
+
+                                # If no spots found, reshape the empty array properly
+                                if all_spots_for_gmm.size == 0:
+                                    print("No spots found, creating empty arrays with correct shape")
+                                    all_spots_for_gmm = np.zeros((0, 2))  # Empty array with 2 columns for x,y coordinates
+                                    all_spots_integrated_intensity = np.zeros((0, 1))
+                                    all_spots_denoised_integrated_intensity = np.zeros((0, 1))
+                                    all_spots_ratio_intensity = np.zeros((0, 1))
+                                else:
+                                    n_spots = len(all_spots_for_gmm)
+                                    print(f"\nProcessing {n_spots} spots")
+                                    
+                                    # Ensure all_spots_for_gmm is 2D
+                                    if len(all_spots_for_gmm.shape) == 1:
+                                        all_spots_for_gmm = all_spots_for_gmm.reshape(-1, 2)
+
+                                # For integrated intensity - ensure matching length
+                                spot_df_list = single_track_copy.loc[single_track_copy[f"ch{chnl}_spots_number"]>0]["ch"+str(chnl)+"_integrated_intensity"].tolist()
+                                all_spots_integrated_intensity = np.array([item for sublist in spot_df_list for item in sublist[0]], dtype=float)
+                                
+                                # For denoised intensity - ensure matching length
+                                spot_df_list = single_track_copy.loc[single_track_copy[f"ch{chnl}_spots_number"]>0]["ch"+str(chnl)+"_denoised_integrated_intensity"].tolist()
+                                all_spots_denoised_integrated_intensity = np.array([item for sublist in spot_df_list for item in sublist], dtype=float)
+                                
+                                # For ratio intensity - ensure matching length
+                                spot_df_list = single_track_copy.loc[single_track_copy[f"ch{chnl}_spots_number"]>0]["ch"+str(chnl)+"_ratio_intensity"].tolist()
+                                all_spots_ratio_intensity = np.array([item for sublist in spot_df_list for item in sublist], dtype=float)
+                                
+                                # Now all arrays should have matching first dimensions and proper number of columns
+                                try:
+                                    all_spots_data = np.concatenate((all_spots_for_gmm, 
+                                                                    all_spots_integrated_intensity,
+                                                                    all_spots_denoised_integrated_intensity,
+                                                                    all_spots_ratio_intensity,
+                                                                    all_spots_time_points), axis=1)
+                                    print(f"Final concatenated shape: {all_spots_data.shape}")
+                                except Exception as e:
+                                    print(f"Error during concatenation: {str(e)}")
+                                    print("Creating empty result array")
+                                    all_spots_data = np.zeros((0, 5))  # 5 columns: x,y,integrated,denoised,ratio
+
+                                if len(all_spots_for_gmm)>3:
+                                    try:
+                                        # Ensure all arrays have correct shape
+                                        all_spots_for_gmm = all_spots_for_gmm.reshape(-1, 2)
+                                        all_spots_integrated_intensity = all_spots_integrated_intensity.reshape(-1, 1)
+                                        all_spots_denoised_integrated_intensity = all_spots_denoised_integrated_intensity.reshape(-1, 1)
+                                        all_spots_ratio_intensity = all_spots_ratio_intensity.reshape(-1, 1)
+                                        all_spots_time_points = all_spots_time_points.reshape(-1, 1)
+
+                                       # Concatenate along axis 1 (columns)
+                                        all_spots_data = np.hstack((
+                                            all_spots_for_gmm,  # x, y coordinates (n x 2)
+                                            all_spots_integrated_intensity,  # (n x 1)
+                                            all_spots_denoised_integrated_intensity,  # (n x 1)
+                                            all_spots_ratio_intensity,  # (n x 1)
+                                            all_spots_time_points  # (n x 1)
+                                        ))
+                                        debug_folder = os.path.join(self.temp_dir, 'debug_data')
+                                        if not os.path.isdir(debug_folder):
+                                            os.mkdir(debug_folder)
+                                        debug_file = f"bayesian_log_file_col_{col}_row_{row}_fov_{fov}_cell_{id_}_ch_{chnl}.txt"
+
+                                        detector = RNABurstDetector(image_size=1000, epsilon=0.01, min_pts=3, log_file=os.path.join(debug_folder, debug_file))
+                                        rna_tracing_fit_results = detector.fit(all_spots_data)
+                                        
+                                        clusters = rna_tracing_fit_results['assignments'] + 1
+                                        
+                                        # Create debug dataframe
+                                        debug_df = pd.DataFrame(all_spots_data, 
+                                            columns=['x', 'y', 'integrated_intensity', 
+                                                   'denoised_intensity', 'ratio_intensity',
+                                                   'time_point'])
+                                        debug_df['cluster'] = clusters
+                                        debug_df['column'] = col
+                                        debug_df['row'] = row
+                                        debug_df['fov'] = fov
+                                        debug_df['cell_id'] = id_
+                                        debug_df['channel'] = chnl
+                                        
+                                        # Save debug data
+                                        
+                                            
+                                        debug_file = f"spots_and_clusters_col_{col}_row_{row}_fov_{fov}_cell_{id_}_ch_{chnl}.csv"
+                                        debug_df.to_csv(os.path.join(debug_folder, debug_file), index=False)
+                                        
+                                    except Exception as e:
+                                        print(f"Error in clustering for col_{col}_row_{row}_fov_{fov}_cell_{id_}_ch_{chnl}: {str(e)}")
+                                        print(f"Error type: {type(e)}")
+                                        import traceback
+                                        traceback.print_exc()
+                                        clusters = []
+                                        all_spots_data = np.zeros((0, 6))  # Empty array with correct dimensions
 
                                     for lbl1 in np.unique(clusters):
                                         if lbl1>0:
                                             single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[]]*len(single_track)
                                             single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"] = 0
+                                            single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_denoised_integrated_intensity"] = 0
+                                            single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_intensity_ratio"] = 0
+                                            single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_real_spot_status"] = 0
                                     if len(clusters) > 0:   
                                         for trk_ind in single_track_copy.index.tolist(): 
-                                            timepoint_spots = list(single_track_copy.loc[trk_ind, "ch"+str(chnl)+"_transformed_spots_locations"])
-                                            integrated_intensities = single_track_copy.loc[trk_ind, "ch"+str(chnl)+"_integrated_intensity"][0]
+                                            timepoint_spots = list(single_track_copy.loc[trk_ind, "ch"+str(int(chnl))+"_transformed_spots_locations"])
+                                            integrated_intensities = single_track_copy.loc[trk_ind, "ch"+str(int(chnl))+"_integrated_intensity"][0]
                                             if len(timepoint_spots)>0:
 
                                                 for spot_loc in timepoint_spots:
                                                     if clusters[np.all(spot_loc == all_spots_for_gmm, axis=1)][0]>0:
                                                         col_name = 'ch'+str(int(chnl))+'_spot_no_'+str(clusters[np.all(spot_loc == all_spots_for_gmm, axis=1)][0])+"_locations"
                                                         single_track_copy.loc[trk_ind, col_name] = [[spot_loc]]
+                                                        single_track_copy.loc[trk_ind,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_real_spot_status"]=1
                                                         # col_name = 'ch'+str(int(chnl))+'_spot_no_'+str(clusters[np.all(spot_loc == all_spots_for_gmm, axis=1)][0])+"_integrated_intensity"
                                                         # single_track_copy.loc[trk_ind, col_name] = integrated_intensities[next((i for i, spot in enumerate(timepoint_spots) if np.array_equal(spot, spot_loc)), -1)]
                                     
                                     for lbl1 in np.unique(clusters)[np.unique(clusters)>0]:
                                         sp_bound= int(round(7*self.params_dict['PSFsizeSpinBox_value']/2))
-                                        all_spot_patches, spot_patches_center_coords = Tracking.get_spot_patch(single_track_copy, chnl, lbl1, 
-                                                                                                           rotated_spot_patches[str(int(chnl))], 
+                                        all_spot_patches, spot_patches_center_coords, denoised_small_spot_patches = Tracking.get_spot_patch(single_track_copy, chnl, lbl1, 
+                                                                                                           rotated_spot_patches[str(int(chnl))],denoised_spot_patches[str(int(chnl))],
                                                                                                            spot_boundary = sp_bound)
                                         for jjj in single_track_copy.index.tolist():
 
                                             if jjj in list(all_spot_patches.keys()):
                                                 spot_patch = all_spot_patches[jjj]
+                                                denoised_spot_patch = denoised_small_spot_patches[jjj]
                                                 spot_coords = spot_patches_center_coords[jjj]
 
                                                 fit_results = self.ImageAnalyzer.gmask_fit(spot_patch, 
                                                                                            xy_input=np.array([np.where(spot_patch==spot_patch.max())[0][0],
                                                                                                               np.where(spot_patch==spot_patch.max())[1][0]]), 
-                                                                                           fit=self.params_dict['IntegratedIntensity_fitStatus']>0)
-                                                single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[np.array([spot_coords[0,0]-sp_bound+fit_results[0],
-                                                                                                                                                spot_coords[0,1]-sp_bound+fit_results[1]])]]
+                                                                                                              fit=True)
+                                                
+                                                
                                                 single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"] = fit_results[2]
-                                    
+
+                                                denoised_fit_results = self.ImageAnalyzer.gmask_fit(denoised_spot_patch, 
+                                                                                                    xy_input=np.array([np.where(spot_patch==denoised_spot_patch.max())[0][0],
+                                                                                                                        np.where(spot_patch==denoised_spot_patch.max())[1][0]]), 
+                                                                                                              fit=True)
+                                                single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_denoised_integrated_intensity"] = denoised_fit_results[2]
+
+
+                                                ratio_patch = large_ratio_spot_img_stack[str(int(chnl))][int(spot_coords[0,0]-sp_bound) : int(spot_coords[0,0]+sp_bound+1), 
+                                                                                                         int(spot_coords[0,1]-sp_bound) : int(spot_coords[0,1]+sp_bound+1), jjj]
+                                                    
+                                                single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_intensity_ratio"] = np.max(ratio_patch)
+
+                                                real_spot_status = detector.is_spot_real( fit_results[2], denoised_fit_results[2], np.max(ratio_patch), all_spots_data)
+                                                if real_spot_status:
+                                                    single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[np.array([spot_coords[0,0]-sp_bound+fit_results[0],
+                                                                                                                                                spot_coords[0,1]-sp_bound+fit_results[1]])]]
+                                                    single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_real_spot_status"]=1
+                                                else:
+                                                    single_track_copy.loc[jjj,'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"] = [[np.array([spot_coords[0,0], spot_coords[0,1]])]]
+
+
                             
                                     for lbl1 in np.unique(clusters)[np.unique(clusters)>0]: 
                                         row_col_name = 'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_x"
@@ -697,8 +843,12 @@ class BatchAnalysis(object):
                                         single_track_copy["row"] = row
                                         single_track_copy["field_index"] = fov
                                         single_track_copy["channel"] = int(chnl)
-                                        spot_signal_df = single_track_copy[["column", "row", "field_index", "channel", "t", row_col_name, 
-                                                                            col_col_name, 'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"]]
+                                        spot_signal_df = single_track_copy[["column", "row", "field_index", "channel", "t", row_col_name, col_col_name, 
+                                                                            'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity",
+                                                                            'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_denoised_integrated_intensity",
+                                                                            'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_intensity_ratio",
+                                                                            'ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_real_spot_status"
+                                                                            ]]
 
 
                                         rna_signal=single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_integrated_intensity"].to_numpy().reshape(-1,1)
@@ -810,8 +960,7 @@ class BatchAnalysis(object):
                                     
                                     imwrite(self.cell_level_file_name(cell_tracking_folder, 'spot_image_patches', 'unannotated_spot_img', '.tif', col, row, fov, id_,chnl),
                                              np.rollaxis(unanotated_large_rot_spot_img_stack, 2, 0), imagej=True, metadata={'axes': 'TYX'})
-                                    imwrite(self.cell_level_file_name(cell_tracking_folder, 'unannotated_spot_image_patches', 'raw_spot_img', '.tif', col, row, fov, id_,chnl),
-                                            np.rollaxis(raw_large_rot_spot_img_stack, 2, 0))
+                                    
                                     
                                     
                             large_cell_stack = self.normalize_stack(large_cell_stack)
@@ -830,14 +979,135 @@ class BatchAnalysis(object):
         self.SAVE_NUCLEI_INFORMATION(self.cell_df, columns, rows)
         self.spot_cell_index = True
         self.PROCESS_ALL_SPOT_CHANNELS()
-        try:
-            shutil.rmtree(self.temp_dir, onerror=self.remove_readonly)
-        except Exception as e:
-            print(f"Error removing {self.temp_dir}: {e}")
+        # try:
+        #     shutil.rmtree(self.temp_dir, onerror=self.remove_readonly)
+        # except Exception as e:
+        #     print(f"Error removing {self.temp_dir}: {e}")
         seconds2 = time.time()
         
         diff=seconds2-seconds1
         print('Total Processing Time (Minutes):',diff/60)
+
+    def exponential_fitting_correction_global(self, image_stack):
+        """
+        Apply exponential fitting bleach correction to a 2D image stack, mirroring the Java version.
+        
+        Parameters:
+            image_stack (numpy.ndarray): Input image stack with shape (height, width, frames).
+        
+        Returns:
+            numpy.ndarray: Corrected image stack with the same dtype as the input.
+        """
+        # Store the original dtype of the input
+        original_dtype = image_stack.dtype
+        
+        # Define the exponential decay function for fitting
+        def exp_decay(x, a, b, c):
+            return a * np.exp(-b * x) + c
+        
+        try:
+            # Compute mean intensity per frame
+            mean_intensities = np.mean(image_stack, axis=(0, 1))
+            timepoints = np.arange(image_stack.shape[2])
+            
+            # Fit exponential decay to mean intensities with error handling
+            popt, _ = optimize.curve_fit(exp_decay, timepoints, mean_intensities, maxfev=10000)
+            
+            # Compute correction ratios for each timepoint
+            ratios = exp_decay(0, *popt) / exp_decay(timepoints, *popt)
+            
+            # Apply correction to each frame
+            corrected_stack = image_stack.astype(np.float64)
+            for t in range(image_stack.shape[2]):
+                corrected_stack[:, :, t] *= ratios[t]
+            
+            # Convert back to original dtype
+            corrected_stack = corrected_stack.astype(original_dtype)
+            return corrected_stack
+        
+        except RuntimeError as e:
+            print(f"Curve fitting failed: {e}. Returning original data.")
+            return image_stack.copy()  # Fallback: return the uncorrected data
+    
+    def process_frame(self, rot_spot_patch, mask, spots=None):
+        if spots is None:
+            spots = []
+        try:
+            # Skip normalization if values are already in reasonable range
+            if rot_spot_patch.max() > 1:
+                frame = rot_spot_patch.astype(np.float32)
+            else:
+                frame = rot_spot_patch.astype(np.float32) * 255.0
+                
+            nl_means = restoration.denoise_nl_means(frame, patch_size=5, patch_distance=6, h=0.1, fast_mode=True)
+            
+            window_size = 7
+            local_mean = cv2.blur(nl_means, (window_size, window_size))
+            local_mean[~mask] = np.nan
+            
+            ratio_image = np.zeros_like(nl_means)
+            valid_mask = (local_mean > 1e-6) & mask
+            ratio_image[valid_mask] = nl_means[valid_mask] / local_mean[valid_mask]
+
+            denoised_intensities = []
+            ratio_intensities = []
+
+            if len(spots) == 0:
+                return np.zeros((0, 1)), np.zeros((0, 1)), nl_means, ratio_image
+
+            for i, spot in enumerate(spots):
+                y, x = spot
+                y_int = int(np.round(y))
+                x_int = int(np.round(x))
+                # Get intensity directly from denoised image first
+                try:
+                    spot_region = nl_means[y_int-2:y_int+3, x_int-2:x_int+3]
+                    if spot_region.size > 0:
+                        direct_intensity = np.max(spot_region)
+                    else:
+                        direct_intensity = 0
+                except Exception as e:
+                    print(f"Error getting direct intensity: {str(e)}")
+                    direct_intensity = 0
+
+                # Try gmask_fit if direct intensity is too low
+                max_intensity = direct_intensity
+                if direct_intensity < 1e-6:
+                    try:
+                        spot_patch = frame[y_int-4:y_int+5, x_int-4:x_int+5]
+                        if spot_patch.shape == (9, 9):
+                            fit_result = self.ImageAnalyzer.gmask_fit(spot_patch, xy_input=np.array([4, 4]), fit=True)
+                            if isinstance(fit_result, (list, tuple)) and len(fit_result) > 2:
+                                max_intensity = max(max_intensity, fit_result[2])
+                    except Exception as e:
+                        print(f"Error in gmask_fit: {str(e)}")
+
+                denoised_intensities.append(max_intensity)
+                # Calculate ratio intensity
+                try:
+                    ratio_patch = ratio_image[y_int-1:y_int+2, x_int-1:x_int+2]
+                    if ratio_patch.size == 9:
+                        ratio_val = np.max(ratio_patch)
+                        ratio_intensities.append(ratio_val)
+                        print(f"Ratio intensity: {ratio_val}")
+                    else:
+                        ratio_intensities.append(0.0)
+                except Exception as e:
+                    print(f"Error calculating ratio: {str(e)}")
+                    ratio_intensities.append(0.0)
+
+            # Convert to numpy arrays
+            denoised_integrated_intensity = np.array(denoised_intensities).reshape(-1, 1)
+            ratio_intensity = np.array(ratio_intensities).reshape(-1, 1)
+
+            return denoised_integrated_intensity, ratio_intensity, nl_means, ratio_image
+
+        except Exception as e:
+            print(f"ERROR in process_frame: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return np.zeros((len(spots), 1)), np.zeros((len(spots), 1))
+
     
     def remove_readonly(self, func, path, _):
         "Clear the readonly bit and reattempt the removal"
@@ -1294,7 +1564,7 @@ class BatchAnalysis(object):
             else:
 
                 nuc_bndry, nuc_mask = self.Z_STACK_NUC_SEGMENTER(ImageForNucMask)
-                label_nuc_stack = self.Z_STACK_NUC_LABLER(ImageForLabel)
+                label_nuc_stack = self.Z_STACK_NUC_LABLER(ImageForNucMask)
 
             ch1_xyz, ch1_xyz_3D, ch1_final_spots, ch2_xyz, ch2_xyz_3D, ch2_final_spots, ch3_xyz, ch3_xyz_3D, ch3_final_spots, ch4_xyz, ch4_xyz_3D, ch4_final_spots, ch5_xyz, ch5_xyz_3D, ch5_final_spots  = self.IMAGE_FOR_SPOT_DETECTION( ImageForNucMask, nuc_mask)
 

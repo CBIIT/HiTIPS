@@ -173,7 +173,7 @@ class ControlPanel(QWidget):
                                 (self.Meta_Data_df["field_index"] == str(int(fov) + 1)) &
                                 (self.Meta_Data_df["z_slice"] == str(int(zslice) + 1)) &
                                 (self.Meta_Data_df["time_point"] == str(int(timepoint) + 1))]
-                        print("temp_metadata:    ", temp_metadata)  
+                        # print("temp_metadata:    ", temp_metadata)  
                         sub_metadata = pd.concat([sub_metadata, temp_metadata]).reset_index(drop=True)
         print("sub_metadata:  ", sub_metadata)
         return sub_metadata

@@ -10,13 +10,16 @@ from skimage.morphology import disk, binary_closing, skeletonize, binary_opening
 from skimage.filters import threshold_li
 from skimage.segmentation import watershed, find_boundaries
 from skimage.measure import regionprops, regionprops_table
+from skimage import restoration, morphology
 import pandas as pd
 from cellpose import models, utils
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from skimage.transform import rescale, resize
 from scipy.special import erf
-
+# from deepcell.applications import NuclearSegmentation
+import torch.nn as nn
+import torch
 
 class ImageAnalyzer(object):
     
@@ -168,7 +171,7 @@ class ImageAnalyzer(object):
         Note:
             Ensure the deepcell library is installed and properly set up. The input image should be in grayscale. The mmp parameter is important for physical size representation in medical imaging.
         """
-        from deepcell.applications import NuclearSegmentation
+        
         app = NuclearSegmentation()
         im = np.expand_dims(input_img, axis=-1)
         im = np.expand_dims(im, axis=0)
@@ -523,9 +526,10 @@ class ImageAnalyzer(object):
 
                     input_image1[labeled_nuc==row['label']]=0
             input_image1[input_image1>max_intensity_max]=0 
+        # input_image1 = restoration.denoise_nl_means(input_image1, patch_size=4, patch_distance=11, fast_mode=True)
         if resize_factor>1:
             input_image1 = rescale(input_image1.copy(), resize_factor, anti_aliasing=False, preserve_range=True)
-
+        
         input_image1 = cv2.normalize(input_image1, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)    
 ########################################
         # Spot Detection Logic
@@ -654,7 +658,11 @@ class ImageAnalyzer(object):
                 spot_locations = []
         # print(spots_df)
         spots_df = spots_df.reset_index(drop=True)
+#         print('spot_locations: ', spot_locations)
+#         model = self.load_cnn_model("/data2/cell_tracking/cnn_model.pth", device="cuda:1")
 
+#         spot_locations_refined, spots_df_refined = self.refine_spots( spot_locations, spots_df, input_image, model, device='cuda:1')
+#         print('spot_locations_refined: ', spot_locations_refined)
         return spot_locations, spots_df   
     
     
@@ -979,3 +987,154 @@ class ImageAnalyzer(object):
         spot_boundary = (255*boundary).astype('uint8')
         
         return spot_boundary
+
+    def refine_spots(self, spot_locations, spots_df, input_image, model, device='cuda:1'):
+        """
+        Refine the list of detected spots by cropping a 5x5 patch around each spot,
+        classifying it with the provided model, and keeping only those classified
+        as 'inkblot' (label == 3).
+
+        Parameters
+        ----------
+        spot_locations : list of tuples
+            Each element is (row, col) (or (y, x)) for a detected spot.
+        spots_df : pandas.DataFrame
+            DataFrame with at least one row per detected spot. Must be in the
+            same order as spot_locations (i.e., index alignment).
+        input_image : numpy.ndarray
+            2D array from which to crop 5x5 patches around each spot.
+        model : torch.nn.Module
+            Trained CNN classifier with 4 output classes:
+              0=checkerboard, 1=gradient, 2=random, 3=inkblot.
+        device : str
+            Device to run the inference on, e.g. 'cuda:1'.
+
+        Returns
+        -------
+        spot_locations_refined : list of tuples
+            Only those spots that are classified as inkblot (label 3).
+        spots_df_refined : pandas.DataFrame
+            The corresponding rows from spots_df for these inkblot-class spots.
+        """
+
+        # Ensure the model is on the correct device
+        model.eval()
+        model.to(device)
+
+        # Prepare a list for storing the cropped 5x5 patches
+        patches = []
+        image_h, image_w = input_image.shape[:2]  # in case image has (rows, cols)
+
+        for (row, col) in spot_locations:
+            r = int(row)
+            c = int(col)
+            # We'll define a 5x5 patch centered at (r, c):
+            #    row range: [r-2, r+2], col range: [c-2, c+2]
+            # but handle boundaries with zero-padding:
+
+            # Create an empty 5x5 (float32) patch:
+            patch_5x5 = np.zeros((5, 5), dtype=np.float32)
+
+            # Compute the region in the original image we can safely copy:
+            r1 = max(r - 2, 0)
+            r2 = min(r + 2, image_h - 1)  # inclusive index
+            c1 = max(c - 2, 0)
+            c2 = min(c + 2, image_w - 1)  # inclusive index
+
+            # region size in input_image
+            actual_h = r2 - r1 + 1
+            actual_w = c2 - c1 + 1
+
+            # The destination top-left inside the 5x5 patch:
+            # e.g., if r=0, r1=0 => shift is 2 - (r-r1) = 2 - (0-0) = 2
+            # but let's compute it directly:
+            dest_r1 = 2 - (r - r1)
+            dest_c1 = 2 - (c - c1)
+            dest_r2 = dest_r1 + actual_h
+            dest_c2 = dest_c1 + actual_w
+
+            # Copy from input_image[r1:r2+1, c1:c2+1] into the patch
+            patch_5x5[dest_r1:dest_r2, dest_c1:dest_c2] = input_image[r1:r2+1, c1:c2+1]
+
+            patches.append(patch_5x5)
+
+        # Convert to Torch tensor => shape [N, 1, 5, 5]
+        patches_array = np.stack(patches, axis=0)  # shape (N, 5, 5)
+        patches_tensor = torch.from_numpy(patches_array).unsqueeze(1)  # (N, 1, 5, 5)
+
+        # Move to device and run inference
+        patches_tensor = patches_tensor.to(device)
+        with torch.no_grad():
+            logits = model(patches_tensor)
+            # shape => (N, 4)
+            predicted_labels = torch.argmax(logits, dim=1).cpu().numpy()  # shape (N,)
+
+        # Identify which spots are inkblot => label == 3
+        keep_mask = (predicted_labels == 3)
+
+        # Filter out the spots that are not inkblot
+        spot_locations_refined = []
+        for i, keep in enumerate(keep_mask):
+            if keep:
+                spot_locations_refined.append(spot_locations[i])
+
+        # Filter the corresponding rows in spots_df
+        # We assume spots_df is aligned with spot_locations by index
+        # If that is the case, we can do:
+        spots_df_refined = spots_df.loc[keep_mask].copy().reset_index(drop=True)
+
+        return spot_locations_refined, spots_df_refined
+
+    def load_cnn_model(self, model_path="/data2/cell_tracking/cnn_model.pth", device="cuda:1"):
+        """
+        Load a CNN model from disk and move it to the specified device.
+
+        Parameters
+        ----------
+        model_path : str
+            Filesystem path to the saved model (state_dict).
+        device : str
+            Torch device to which the model will be moved (e.g. 'cuda:1' or 'cpu').
+
+        Returns
+        -------
+        model : nn.Module
+            The loaded CNN model in eval mode.
+        """
+
+        # ------------------------------------------------
+        # 1) Define the same architecture as when saved
+        #    (Must match your training script exactly)
+        # ------------------------------------------------
+        class SmallCNN(nn.Module):
+            def __init__(self):
+                super().__init__()
+                self.conv1 = nn.Conv2d(1, 32, kernel_size=3, padding=1)
+                self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+                self.pool  = nn.MaxPool2d(kernel_size=2)
+                self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+                self.fc    = nn.Linear(128 * 2 * 2, 4)
+
+            def forward(self, x):
+                x = torch.relu(self.conv1(x))
+                x = torch.relu(self.conv2(x))
+                x = self.pool(x)  
+                x = torch.relu(self.conv3(x)) 
+                x = x.view(x.size(0), -1)  
+                logits = self.fc(x)        
+                return logits
+
+        # ------------------------------------------------
+        # 2) Instantiate and load the state dict
+        # ------------------------------------------------
+        model = SmallCNN()
+        model.load_state_dict(torch.load(model_path, map_location=device))
+
+        # ------------------------------------------------
+        # 3) Move to device and set eval mode
+        # ------------------------------------------------
+        model.to(device)
+        model.eval()
+
+        return model
+    

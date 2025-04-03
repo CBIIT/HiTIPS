@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setup(
     name="hitips",
-    version="1.0.9",
+    version="1.1.0",
     author="keikhosravi",
     author_email="adib.keikhosravi@nih.gov",
     description="HiTIPS: High-Throughput Image Processing Software for FISH data analysis",
@@ -25,7 +25,6 @@ setup(
         'imageio==2.31.5',
         'tifffile==2023.9.26',
         'aicsimageio==4.7.0',
-        'DeepCell==0.12.0',
         'scikit-learn==1.1.1',
         'hmmlearn==0.3.0',
         'PyQt5==5.15.10',

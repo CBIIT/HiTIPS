@@ -94,7 +94,7 @@ class analyzer(QWidget):
         self.NucDetectMethod.addItem("CellPose-CPU")
         self.NucDetectMethod.addItem("CellPose-GPU")
         self.NucDetectMethod.addItem("CellPose-Cyto")
-        self.NucDetectMethod.addItem("DeepCell")
+        # self.NucDetectMethod.addItem("DeepCell")
         self.NucDetectMethod.setFont(font)
         self.NucDetectMethod.currentIndexChanged.connect(lambda: self.INITIALIZE_SEGMENTATION_PARAMETERS())
         self.NucDetectMethod.currentIndexChanged.connect(lambda: self.ImDisplay.GET_IMAGE_NAME(self.displaygui))
@@ -619,7 +619,7 @@ class analyzer(QWidget):
         
         self.NucTrackMethod.setObjectName("NucTrackMethod")
         self.NucTrackMethod.addItem("Bayesian")
-        self.NucTrackMethod.addItem("DeepCell")
+        # self.NucTrackMethod.addItem("DeepCell")
         self.NucTrackMethod.setFont(font)
         
         self.NucSearchRadiusSpinbox = QtWidgets.QSpinBox(self.nuc_spot_track)
@@ -830,7 +830,7 @@ class analyzer(QWidget):
         self.NucDetectMethod.setItemText(2, _translate("MainWindow", "CellPose-CPU"))
         self.NucDetectMethod.setItemText(3, _translate("MainWindow", "CellPose-GPU"))
         self.NucDetectMethod.setItemText(4, _translate("MainWindow", "CellPose-Cyto"))
-        self.NucDetectMethod.setItemText(5, _translate("MainWindow", "DeepCell"))
+        # self.NucDetectMethod.setItemText(5, _translate("MainWindow", "DeepCell"))
         
         self.NucMaxZprojectCheckBox.setText(_translate("MainWindow", "MaxZ Projection"))
         self.NucRemoveBoundaryCheckBox.setText(_translate("MainWindow", "Remove Boundary Nuclei"))
@@ -924,7 +924,7 @@ class analyzer(QWidget):
         self.patchsize.setItemText(1, _translate("MainWindow", "256"))
         self.patchsize.setItemText(2, _translate("MainWindow", "512"))
         self.NucTrackMethod.setItemText(0, _translate("MainWindow", "Bayesian"))
-        self.NucTrackMethod.setItemText(1, _translate("MainWindow", "DeepCell"))
+        # self.NucTrackMethod.setItemText(1, _translate("MainWindow", "DeepCell"))
         
         self.RegistrationmethodLbl.setText(_translate("MainWindow", "Track Registration Method"))
         self.Registrationmethod.setItemText(0, _translate("MainWindow", "Phase Correlation"))

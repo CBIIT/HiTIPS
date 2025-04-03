@@ -15,7 +15,9 @@ from scipy import ndimage
 from skimage.metrics import structural_similarity as ssim
 from btrack.constants import BayesianUpdates
 import btrack  
-
+from skimage import restoration
+from .bayesian_spot_tracking import RNABurstDetector
+detector = RNABurstDetector(image_size=1000, epsilon=0.01, min_pts=3)
 
 class Tracking():
     
@@ -316,7 +318,7 @@ class Tracking():
         qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
         return qx, qy
     
-    def get_spot_patch(single_track_copy, chnl, lbl1, rot_spot_patches, spot_boundary = 4):
+    def get_spot_patch(single_track_copy, chnl, lbl1, rot_spot_patches, denoised_spot_patches, spot_boundary = 4):
         """
         Extracts small patches around detected spots in an image.
 
@@ -330,11 +332,14 @@ class Tracking():
         Returns:
         - small_spot_patches (dict): Dictionary of extracted spot patches.
         - spot_patches_center_coords (dict): Dictionary of center coordinates for each spot patch.
+        - denoised_small_spot_patches (dict): Dictionary of denoised spot patches.
 
         This method extracts small patches around detected spots based on the provided tracking information and spot boundaries.
         """
         small_spot_patches = {}
         spot_patches_center_coords = {}
+        denoised_small_spot_patches = {}
+        
         real_spots = single_track_copy[single_track_copy['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"].apply(lambda x: x != [])]['ch'+str(int(chnl))+'_spot_no_'+str(lbl1)+"_locations"]
         real_spots_indices = np.array(real_spots.index)
         for i in np.array(single_track_copy.index):
@@ -364,8 +369,12 @@ class Tracking():
                     except:
                           uper_row,uper_col = real_spots.loc[real_spots_indices[ind1]][0]
                           
-                    row = int(np.round((lower_row+uper_row)/2))
-                    col = int(np.round((lower_col+uper_col)/2))
+                    # row = int(np.round((lower_row+uper_row)/2))
+                    # col = int(np.round((lower_col+uper_col)/2))
+
+                    row = int(np.round(lower_row))
+                    col = int(np.round(lower_col))
+                    
 
             else:
                  
@@ -376,9 +385,11 @@ class Tracking():
        
             small_spot_patches[i]=rot_spot_patches[int(i)][int(row-spot_boundary) : int(row+spot_boundary+1), int(col-spot_boundary) : int(col+spot_boundary+1)]
             spot_patches_center_coords[i] = np.array([row,col]).reshape((1,2))
+            denoised_small_spot_patches[i]=denoised_spot_patches[int(i)][int(row-spot_boundary) : int(row+spot_boundary+1), int(col-spot_boundary) : int(col+spot_boundary+1)]
 
-        return small_spot_patches, spot_patches_center_coords
+        return small_spot_patches, spot_patches_center_coords, denoised_small_spot_patches
     
+
     def merge_small_clusters(points, labels, max_dist, min_burst_duration):
         
         """

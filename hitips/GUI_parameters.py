@@ -132,7 +132,17 @@ class Gui_Params(object):
             "SpotareamaxSpinBox_value": self.AnalysisGui.SpotareamaxSpinBox.value(),
             "SpotIntegratedIntensitySpinBox_value": self.AnalysisGui.SpotIntegratedIntensitySpinBox.value(),
             "PSFsizeSpinBox_value": self.AnalysisGui.PSFsizeSpinBox.value(),
-            "Output_dir": self.Output_dir
+            "Output_dir": self.Output_dir,
+            "Seceondary_Channel_index": self.AnalysisGui.SecChannel.currentIndex(),
+            "Secondary_Area_index": self.AnalysisGui.SecArea.currentIndex(),
+            "ch1_spot_detection_method": self.spot_params_dict['Ch1'][0],
+            "ch1_spot_threshold_method": self.spot_params_dict['Ch1'][1],
+            "ch1_spot_threshold_value": self.spot_params_dict['Ch1'][2],
+            "ch1_kernel_size": self.spot_params_dict['Ch1'][3],
+            "ch1_spots/ch": self.spot_params_dict['Ch1'][4],
+            "ch1_spots_area_min": self.spot_params_dict['Ch1'][5],
+            "ch1_spots_area_max": self.spot_params_dict['Ch1'][6],
+            "ch1_spots_integrated_intensity": self.spot_params_dict['Ch1'][7]
         }
     
         return params_dict
@@ -359,75 +369,88 @@ class Gui_Params(object):
                                                                 '', "Configuration files (*.csv)", options=options)
         if not self.fnames:
             return  # Exit if no file selected
-    
+
         conf = pd.read_csv(self.fnames[0], index_col='Parameter')
         conf_dict = conf.to_dict()['Value']
-    
+
         def get_bool(key):
             return bool(util.strtobool(conf_dict[key]))
-    
-        self.AnalysisGui.NucleiChannel.setCurrentText(conf_dict['nuclei_channel'])
-        self.AnalysisGui.NucDetectMethod.setCurrentText(conf_dict['nuclei_detection_method'])
-        self.AnalysisGui.NucMaxZprojectCheckBox.setChecked(get_bool('nuclei_z_project'))
-        self.AnalysisGui.NucRemoveBoundaryCheckBox.setChecked(get_bool('remove_boundary_nuclei'))
-        self.AnalysisGui.NucDetectionSlider.setValue(int(float(conf_dict['nuclei_detection'])))
-        self.AnalysisGui.NucSeparationSlider.setValue(int(float(conf_dict['nuclei_separation'])))
-        self.AnalysisGui.NucleiAreaSlider.setValue(int(float(conf_dict['nuclei_area'])))
-        self.AnalysisGui.SpotCh1CheckBox.setChecked(get_bool('ch1_spot'))
-        self.AnalysisGui.SpotCh2CheckBox.setChecked(get_bool('ch2_spot'))
-        self.AnalysisGui.SpotCh3CheckBox.setChecked(get_bool('ch3_spot'))
-        self.AnalysisGui.SpotCh4CheckBox.setChecked(get_bool('ch4_spot'))
-        self.AnalysisGui.SpotCh5CheckBox.setChecked(get_bool('ch5_spot'))
-        self.AnalysisGui.SpotLocationCbox.setCurrentText(conf_dict['spot_coordinates'])
-        self.AnalysisGui.SpotMaxZProject.setChecked(get_bool('spot_z_project'))
-        self.AnalysisGui.spotanalysismethod.setCurrentText(conf_dict['ch1_spot_detection_method'])
-        self.AnalysisGui.thresholdmethod.setCurrentText(conf_dict['ch1_spot_threshold_method'])
-        self.AnalysisGui.ThresholdSlider.setValue(int(float(conf_dict['ch1_spot_threshold_value'])))
-        self.AnalysisGui.SensitivitySpinBox.setValue(int(float(conf_dict['ch1_kernel_size'])))
-        self.AnalysisGui.ResizeFactor.setValue(int(float(conf_dict['ch1_spots/ch'])))
-        self.AnalysisGui.SpotareaminSpinBox.setValue(int(float(conf_dict['ch1_spots_area_min'])))
-        self.AnalysisGui.SpotareamaxSpinBox.setValue(int(float(conf_dict['ch1_spots_area_max'])))
-        self.AnalysisGui.SpotIntegratedIntensitySpinBox.setValue(int(float(conf_dict['ch1_spots_integrated_intensity'])))
-        self.AnalysisGui.NucInfoChkBox.setChecked(get_bool('Nuclei_Info_CheckBox_status'))
-        self.AnalysisGui.SpotsLocation.setChecked(get_bool('Spots_Location_status'))
-        self.AnalysisGui.Spot_Tracking.setChecked(get_bool('Spots_Tracking_status'))
-        self.AnalysisGui.NucMaskCheckBox.setChecked(get_bool('Nuclei_MaskCheckBox_status'))
-        self.AnalysisGui.NucMaxZprojectCheckBox.setChecked(get_bool('Nuclei_MaxZproject_CheckBox_status'))
-        self.AnalysisGui.RemoveBrightJunk.setChecked(get_bool('RemoveBrightJunk_status_check'))
-        self.inout_resource_gui.NumCPUsSpinBox.setValue(int(conf_dict['NumCPUsSpinBox_value']))
-        self.AnalysisGui.Cell_Tracking.setChecked(get_bool('Cell_Tracking_check_status'))
-        self.AnalysisGui.NucTrackMethod.setCurrentText(conf_dict['NucTrackingMethod'])
-        self.AnalysisGui.NucSearchRadiusSpinbox.setValue(int(conf_dict['NucSearchRadius']))
-        self.AnalysisGui.SpotSearchRadiusSpinbox.setValue(int(conf_dict['SpotSearchRadius_value']))
-        self.AnalysisGui.Sec_SpotSearchRadiusSpinbox.setValue(int(conf_dict['Sec_SpotSearchRadius_value']))
-        self.AnalysisGui.SecChannel.setCurrentIndex(int(conf_dict['Seceondary_Channel_index']))
-        self.AnalysisGui.SecArea.setCurrentIndex(int(conf_dict['Secondary_Area_index']))
-        self.AnalysisGui.MintrackLengthSpinbox.setValue(int(conf_dict['MintrackLength_value']))
-        self.AnalysisGui.maxspotspercellSpinbox.setValue(int(conf_dict['maxspotspercell_value']))
-        self.AnalysisGui.minburstdurationSpinbox.setValue(int(conf_dict['minburstduration_value']))
-        self.AnalysisGui.Fittingnmethod.setCurrentIndex(int(conf_dict['FittingMethod_index']))
-        self.AnalysisGui.patchsize.setCurrentText(str(conf_dict['patchsize']))
-        self.AnalysisGui.IntegratedIntensityCbox.setCurrentIndex(int(conf_dict['IntegratedIntensity_fitStatus']))
-        self.AnalysisGui.Registrationmethod.setCurrentText(conf_dict['Registrationmethod'])
-        self.AnalysisGui.IntegratedIntensityCbox.setCurrentIndex(int(conf_dict['IntegratedIntensity_Index']))
-        self.AnalysisGui.PSFsizeSpinBox.setValue(float(conf_dict['PSFsize_value']))
-        self.AnalysisGui.SecChannel.setCurrentIndex(int(conf_dict["SecChannel_current_index"]))
-        self.AnalysisGui.SecArea.setCurrentIndex(int(conf_dict["SecArea_current_index"]))
-        self.AnalysisGui.SpotsDistance.setChecked(get_bool('SpotsDistance_check_status'))
-        self.AnalysisGui.SpotIntegratedIntensitySpinBox.setValue(int(conf_dict['SpotIntegratedIntensitySpinBox_value'])) 
-        self.AnalysisGui.ResizeFactor.setValue(int(conf_dict["Resize_Factor"]))
-        for ch in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
-            ch_lower = ch.lower()
-            self.spot_params_dict[ch] = np.array([
-                det_method.index(conf_dict[f'{ch_lower}_spot_detection_method']),
-                thresh_method.index(conf_dict[f'{ch_lower}_spot_threshold_method']),
-                int(float(conf_dict[f'{ch_lower}_spot_threshold_value'])),
-                int(float(conf_dict[f'{ch_lower}_kernel_size'])),
-                int(float(conf_dict[f'{ch_lower}_spots/ch'])),
-                int(float(conf_dict[f'{ch_lower}_spots_area_min'])),
-                int(float(conf_dict[f'{ch_lower}_spots_area_max'])),
-                int(float(conf_dict[f'{ch_lower}_spots_integrated_intensity']))
-            ], dtype=int)
+        
+        def get_param(key, default):
+            return conf_dict.get(key, default)
+
+        try:
+            self.AnalysisGui.NucleiChannel.setCurrentText(conf_dict['nuclei_channel'])
+            self.AnalysisGui.NucDetectMethod.setCurrentText(conf_dict['nuclei_detection_method'])
+            self.AnalysisGui.NucMaxZprojectCheckBox.setChecked(get_bool('nuclei_z_project'))
+            self.AnalysisGui.NucRemoveBoundaryCheckBox.setChecked(get_bool('remove_boundary_nuclei'))
+            self.AnalysisGui.NucDetectionSlider.setValue(int(float(conf_dict['nuclei_detection'])))
+            self.AnalysisGui.NucSeparationSlider.setValue(int(float(conf_dict['nuclei_separation'])))
+            self.AnalysisGui.NucleiAreaSlider.setValue(int(float(conf_dict['nuclei_area'])))
+            self.AnalysisGui.SpotCh1CheckBox.setChecked(get_bool('ch1_spot'))
+            self.AnalysisGui.SpotCh2CheckBox.setChecked(get_bool('ch2_spot'))
+            self.AnalysisGui.SpotCh3CheckBox.setChecked(get_bool('ch3_spot'))
+            self.AnalysisGui.SpotCh4CheckBox.setChecked(get_bool('ch4_spot'))
+            self.AnalysisGui.SpotCh5CheckBox.setChecked(get_bool('ch5_spot'))
+            self.AnalysisGui.SpotLocationCbox.setCurrentText(conf_dict['spot_coordinates'])
+            self.AnalysisGui.SpotMaxZProject.setChecked(get_bool('spot_z_project'))
+            self.AnalysisGui.spotanalysismethod.setCurrentText(conf_dict['ch1_spot_detection_method'])
+            self.AnalysisGui.thresholdmethod.setCurrentText(conf_dict['ch1_spot_threshold_method'])
+            self.AnalysisGui.ThresholdSlider.setValue(int(float(conf_dict['ch1_spot_threshold_value'])))
+            self.AnalysisGui.SensitivitySpinBox.setValue(int(float(conf_dict['ch1_kernel_size'])))
+            self.AnalysisGui.ResizeFactor.setValue(int(float(conf_dict['ch1_spots/ch'])))
+            self.AnalysisGui.SpotareaminSpinBox.setValue(int(float(conf_dict['ch1_spots_area_min'])))
+            self.AnalysisGui.SpotareamaxSpinBox.setValue(int(float(conf_dict['ch1_spots_area_max'])))
+            self.AnalysisGui.SpotIntegratedIntensitySpinBox.setValue(int(float(conf_dict['ch1_spots_integrated_intensity'])))
+            self.AnalysisGui.NucInfoChkBox.setChecked(get_bool('Nuclei_Info_CheckBox_status'))
+            self.AnalysisGui.SpotsLocation.setChecked(get_bool('Spots_Location_status'))
+            self.AnalysisGui.Spot_Tracking.setChecked(get_bool('Spots_Tracking_status'))
+            self.AnalysisGui.NucMaskCheckBox.setChecked(get_bool('Nuclei_MaskCheckBox_status'))
+            self.AnalysisGui.NucMaxZprojectCheckBox.setChecked(get_bool('Nuclei_MaxZproject_CheckBox_status'))
+            self.AnalysisGui.RemoveBrightJunk.setChecked(get_bool('RemoveBrightJunk_status_check'))
+            self.inout_resource_gui.NumCPUsSpinBox.setValue(int(conf_dict['NumCPUsSpinBox_value']))
+            self.AnalysisGui.Cell_Tracking.setChecked(get_bool('Cell_Tracking_check_status'))
+            self.AnalysisGui.NucTrackMethod.setCurrentText(conf_dict['NucTrackingMethod'])
+            self.AnalysisGui.NucSearchRadiusSpinbox.setValue(int(conf_dict['NucSearchRadius']))
+            self.AnalysisGui.SpotSearchRadiusSpinbox.setValue(int(conf_dict['SpotSearchRadius_value']))
+            self.AnalysisGui.Sec_SpotSearchRadiusSpinbox.setValue(int(conf_dict['Sec_SpotSearchRadius_value']))
+            # Use consistent parameter naming
+            self.AnalysisGui.SecChannel.setCurrentIndex(int(get_param('Seceondary_Channel_index', 0)))
+            self.AnalysisGui.SecArea.setCurrentIndex(int(get_param('Secondary_Area_index', 0)))
+            self.AnalysisGui.MintrackLengthSpinbox.setValue(int(conf_dict['MintrackLength_value']))
+            self.AnalysisGui.maxspotspercellSpinbox.setValue(int(conf_dict['maxspotspercell_value']))
+            self.AnalysisGui.minburstdurationSpinbox.setValue(int(conf_dict['minburstduration_value']))
+            self.AnalysisGui.Fittingnmethod.setCurrentIndex(int(conf_dict['FittingMethod_index']))
+            self.AnalysisGui.patchsize.setCurrentText(str(conf_dict['patchsize']))
+            self.AnalysisGui.IntegratedIntensityCbox.setCurrentIndex(int(conf_dict['IntegratedIntensity_fitStatus']))
+            self.AnalysisGui.Registrationmethod.setCurrentText(conf_dict['Registrationmethod'])
+            self.AnalysisGui.IntegratedIntensityCbox.setCurrentIndex(int(conf_dict['IntegratedIntensity_Index']))
+            self.AnalysisGui.PSFsizeSpinBox.setValue(float(conf_dict['PSFsize_value']))
+            self.AnalysisGui.SpotIntegratedIntensitySpinBox.setValue(int(conf_dict['SpotIntegratedIntensitySpinBox_value']))
+            self.AnalysisGui.ResizeFactor.setValue(int(conf_dict["Resize_Factor"]))
+
+            # Load spot parameters for each channel
+            for ch in ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5']:
+                ch_lower = ch.lower()
+                try:
+                    self.spot_params_dict[ch] = np.array([
+                        det_method.index(conf_dict[f'{ch_lower}_spot_detection_method']),
+                        thresh_method.index(conf_dict[f'{ch_lower}_spot_threshold_method']),
+                        int(float(conf_dict[f'{ch_lower}_spot_threshold_value'])),
+                        int(float(conf_dict[f'{ch_lower}_kernel_size'])),
+                        int(float(conf_dict[f'{ch_lower}_spots/ch'])),
+                        int(float(conf_dict[f'{ch_lower}_spots_area_min'])),
+                        int(float(conf_dict[f'{ch_lower}_spots_area_max'])),
+                        int(float(conf_dict[f'{ch_lower}_spots_integrated_intensity']))
+                    ], dtype=int)
+                except (KeyError, ValueError) as e:
+                    print(f"Warning: Error loading parameters for {ch}: {e}")
+                    continue
+
+        except Exception as e:
+            pass
+            # print(f"Error loading configuration: {e}")
+            # QtWidgets.QMessageBox.warning(None, "Error", f"Failed to load configuration file: {e}")
 
     def OUTPUT_FOLDER_LOADBTN(self):
         options = QtWidgets.QFileDialog.Options()
